@@ -29,7 +29,7 @@ jobs:
       uses: dhkatz/get-version-action@v3.0.0
       id: extract_version
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore --force
     - name: Build
       run: dotnet build --no-restore --configuration ${BUILD_CONFIGURATION} /p:Version="${BUILD_VERSION}"
       env:
