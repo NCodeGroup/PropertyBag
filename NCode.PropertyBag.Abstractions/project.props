@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+
+  <PropertyGroup>
+    <Description>Provides abstractions for a strongly-typed property bag that stores and retrieves values using type-safe keys. Includes IPropertyBag, IReadOnlyPropertyBag, IPropertyBagScope, and PropertyBagKey types for type-safe key-value storage with support for scoped values and cloning.</Description>
+    <PackageTags>property-bag;property-dictionary;typed-dictionary;key-value;strongly-typed;abstractions;scope;context</PackageTags>
+  </PropertyGroup>
+
+</Project>

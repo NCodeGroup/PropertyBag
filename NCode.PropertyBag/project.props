@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+
+  <PropertyGroup>
+    <Description>Provides the default implementation of a strongly-typed property bag for storing and retrieving values using type-safe keys. Includes DefaultPropertyBag with dictionary-based storage, lazy initialization, ICloneable support, scoped values with automatic cleanup, and Microsoft.Extensions.DependencyInjection integration.</Description>
+    <PackageTags>property-bag;property-dictionary;typed-dictionary;key-value;strongly-typed;dependency-injection;di;scope;context;cloneable</PackageTags>
+  </PropertyGroup>
+
+</Project>
