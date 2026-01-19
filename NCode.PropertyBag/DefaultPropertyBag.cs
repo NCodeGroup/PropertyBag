@@ -18,7 +18,6 @@
 #endregion
 
 using System.Collections;
-using System.Diagnostics.CodeAnalysis;
 
 namespace NCode.PropertyBag;
 
@@ -183,7 +182,7 @@ public class DefaultPropertyBag : IPropertyBag, IReadOnlyDictionary<PropertyBagK
             return true;
         }
 
-        value = default;
+        value = null;
         return false;
     }
 
@@ -228,7 +227,7 @@ public class DefaultPropertyBag : IPropertyBag, IReadOnlyDictionary<PropertyBagK
     /// <param name="key">The key of the value to get.</param>
     /// <returns>The value associated with the specified key, or <c>null</c> if the key is not found.</returns>
     object? IReadOnlyDictionary<PropertyBagKey, object?>.this[PropertyBagKey key] =>
-        TryGetBase(key, out var value) ? value : default;
+        TryGetBase(key, out var value) ? value : null;
 
     /// <summary>
     /// Determines whether the property bag contains an element with the specified key.
