@@ -13,7 +13,6 @@
         <EmbedUntrackedSources>true</EmbedUntrackedSources>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-        <PackageIconUrl></PackageIconUrl>
     </PropertyGroup>
 
     <ItemGroup>
@@ -22,8 +21,8 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.1" />
-        <PackageReference Include="NCode.ProjectSettings.Scaffold" Version="1.0.16">
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.2" />
+        <PackageReference Include="NCode.ProjectSettings.Scaffold" Version="1.0.18">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
