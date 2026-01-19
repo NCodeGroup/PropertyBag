@@ -107,7 +107,9 @@ propertyBag
     .Set(timeout);
 
 // Retrieve with inferred key name
-if (propertyBag.TryGet(out string? connectionString))
+// Note: declare variable first - inline declaration (out string? x) won't infer the key name correctly
+string? connectionString;
+if (propertyBag.TryGet(out connectionString)) // Key inferred as "connectionString"
 {
     Console.WriteLine(connectionString);
 }
@@ -150,3 +152,4 @@ Licensed under the Apache License, Version 2.0. See [LICENSE.txt](LICENSE.txt) f
 * v1.0.0 - Initial release
 * v1.0.1 - Fix CI build
 * v1.1.0 - Added NET 8.0 build
+* v1.1.1 - Fixed TryGet documentation example to show correct variable declaration pattern

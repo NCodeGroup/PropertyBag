@@ -137,7 +137,9 @@ public static class PropertyBagExtensions
         /// <example>
         /// <code>
         /// // Assuming a value was stored with key "userName"
-        /// if (propertyBag.TryGet(out string? userName))
+        /// // Note: declare variable first - inline declaration (out string? x) won't infer the key name correctly
+        /// string? userName;
+        /// if (propertyBag.TryGet(out userName))
         /// {
         ///     Console.WriteLine($"User: {userName}");
         /// }
