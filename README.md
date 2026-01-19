@@ -141,6 +141,12 @@ if (propertyBag.TryGet(out string? connectionString))
 
 Licensed under the Apache License, Version 2.0. See [LICENSE.txt](LICENSE.txt) for details.
 
+## Target Frameworks
+
+- .NET 8.0
+- .NET 10.0
+
 ## Release Notes
 * v1.0.0 - Initial release
 * v1.0.1 - Fix CI build
+* v1.1.0 - Added NET 8.0 build
