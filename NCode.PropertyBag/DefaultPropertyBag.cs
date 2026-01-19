@@ -112,7 +112,7 @@ public class DefaultPropertyBag : IPropertyBag, IReadOnlyDictionary<PropertyBagK
     /// <remarks>
     /// If the key already exists, its value is overwritten with the new value.
     /// </remarks>
-    public IPropertyBag Set<T>(PropertyBagKey<T> key, T value)
+    public IPropertyBag Set<T>(PropertyBagKey<T> key, T? value)
     {
         Items[key] = value;
         return this;
@@ -133,7 +133,7 @@ public class DefaultPropertyBag : IPropertyBag, IReadOnlyDictionary<PropertyBagK
     /// This method sets the value using <see cref="Set{T}"/> and returns a <see cref="DefaultPropertyBagScope"/>
     /// that will restore the previous state when disposed.
     /// </remarks>
-    public IPropertyBagScope Scope<T>(PropertyBagKey<T> key, T value)
+    public IPropertyBagScope Scope<T>(PropertyBagKey<T> key, T? value)
     {
         Set(key, value);
         return new DefaultPropertyBagScope(this, key);
@@ -142,14 +142,24 @@ public class DefaultPropertyBag : IPropertyBag, IReadOnlyDictionary<PropertyBagK
     /// <inheritdoc />
     /// <remarks>
     /// This method performs a type check on the retrieved value. If the stored value is not of type
-    /// <typeparamref name="T"/>, this method returns <c>false</c>.
+    /// <typeparamref name="T"/> (and is not <c>null</c>), this method returns <c>false</c>.
+    /// If the stored value is <c>null</c>, this method returns <c>true</c> with <paramref name="value"/> set to <c>null</c>.
     /// </remarks>
-    public bool TryGetValue<T>(PropertyBagKey<T> key, [MaybeNullWhen(false)] out T value)
+    public bool TryGetValue<T>(PropertyBagKey<T> key, out T? value)
     {
-        if (TryGetBase(key, out var baseValue) && baseValue is T typedValue)
+        if (TryGetBase(key, out var baseValue))
         {
-            value = typedValue;
-            return true;
+            if (baseValue is null)
+            {
+                value = default;
+                return true;
+            }
+
+            if (baseValue is T typedValue)
+            {
+                value = typedValue;
+                return true;
+            }
         }
 
         value = default;

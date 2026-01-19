@@ -8,6 +8,7 @@ A lightweight, strongly-typed property bag library for .NET that provides type-s
 ## Features
 
 - **Strongly-Typed Keys** - Type-safe `PropertyBagKey<T>` ensures compile-time type checking when storing and retrieving values
+- **Nullable Value Support** - Explicitly store and retrieve `null` values for reference types and nullable value types
 - **Read-Only Interface** - `IReadOnlyPropertyBag` for passing property bags to code that should only read values
 - **Fluent API** - Method chaining support for `Set` and `Remove` operations
 - **Scoped Values** - Temporarily override values with automatic cleanup using `IPropertyBagScope`
@@ -115,6 +116,31 @@ if (propertyBag.TryGet(out connectionString)) // Key inferred as "connectionStri
 }
 ```
 
+### Nullable Values
+
+Null values can be explicitly stored and retrieved:
+
+```csharp
+var optionalNameKey = new PropertyBagKey<string?>("OptionalName");
+
+// Explicitly store null
+propertyBag.Set(optionalNameKey, null);
+
+// TryGetValue returns true because the key exists (even though value is null)
+if (propertyBag.TryGetValue(optionalNameKey, out var name))
+{
+    // name is null here, but the key was found
+    Console.WriteLine(name ?? "(not set)");
+}
+
+// This is different from a missing key
+var missingKey = new PropertyBagKey<string?>("Missing");
+if (!propertyBag.TryGetValue(missingKey, out _))
+{
+    // Key does not exist
+}
+```
+
 ## API Overview
 
 ### Abstractions (`NCode.PropertyBag.Abstractions`)
@@ -153,3 +179,4 @@ Licensed under the Apache License, Version 2.0. See [LICENSE.txt](LICENSE.txt) f
 * v1.0.1 - Fix CI build
 * v1.1.0 - Added NET 8.0 build
 * v1.1.1 - Fixed TryGet documentation example to show correct variable declaration pattern
+* v1.2.0 - Added explicit support for nullable values; `TryGetValue` now returns `true` when a key exists with a `null` value

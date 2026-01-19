@@ -16,7 +16,6 @@
 
 #endregion
 
-using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
 
 namespace NCode.PropertyBag;
@@ -88,6 +87,8 @@ public interface IReadOnlyPropertyBag
     /// When this method returns, contains the strongly typed value associated with the specified key
     /// if the key is found; otherwise, the default value for type <typeparamref name="T"/>.
     /// This parameter is passed uninitialized.
+    /// Note that the value may be <c>null</c> even when the method returns <c>true</c>,
+    /// if <c>null</c> was explicitly stored for the key.
     /// </param>
     /// <typeparam name="T">The type of the value to retrieve from the property bag.</typeparam>
     /// <returns>
@@ -99,24 +100,28 @@ public interface IReadOnlyPropertyBag
     /// is not found. Use this method when the presence of a key is uncertain.
     /// </para>
     /// <para>
-    /// The <see cref="MaybeNullWhenAttribute"/> on the <paramref name="value"/> parameter indicates
-    /// to nullable analysis that the output value may be <c>null</c> when the method returns <c>false</c>.
+    /// The output <paramref name="value"/> may be <c>null</c> in two scenarios:
+    /// <list type="bullet">
+    /// <item><description>When the method returns <c>false</c> (key not found), the value is set to <c>default(T)</c>.</description></item>
+    /// <item><description>When the method returns <c>true</c> (key found), but <c>null</c> was explicitly stored as the value.</description></item>
+    /// </list>
     /// </para>
     /// </remarks>
     /// <example>
     /// <code>
-    /// var userNameKey = new PropertyBagKey&lt;string&gt;("UserName");
+    /// var userNameKey = new PropertyBagKey&lt;string?&gt;("UserName");
     ///
     /// if (propertyBag.TryGetValue(userNameKey, out var userName))
     /// {
-    ///     Console.WriteLine($"User: {userName}");
+    ///     // Key exists, but userName could be null if null was stored
+    ///     Console.WriteLine($"User: {userName ?? "(not set)"}");
     /// }
     /// else
     /// {
-    ///     Console.WriteLine("User name not found");
+    ///     Console.WriteLine("User name key not found");
     /// }
     /// </code>
     /// </example>
     /// <seealso cref="PropertyBagExtensions"/>
-    bool TryGetValue<T>(PropertyBagKey<T> key, [MaybeNullWhen(false)] out T value);
+    bool TryGetValue<T>(PropertyBagKey<T> key, out T? value);
 }

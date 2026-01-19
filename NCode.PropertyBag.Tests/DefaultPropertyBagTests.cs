@@ -38,11 +38,8 @@ public class DefaultPropertyBagTests
 
         propertyBag.Set(key, null);
 
-        // TryGetValue returns false for null values because the type check fails
-        // Use the IReadOnlyDictionary interface to verify the value is stored
-        IReadOnlyDictionary<PropertyBagKey, object?> dict = propertyBag;
-        Assert.True(dict.ContainsKey(key));
-        Assert.Null(dict[key]);
+        Assert.True(propertyBag.TryGetValue(key, out var value));
+        Assert.Null(value);
     }
 
     [Fact]
@@ -360,6 +357,22 @@ public class DefaultPropertyBagTests
         }
 
         Assert.False(propertyBag.TryGetValue(key, out _));
+    }
+
+    [Fact]
+    public void Scope_WithNullValue_SetsNull()
+    {
+        var propertyBag = new DefaultPropertyBag();
+        var key = new PropertyBagKey<string?>("TestKey");
+
+        using (propertyBag.Scope(key, null))
+        {
+            Assert.True(propertyBag.TryGetValue(key, out var value));
+            Assert.Null(value);
+        }
+
+        IReadOnlyDictionary<PropertyBagKey, object?> dict = propertyBag;
+        Assert.False(dict.ContainsKey(key));
     }
 
     #endregion

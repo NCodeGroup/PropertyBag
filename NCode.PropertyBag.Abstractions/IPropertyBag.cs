@@ -55,7 +55,10 @@ public interface IPropertyBag : IReadOnlyPropertyBag
     /// Sets a strongly typed value for the specified <paramref name="key"/> in the property bag.
     /// </summary>
     /// <param name="key">The <see cref="PropertyBagKey{T}"/> that identifies the value to set.</param>
-    /// <param name="value">The strongly typed value to associate with the specified key.</param>
+    /// <param name="value">
+    /// The strongly typed value to associate with the specified key.
+    /// This value may be <c>null</c> for reference types and nullable value types.
+    /// </param>
     /// <typeparam name="T">The type of the value to set in the property bag.</typeparam>
     /// <returns>The current <see cref="IPropertyBag"/> instance for method chaining.</returns>
     /// <remarks>
@@ -66,18 +69,25 @@ public interface IPropertyBag : IReadOnlyPropertyBag
     /// This method returns the same <see cref="IPropertyBag"/> instance to allow fluent method chaining,
     /// enabling multiple values to be set in a single expression.
     /// </para>
+    /// <para>
+    /// Setting a <c>null</c> value explicitly stores <c>null</c> in the property bag. This is different
+    /// from removing the key entirely. When <see cref="IReadOnlyPropertyBag.TryGetValue{T}"/> is called
+    /// for a key with a stored <c>null</c> value, it returns <c>true</c> with the output value set to <c>null</c>.
+    /// </para>
     /// </remarks>
     /// <example>
     /// <code>
     /// var nameKey = new PropertyBagKey&lt;string&gt;("Name");
     /// var ageKey = new PropertyBagKey&lt;int&gt;("Age");
+    /// var optionalKey = new PropertyBagKey&lt;string?&gt;("Optional");
     ///
     /// propertyBag
     ///     .Set(nameKey, "Alice")
-    ///     .Set(ageKey, 30);
+    ///     .Set(ageKey, 30)
+    ///     .Set(optionalKey, null); // Explicitly stores null
     /// </code>
     /// </example>
-    IPropertyBag Set<T>(PropertyBagKey<T> key, T value);
+    IPropertyBag Set<T>(PropertyBagKey<T> key, T? value);
 
     /// <summary>
     /// Removes the value associated with the specified <paramref name="key"/> from the property bag.
@@ -108,7 +118,10 @@ public interface IPropertyBag : IReadOnlyPropertyBag
     /// that will be automatically removed or restored when the returned <see cref="IPropertyBagScope"/> is disposed.
     /// </summary>
     /// <param name="key">The <see cref="PropertyBagKey{T}"/> that identifies the value to set.</param>
-    /// <param name="value">The strongly typed value to temporarily associate with the specified key.</param>
+    /// <param name="value">
+    /// The strongly typed value to temporarily associate with the specified key.
+    /// This value may be <c>null</c> for reference types and nullable value types.
+    /// </param>
     /// <typeparam name="T">The type of the value to set in the property bag.</typeparam>
     /// <returns>
     /// An <see cref="IPropertyBagScope"/> instance that, when disposed, will remove the scoped value
@@ -124,10 +137,13 @@ public interface IPropertyBag : IReadOnlyPropertyBag
     /// If a value already exists for the specified key, disposing the scope will restore the
     /// original value. If no value existed, disposing the scope will remove the key entirely.
     /// </para>
+    /// <para>
+    /// A <c>null</c> value can be used to temporarily set a key to <c>null</c> within the scope.
+    /// </para>
     /// </remarks>
     /// <example>
     /// <code>
-    /// var cultureKey = new PropertyBagKey&lt;string&gt;("Culture");
+    /// var cultureKey = new PropertyBagKey&lt;string?&gt;("Culture");
     /// propertyBag.Set(cultureKey, "en-US");
     ///
     /// using (propertyBag.Scope(cultureKey, "fr-FR"))
@@ -141,5 +157,5 @@ public interface IPropertyBag : IReadOnlyPropertyBag
     /// </code>
     /// </example>
     /// <seealso cref="IPropertyBagScope"/>
-    IPropertyBagScope Scope<T>(PropertyBagKey<T> key, T value);
+    IPropertyBagScope Scope<T>(PropertyBagKey<T> key, T? value);
 }
