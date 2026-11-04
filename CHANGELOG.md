@@ -8,13 +8,11 @@ The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.
 
 ### Added
 
-- Public API tracking with `PublicAPI.Shipped.txt` and `PublicAPI.Unshipped.txt` in each packable project.
-- Banned-API and null-forgiving-operator analyzers, and the `build/dod.ps1` Definition of Done script.
-- `CONTRIBUTING.md`, `SECURITY.md` and architecture decision records in `docs/decisions/`.
+- Public API tracking with `PublicAPI.Shipped.txt` and `PublicAPI.Unshipped.txt` in each packable project. The recorded surface equals that of v1.2.0; the public API is unchanged.
 
 ### Changed
 
-- Updated the project from project-template v0.41.0 to v0.61.2: CI now runs the Definition of Done, the NCode Review workflow is refreshed, and Dependabot groups security updates.
-- Test helper types are sealed, as the new analyzers require.
+- Updated the project from project-template v0.41.0 to v0.61.2 (build, analyzers, CI and documentation); the library's behavior is unchanged.
+- `AssemblyVersion` now moves only with the major version (for example `1.0.0.0` for every 1.x release), where it was previously the full version. `FileVersion` and `InformationalVersion` keep the exact version.
 
 [Unreleased]: https://github.com/NCodeGroup/PropertyBag/compare/v1.2.0...HEAD
