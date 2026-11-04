@@ -494,7 +494,7 @@ public class PropertyBagExtensionsTests
 
     #region Helper Classes
 
-    private class TestConfiguration
+    private sealed class TestConfiguration
     {
         public int Timeout { get; set; }
         public string? Endpoint { get; set; }

@@ -17,6 +17,7 @@
 
 #endregion
 
+using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
 
 namespace NCode.PropertyBag;
@@ -87,6 +88,7 @@ public interface IPropertyBag : IReadOnlyPropertyBag
     ///     .Set(optionalKey, null); // Explicitly stores null
     /// </code>
     /// </example>
+    [SuppressMessage("Naming", "CA1716:Identifiers should not match keywords", Justification = "Set is the published API name; renaming it would be a breaking change.")]
     IPropertyBag Set<T>(PropertyBagKey<T> key, T? value);
 
     /// <summary>

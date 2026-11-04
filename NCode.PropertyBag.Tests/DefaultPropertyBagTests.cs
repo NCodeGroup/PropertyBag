@@ -574,14 +574,14 @@ public class DefaultPropertyBagTests
 
     #region Helper Classes
 
-    private class CloneableValue : ICloneable
+    private sealed class CloneableValue : ICloneable
     {
         public string? Data { get; set; }
 
         public object Clone() => new CloneableValue { Data = Data };
     }
 
-    private class NonCloneableValue
+    private sealed class NonCloneableValue
     {
         public string? Data { get; set; }
     }
