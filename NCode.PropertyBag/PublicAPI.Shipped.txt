@@ -1,0 +1,28 @@
+#nullable enable
+NCode.PropertyBag.DefaultPropertyBag
+NCode.PropertyBag.DefaultPropertyBag.Clone() -> NCode.PropertyBag.IPropertyBag!
+NCode.PropertyBag.DefaultPropertyBag.DefaultPropertyBag() -> void
+NCode.PropertyBag.DefaultPropertyBag.Remove(NCode.PropertyBag.PropertyBagKey key) -> NCode.PropertyBag.IPropertyBag!
+NCode.PropertyBag.DefaultPropertyBag.Scope<T>(NCode.PropertyBag.PropertyBagKey<T> key, T? value) -> NCode.PropertyBag.IPropertyBagScope!
+NCode.PropertyBag.DefaultPropertyBag.Set<T>(NCode.PropertyBag.PropertyBagKey<T> key, T? value) -> NCode.PropertyBag.IPropertyBag!
+NCode.PropertyBag.DefaultPropertyBag.TryGetValue<T>(NCode.PropertyBag.PropertyBagKey<T> key, out T? value) -> bool
+NCode.PropertyBag.DefaultPropertyBagFactory
+NCode.PropertyBag.DefaultPropertyBagFactory.Create() -> NCode.PropertyBag.IPropertyBag!
+NCode.PropertyBag.DefaultPropertyBagFactory.DefaultPropertyBagFactory() -> void
+NCode.PropertyBag.DefaultPropertyBagScope
+NCode.PropertyBag.DefaultPropertyBagScope.DefaultPropertyBagScope(NCode.PropertyBag.IPropertyBag! propertyBag, NCode.PropertyBag.PropertyBagKey key) -> void
+NCode.PropertyBag.DefaultPropertyBagScope.Dispose() -> void
+NCode.PropertyBag.DefaultPropertyBagScope.Key.get -> NCode.PropertyBag.PropertyBagKey
+NCode.PropertyBag.DefaultPropertyBagScope.PropertyBag.get -> NCode.PropertyBag.IPropertyBag!
+NCode.PropertyBag.DefaultRegistration
+NCode.PropertyBag.DefaultRegistration.extension(Microsoft.Extensions.DependencyInjection.IServiceCollection!)
+NCode.PropertyBag.DefaultRegistration.extension(Microsoft.Extensions.DependencyInjection.IServiceCollection!).AddPropertyBag() -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
+NCode.PropertyBag.IPropertyBagFactory
+NCode.PropertyBag.IPropertyBagFactory.Create() -> NCode.PropertyBag.IPropertyBag!
+NCode.PropertyBag.PropertyBagFactory
+static NCode.PropertyBag.DefaultPropertyBagFactory.Singleton.get -> NCode.PropertyBag.IPropertyBagFactory!
+static NCode.PropertyBag.DefaultPropertyBagFactory.Singleton.set -> void
+static NCode.PropertyBag.DefaultRegistration.AddPropertyBag(this Microsoft.Extensions.DependencyInjection.IServiceCollection! serviceCollection) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
+static NCode.PropertyBag.PropertyBagFactory.Create() -> NCode.PropertyBag.IPropertyBag!
+static NCode.PropertyBag.PropertyBagFactory.DefaultFactory.get -> NCode.PropertyBag.IPropertyBagFactory!
+static NCode.PropertyBag.PropertyBagFactory.DefaultFactory.set -> void

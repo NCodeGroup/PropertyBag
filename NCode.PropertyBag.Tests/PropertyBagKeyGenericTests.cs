@@ -323,7 +323,7 @@ public class PropertyBagKeyGenericTests
 
     #region Helper Classes
 
-    private class TestClass
+    private sealed class TestClass
     {
         public string? Value { get; set; }
     }

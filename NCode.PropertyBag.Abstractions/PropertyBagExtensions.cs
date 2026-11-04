@@ -17,6 +17,7 @@
 
 #endregion
 
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 
@@ -49,6 +50,7 @@ namespace NCode.PropertyBag;
 /// <seealso cref="IReadOnlyPropertyBag"/>
 /// <seealso cref="PropertyBagKey{T}"/>
 [PublicAPI]
+[SuppressMessage("Naming", "CA1708:Identifiers should differ by more than case", Justification = "The compiler-generated names of the extension blocks differ only by case in the analyzer's view; renaming public members would be a breaking change.")]
 public static class PropertyBagExtensions
 {
     /// <summary>

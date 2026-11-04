@@ -180,3 +180,11 @@ Licensed under the Apache License, Version 2.0. See [LICENSE.txt](LICENSE.txt) f
 * v1.1.0 - Added NET 8.0 build
 * v1.1.1 - Fixed TryGet documentation example to show correct variable declaration pattern
 * v1.2.0 - Added explicit support for nullable values; `TryGetValue` now returns `true` when a key exists with a `null` value
+
+## Project
+
+- [CONTRIBUTING.md](CONTRIBUTING.md): how to set up, build, test and propose a change.
+- [SECURITY.md](SECURITY.md): how to report a vulnerability privately.
+- [docs/decisions/](docs/decisions/README.md): the decisions behind the design, the project's and the template's.
+- [CHANGELOG.md](CHANGELOG.md): what changed in each release, in the Keep a Changelog format.
+- [LICENSE.txt](LICENSE.txt): the license.
