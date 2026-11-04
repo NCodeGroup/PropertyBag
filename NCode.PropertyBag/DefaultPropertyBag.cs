@@ -18,6 +18,7 @@
 #endregion
 
 using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 
 namespace NCode.PropertyBag;
 
@@ -54,6 +55,7 @@ namespace NCode.PropertyBag;
 /// <seealso cref="IPropertyBag"/>
 /// <seealso cref="IReadOnlyPropertyBag"/>
 /// <seealso cref="DefaultPropertyBagFactory"/>
+[SuppressMessage("Naming", "CA1710:Identifiers should have correct suffix", Justification = "DefaultPropertyBag is the published type name; renaming it would be a breaking change.")]
 public class DefaultPropertyBag : IPropertyBag, IReadOnlyDictionary<PropertyBagKey, object?>, ICloneable
 {
     /// <summary>
