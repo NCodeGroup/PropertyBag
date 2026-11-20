@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- https://learn.microsoft.com/dotnet/fundamentals/package-validation/diagnostic-ids -->
-<Suppressions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<Suppressions
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+>
   <Suppression>
     <DiagnosticId>CP0001</DiagnosticId>
     <Target>T:NCode.PropertyBag.PropertyBagExtensions.&lt;G&gt;$8C5C028EDC5343FF8CBFD29B8A159E05.&lt;M&gt;$274AD645B704656F98ED1AE931F0F094</Target>
