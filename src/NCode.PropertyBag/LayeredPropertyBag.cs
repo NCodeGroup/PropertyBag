@@ -47,17 +47,17 @@ public sealed class LayeredPropertyBag(IReadOnlyPropertyBag parent)
         IScopeRestorer
 {
     /// <summary>
+    /// Gets the marker that a local entry holds when the key is hidden from the parent.
+    /// </summary>
+    private static object Removed { get; } = new();
+
+    /// <summary>
     /// Gets the bag that this bag reads through to.
     /// </summary>
     /// <value>The parent bag, which this bag never writes.</value>
     /// <exception cref="ArgumentNullException">The parent passed to the constructor is <c>null</c>.</exception>
     public IReadOnlyPropertyBag Parent { get; } =
         parent ?? throw new ArgumentNullException(nameof(parent));
-
-    /// <summary>
-    /// The marker that a local entry holds when the key is hidden from the parent.
-    /// </summary>
-    private static object Removed { get; } = new();
 
     /// <summary>
     /// The local entries, or <c>null</c> if nothing has been written yet.

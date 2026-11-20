@@ -24,6 +24,9 @@ namespace NCode.PropertyBag;
 [PublicAPI]
 public sealed class ReadOnlyPropertyBag(IReadOnlyPropertyBag propertyBag) : IReadOnlyPropertyBag
 {
+    /// <summary>
+    /// Gets the bag that this view reads through to.
+    /// </summary>
     private IReadOnlyPropertyBag Inner { get; } =
         propertyBag ?? throw new ArgumentNullException(nameof(propertyBag));
 
