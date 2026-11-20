@@ -5,8 +5,8 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Description>Provides abstractions for a strongly-typed property bag that stores and retrieves values using type-safe keys. Includes IPropertyBag, IReadOnlyPropertyBag, IPropertyBagScope, and PropertyBagKey types for type-safe key-value storage with support for scoped values and cloning.</Description>
-    <PackageTags>property-bag;property-dictionary;typed-dictionary;key-value;strongly-typed;abstractions;scope;context</PackageTags>
+    <Description>The interfaces and strongly typed keys of NCode.PropertyBag: IPropertyBag, IReadOnlyPropertyBag, IPropertyBagScope and PropertyBagKey, for libraries that accept or read a property bag without depending on its implementation.</Description>
+    <PackageTags>property-bag typed-dictionary key-value strongly-typed type-safe context abstractions</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

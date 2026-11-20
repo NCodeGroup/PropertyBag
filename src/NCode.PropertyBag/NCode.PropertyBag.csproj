@@ -4,8 +4,8 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Description>Provides the default implementation of a strongly-typed property bag for storing and retrieving values using type-safe keys. Includes DefaultPropertyBag with dictionary-based storage, lazy initialization, ICloneable support, scoped values with automatic cleanup, and Microsoft.Extensions.DependencyInjection integration.</Description>
-    <PackageTags>property-bag;property-dictionary;typed-dictionary;key-value;strongly-typed;dependency-injection;di;scope;context;cloneable</PackageTags>
+    <Description>Strongly typed property bags for .NET: store and read values by type-safe keys, override a value for a scope, clone a bag, and create bags through Microsoft.Extensions.DependencyInjection.</Description>
+    <PackageTags>property-bag typed-dictionary key-value strongly-typed type-safe context scope dependency-injection</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
