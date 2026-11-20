@@ -33,8 +33,7 @@ public class DependencyInjectionSamples
 
     private sealed class OrderHandler(IPropertyBagFactory factory)
     {
-        public IPropertyBag Handle(string orderId) =>
-            factory.Create().Set(OrderIdKey, orderId);
+        public IPropertyBag Handle(string id) => factory.Create().Set(OrderIdKey, id);
     }
 
     // end-snippet
