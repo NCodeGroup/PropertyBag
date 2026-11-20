@@ -4,7 +4,7 @@
 #requires -version 7
 <#
 .SYNOPSIS
-    The project's gate: the sample key check, the README samples check (build/Assert-Markdown.ps1, tested offline by build/Test-AssertMarkdown.ps1), the API map check (build/Assert-ApiMap.ps1, whose rules build/Test-AssertApiMap.ps1 tests offline first), the XML documentation examples check (build/Test-XmlDocExamples.ps1) and the site script's offline test (build/Test-Site.ps1), then the Definition of Done, build/dod.ps1, whose Format stage runs the CSharpier check (project-template ADR-0148, ADR-1003, ADR-1006).
+    The project's gate: the sample key check, the README samples check (build/Assert-Markdown.ps1, tested offline by build/Test-AssertMarkdown.ps1), the API map check (build/Assert-ApiMap.ps1, whose rules build/Test-AssertApiMap.ps1 tests offline first), the XML documentation examples check (build/Test-XmlDocExamples.ps1, tested by build/Test-TestXmlDocExamples.ps1) and the site script's offline test (build/Test-Site.ps1), then the Definition of Done, build/dod.ps1, whose Format stage runs the CSharpier check (project-template ADR-0148, ADR-1003, ADR-1006).
 .DESCRIPTION
     build/dod.ps1 is template-owned and has no stage for the samples, so this script runs those checks before it, as
     project-template ADR-0117 says. -Fast and -Filter are passed on to build/dod.ps1.
@@ -38,7 +38,10 @@ try {
     # The API map on /reference/api-map/ lists every line of both PublicAPI.Shipped.txt files once.
     ./build/Assert-ApiMap.ps1
     if ($LASTEXITCODE) { exit $LASTEXITCODE }
-    # Every example in the XML documentation ships to IntelliSense, so each must compile as written.
+    # Every example in the XML documentation ships to IntelliSense, so each must compile as written. The check's rules
+    # are tested against fixtures first, so a rule broken in the check fails here instead of passing every example.
+    ./build/Test-TestXmlDocExamples.ps1
+    if ($LASTEXITCODE) { exit $LASTEXITCODE }
     ./build/Test-XmlDocExamples.ps1
     if ($LASTEXITCODE) { exit $LASTEXITCODE }
     # build/site.ps1 finds the documentation site's toolchain from the main checkout and from a worktree alike; its

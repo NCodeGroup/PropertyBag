@@ -8,8 +8,8 @@
 .DESCRIPTION
     Covers a map that lists every shipped line once, whatever the files' comment and empty lines; a shipped line no
     entry lists; a line of the second file no entry lists; a line an entry lists that is not shipped; a line two
-    entries list; and no map file. Each fixture is a folder under the temp path, not a repository, that holds the two
-    PublicAPI.Shipped.txt files and the map. Each case checks the exit code and every line the check prints. Exits 1 on
+    entries list; no map file; and two files that hold no shipped line. Each fixture is a folder under the temp path,
+    not a repository, that holds the two PublicAPI.Shipped.txt files and the map. Each case checks the exit code and every line the check prints. Exits 1 on
     the first failed check. build/gate.ps1 runs it before the check.
 #>
 $ErrorActionPreference = 'Stop'
@@ -32,17 +32,18 @@ function Invoke-Case {
     param(
         [string]$Case,
         [hashtable[]]$Entries,
-        [string[]]$Problems = @()
+        [string[]]$Problems = @(),
+        [switch]$NoShippedLines
     )
     $root = Join-Path ([IO.Path]::GetTempPath()) "api-map-test-$([guid]::NewGuid().ToString('N'))"
     New-Item -ItemType Directory -Path $root | Out-Null
     try {
         $abstractions = Join-Path $root $abstractionsPath
         New-Item -ItemType Directory -Path (Split-Path -Parent $abstractions) -Force | Out-Null
-        [IO.File]::WriteAllText($abstractions, "#nullable enable`n`n$type`n$name  `n", $utf8)
+        [IO.File]::WriteAllText($abstractions, $(if ($NoShippedLines) { "#nullable enable`n" } else { "#nullable enable`n`n$type`n$name  `n" }), $utf8)
         $implementation = Join-Path $root $implementationPath
         New-Item -ItemType Directory -Path (Split-Path -Parent $implementation) -Force | Out-Null
-        [IO.File]::WriteAllText($implementation, "#nullable enable`n$factory`n", $utf8)
+        [IO.File]::WriteAllText($implementation, $(if ($NoShippedLines) { "#nullable enable`n" } else { "#nullable enable`n$factory`n" }), $utf8)
         if ($null -ne $Entries) {
             $map = Join-Path $root $mapPath
             New-Item -ItemType Directory -Path (Split-Path -Parent $map) -Force | Out-Null
@@ -75,5 +76,6 @@ Invoke-Case 'a line that is not shipped' -Entries (Entry 'property-bag-key' @($t
 Invoke-Case 'a line two entries list' -Entries (Entry 'property-bag-key' @($type, $name)), (Entry 'property-bag-key-name' @($name)), (Entry 'property-bag-factory' @($factory)) `
     -Problems "API map: '$name' is listed 2 times: property-bag-key, property-bag-key-name"
 Invoke-Case 'no map file' -Entries $null -Problems "API map: $mapPath does not exist"
+Invoke-Case 'no shipped line in either file' -Entries @() -NoShippedLines -Problems "API map: $abstractionsPath and $implementationPath hold no shipped line"
 # Every case passed. The last one left the check's exit code, 1, in $LASTEXITCODE, which a caller may read.
 exit 0

@@ -35,7 +35,8 @@ sites built with them are built out. The pin is v0.15.2.
    its next weekly update.
 3. Every other dependency keeps project-template ADR-0009's three days. NCode Review (NCodeGroup/code-review) is among
    them: it receives the organization's keys, and `.github/workflows/code-review-auto-merge.yml` merges its pin without
-   a person (project-template ADR-0006's exception), so a release adopted the day it appears would reach those keys unreviewed.
+   a person (project-template ADR-0006's exception), so a release adopted the day it appears would reach those keys
+   unreviewed.
    NCodeGroup/brand reaches this repository only through the toolchain's vendored copy, which the toolchain verifies
    against the release's attestation.
 4. The exception ends with the first stable release of NCodeGroup/docs, 1.0.0, or earlier when the maintainers declare
@@ -58,8 +59,8 @@ sites built with them are built out. The pin is v0.15.2.
   sooner.
 - A compromised or broken toolchain release can reach this repository's documentation build up to three days sooner than
   project-template ADR-0009 allows. That build runs the toolchain's workflow with the permissions `docs.yml` grants it,
-  `pages: write` and `id-token: write` included. The pin is a full SHA, so the toolchain moves only through a pull request a person
-  reviews and merges (project-template ADR-0006).
+  `pages: write` and `id-token: write` included. The pin is a full SHA, so the toolchain moves only through a pull
+  request a person reviews and merges (project-template ADR-0006).
 - A Dependabot pull request can move the pin to a release that asks something of the site, such as a renamed token; the
   documentation site workflow fails it when a page or component breaks the release's checks, and its reviewer reads the
   release's notes before merging it.

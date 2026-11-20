@@ -40,6 +40,12 @@ try {
             if ($text.Length -and -not $text.StartsWith('#', [StringComparison]::Ordinal)) { $shipped.Add($text) }
         }
     }
+    # A misread file yields no lines, and a map checked against nothing would pass.
+    if ($shipped.Count -eq 0) {
+        'API map: FAILED.'
+        "API map: $($shippedPaths -join ' and ') hold no shipped line"
+        exit 1
+    }
     $map = Get-Content -LiteralPath $mapPath -Raw | ConvertFrom-Json -AsHashtable
     # The map's lines in entry order, and the ids of the entries that list each one, in the order it is first listed.
     $listings = [Collections.Generic.List[object]]::new()

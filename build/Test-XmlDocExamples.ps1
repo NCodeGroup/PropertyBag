@@ -12,16 +12,22 @@
     with #line directives that point each error at its source line. The script builds that file against both packages.
     A <code> tag that is not alone on its /// line fails the check, so no example is skipped. An example may use
     `propertyBag` (an IPropertyBag), `services` (an IServiceCollection), `userName` (a string), `GetPropertyBag()` and
-    the class `CustomPropertyBagFactory`; the script declares them. build/gate.ps1 runs it.
+    the class `CustomPropertyBagFactory`; the script declares them. build/gate.ps1 runs it, after
+    build/Test-TestXmlDocExamples.ps1, which tests it against fixtures.
 #>
 [CmdletBinding()]
-param()
+param(
+    # The folder whose C# files hold the examples; build/Test-TestXmlDocExamples.ps1 points it at fixtures.
+    [string]$Source,
+    # Where the scratch project is written; it must be under the repository, so its global.json and nuget.config apply.
+    [string]$Out
+)
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot
-$source = Join-Path $root 'src'
+$source = if ($Source) { $Source } else { Join-Path $root 'src' }
 $project = Join-Path $root 'src/NCode.PropertyBag/NCode.PropertyBag.csproj'
-# Under the repository, so its global.json and nuget.config apply; artifacts/ is ignored by git and CSharpier.
-$out = Join-Path $root 'artifacts/xml-examples'
+# artifacts/ is ignored by git and CSharpier.
+$out = if ($Out) { $Out } else { Join-Path $root 'artifacts/xml-examples' }
 New-Item -ItemType Directory -Force -Path $out | Out-Null
 
 $framework = @(([xml](Get-Content -Raw -LiteralPath $project)).Project.PropertyGroup.TargetFramework | Where-Object { $_ })[0]

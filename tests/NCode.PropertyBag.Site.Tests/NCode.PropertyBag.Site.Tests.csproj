@@ -1,5 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <!-- The documentation site's samples (ADR-1006). The library grants this assembly no InternalsVisibleTo, and its namespace is outside NCode.PropertyBag, so a sample compiles only as a consumer's code would. It references no coverage collector: build/Test-Coverage.ps1 measures the library through NCode.PropertyBag.Tests alone. -->
+  <!--
+    The documentation site's samples (ADR-1006). The library grants this assembly no InternalsVisibleTo, and its
+    namespace is outside NCode.PropertyBag, so a sample compiles only as a consumer's code would. It references no
+    coverage collector: build/Test-Coverage.ps1 measures the library through NCode.PropertyBag.Tests alone.
+  -->
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <RootNamespace>SiteSamples</RootNamespace>
