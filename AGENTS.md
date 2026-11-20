@@ -38,7 +38,7 @@ How `/ship-plan` lands a reviewed plan. `integrate`: `pull-request` pushes the p
 - protect: none
 - pr-format: none
 - review-bots: ncode-review
-- max-review-rounds: 999
+- max-review-rounds: 3
 - prelude: none
 
 ## Conventions
