@@ -1,15 +1,1 @@
 #nullable enable
-NCode.PropertyBag.PropertyBagExtensions.extension(NCode.PropertyBag.IPropertyBag!).GetOrAdd<T>(NCode.PropertyBag.PropertyBagKey<T> key, System.Func<NCode.PropertyBag.PropertyBagKey<T>, T?>! valueFactory) -> T?
-NCode.PropertyBag.PropertyBagExtensions.extension(NCode.PropertyBag.IPropertyBag!).TryAdd<T>(NCode.PropertyBag.PropertyBagKey<T> key, T? value) -> bool
-NCode.PropertyBag.PropertyBagExtensions.extension(NCode.PropertyBag.IPropertyBag!).TryRemove<T>(NCode.PropertyBag.PropertyBagKey<T> key, out T? value) -> bool
-NCode.PropertyBag.ReadOnlyPropertyBagExtensions.extension(NCode.PropertyBag.IReadOnlyPropertyBag!).ContainsKey<T>(NCode.PropertyBag.PropertyBagKey<T> key) -> bool
-NCode.PropertyBag.ReadOnlyPropertyBagExtensions.extension(NCode.PropertyBag.IReadOnlyPropertyBag!).GetValue<T>(NCode.PropertyBag.PropertyBagKey<T> key) -> T?
-NCode.PropertyBag.ReadOnlyPropertyBagExtensions.extension(NCode.PropertyBag.IReadOnlyPropertyBag!).GetValueOrDefault<T>(NCode.PropertyBag.PropertyBagKey<T> key, T? defaultValue = default(T?)) -> T?
-override NCode.PropertyBag.PropertyBagKey.ToString() -> string!
-override NCode.PropertyBag.PropertyBagKey<T>.ToString() -> string!
-static NCode.PropertyBag.PropertyBagExtensions.GetOrAdd<T>(this NCode.PropertyBag.IPropertyBag! bag, NCode.PropertyBag.PropertyBagKey<T> key, System.Func<NCode.PropertyBag.PropertyBagKey<T>, T?>! valueFactory) -> T?
-static NCode.PropertyBag.PropertyBagExtensions.TryAdd<T>(this NCode.PropertyBag.IPropertyBag! bag, NCode.PropertyBag.PropertyBagKey<T> key, T? value) -> bool
-static NCode.PropertyBag.PropertyBagExtensions.TryRemove<T>(this NCode.PropertyBag.IPropertyBag! bag, NCode.PropertyBag.PropertyBagKey<T> key, out T? value) -> bool
-static NCode.PropertyBag.ReadOnlyPropertyBagExtensions.ContainsKey<T>(this NCode.PropertyBag.IReadOnlyPropertyBag! bag, NCode.PropertyBag.PropertyBagKey<T> key) -> bool
-static NCode.PropertyBag.ReadOnlyPropertyBagExtensions.GetValue<T>(this NCode.PropertyBag.IReadOnlyPropertyBag! bag, NCode.PropertyBag.PropertyBagKey<T> key) -> T?
-static NCode.PropertyBag.ReadOnlyPropertyBagExtensions.GetValueOrDefault<T>(this NCode.PropertyBag.IReadOnlyPropertyBag! bag, NCode.PropertyBag.PropertyBagKey<T> key, T? defaultValue = default(T?)) -> T?
