@@ -1,4 +1,4 @@
-# 1010. New capabilities are extension members and new types, and the interfaces stay unchanged within a major version
+# 1011. New capabilities are extension members and new types, and the interfaces stay unchanged within a major version
 
 - **Status:** Accepted
 - **Date:** 2026-11-20

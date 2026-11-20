@@ -80,6 +80,11 @@ Each package's project is in its own folder under `src/`, `src/NCode.PropertyBag
 
 The packages do no I/O, start no threads, and share no state except the two settable factory properties.
 
+The packages show people no text and sort nothing: they have no user interface, write no log, console or file, and
+define no message of their own. The only exceptions they throw on purpose are `ArgumentNullException` from
+`ArgumentNullException.ThrowIfNull`, which are for developers and whose message .NET supplies in its own languages, so
+nothing in them needs translating.
+
 ## Design Rules
 
 - Decisions the design rests on are recorded in [decisions/](decisions/README.md).
@@ -108,6 +113,10 @@ the release
 `raise-baseline.yml`, which opens the pull request that raises the package validation baseline
 ([ADR-0150](decisions/project-template/0150-a-workflow-raises-the-package-validation-baseline-after-each-release.md),
 [ADR-0151](decisions/project-template/0151-release-follow-ups-are-jobs-publish-calls.md)).
+`reproducible-build.yml` packs every pull request and push to `main` twice, from checkouts in different folders, and
+every Monday rebuilds the newest release's tag, and compares the packages entry by entry with
+`build/Compare-Packages.ps1`
+([ADR-1010](decisions/1010-package-builds-are-reproducible-and-ci-compares-rebuilds-entry-by-entry.md)).
 
 `docs.yml` builds the documentation site with NCodeGroup/docs, pinned by commit, on every pull request and publishes it
 to GitHub Pages at https://propertybag.ncode.io/ from every push to `main`

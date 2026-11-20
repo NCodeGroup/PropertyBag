@@ -4,7 +4,7 @@
 #requires -version 7
 <#
 .SYNOPSIS
-    The project's gate: the sample key check, the README samples check (build/Assert-Markdown.ps1, tested offline by build/Test-AssertMarkdown.ps1), the API map check (build/Assert-ApiMap.ps1, whose rules build/Test-AssertApiMap.ps1 tests offline first), the XML documentation examples check (build/Test-XmlDocExamples.ps1, tested by build/Test-TestXmlDocExamples.ps1) and the site script's offline test (build/Test-Site.ps1), then the Definition of Done, build/dod.ps1, whose Format stage runs the CSharpier check (project-template ADR-0148, ADR-1003, ADR-1006).
+    The project's gate: the sample key check, the README samples check (build/Assert-Markdown.ps1, tested offline by build/Test-AssertMarkdown.ps1), the API map check (build/Assert-ApiMap.ps1, whose rules build/Test-AssertApiMap.ps1 tests offline first), the XML documentation examples check (build/Test-XmlDocExamples.ps1, tested by build/Test-TestXmlDocExamples.ps1) and the site script's offline test (build/Test-Site.ps1), the package comparison's offline test (build/Test-ComparePackages.ps1), then the Definition of Done, build/dod.ps1, whose Format stage runs the CSharpier check (project-template ADR-0148, ADR-1003, ADR-1006).
 .DESCRIPTION
     build/dod.ps1 is template-owned and has no stage for the samples, so this script runs those checks before it, as
     project-template ADR-0117 says. -Fast and -Filter are passed on to build/dod.ps1.
@@ -47,6 +47,10 @@ try {
     # build/site.ps1 finds the documentation site's toolchain from the main checkout and from a worktree alike; its
     # rules are tested offline, with a fake toolchain and a fake node, though the gate does not build the site.
     ./build/Test-Site.ps1
+    if ($LASTEXITCODE) { exit $LASTEXITCODE }
+    # build/Compare-Packages.ps1 compares two builds' packages entry by entry in reproducible-build.yml
+    # (ADR-1010); its rules are tested offline here, so a rule broken in the comparison fails before CI relies on it.
+    ./build/Test-ComparePackages.ps1
     if ($LASTEXITCODE) { exit $LASTEXITCODE }
     $dod = @{}
     if ($Fast) { $dod.Fast = $true }

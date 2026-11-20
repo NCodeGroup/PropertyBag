@@ -16,6 +16,7 @@
   <a href="https://www.nuget.org/packages/NCode.PropertyBag#supportedframeworks-body-tab"><img alt="Target framework" src="https://img.shields.io/badge/dynamic/xml?url=https%3A%2F%2Fraw.githubusercontent.com%2FNCodeGroup%2FPropertyBag%2Fmain%2Fsrc%2FNCode.PropertyBag%2FNCode.PropertyBag.csproj&query=%2F%2FTargetFramework%20%7C%20%2F%2FTargetFrameworks&label=target&logo=dotnet&color=512BD4"></a>
   <a href="LICENSE.txt"><img alt="License" src="https://img.shields.io/github/license/NCodeGroup/PropertyBag"></a>
   <a href="https://scorecard.dev/viewer/?uri=github.com/NCodeGroup/PropertyBag"><img alt="OpenSSF Scorecard" src="https://api.scorecard.dev/projects/github.com/NCodeGroup/PropertyBag/badge"></a>
+  <a href="https://www.bestpractices.dev/projects/16954"><img alt="OpenSSF Best Practices" src="https://www.bestpractices.dev/projects/16954/badge"></a>
 </p>
 
 A property bag carries context, such as the current user, a culture or a correlation ID, through code that doesn't need to know every value it passes on. Each value is stored and read through a `PropertyBagKey<T>`, which names the value and fixes its type, so a read returns a `T` without a cast.

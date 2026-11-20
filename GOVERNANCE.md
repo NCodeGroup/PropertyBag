@@ -9,7 +9,7 @@ what and how decisions are made.
 
 | Role | Who | Responsibilities |
 | --- | --- | --- |
-| Maintainer | The repository's owners | Sets direction, triages issues, reviews and merges pull requests, approves each publication in the `nuget` environment, answers vulnerability reports, owns the repository's settings and the nuget.org packages |
+| Maintainer | [@polewskm](https://github.com/polewskm) | Sets direction, triages issues, reviews and merges pull requests, approves each publication in the `nuget` environment, answers vulnerability reports, owns the repository's settings and the nuget.org packages |
 | Contributor | Anyone | Opens issues and pull requests, under [CONTRIBUTING.md](CONTRIBUTING.md) and the [Code of Conduct](CODE_OF_CONDUCT.md) |
 | Automation | `ncode-review[bot]`, Dependabot, GitHub Actions | Reviews and approves a clean pull request, proposes dependency updates, runs CI, tags and publishes releases; never merges a pull request except the pin bump `code-review-auto-merge.yml` merges once a maintainer approves it |
 
@@ -41,9 +41,10 @@ on with no knowledge held elsewhere. nuget.org publishing uses trusted publishin
 
 [//]: # "Maintainers: name the owners, and keep the list current."
 
-Owners today: the repository's owners and the owners of the nuget.org packages. Continuity
-needs at least two people who can administer both; until there are
-two, it is incomplete, and the OpenSSF Best Practices silver level can't be claimed
+Owners today, as of 2026-11-20: [@polewskm](https://github.com/polewskm) is the one owner of the NCodeGroup GitHub
+organization and the one administrator of this repository, and the nuget.org packages belong to the nuget.org account
+`NCode`. Continuity needs at least two people who can administer the organization, the repository and that account;
+until a second owner is added, it is incomplete, and the OpenSSF Best Practices silver level can't be claimed
 ([docs/best-practices-badge.md](docs/best-practices-badge.md)).
 
 ## Changing This Document
