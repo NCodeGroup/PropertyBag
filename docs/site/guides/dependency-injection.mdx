@@ -1,0 +1,43 @@
+---
+title: Create bags with dependency injection
+description: Register the factory with AddPropertyBag, inject IPropertyBagFactory, or replace the factory PropertyBagFactory uses.
+---
+
+A bag is cheap to create, so code that needs one asks a factory for it. This page shows how to register the factory with a service container, how to create a bag per unit of work, how to use your own factory, how to create bags without a container, and what to watch for.
+
+## Register the factory
+
+`AddPropertyBag()` extends `IServiceCollection`. It registers `DefaultPropertyBagFactory` as the singleton `IPropertyBagFactory` with `TryAddSingleton` and returns the collection, so calls chain. It registers no `IPropertyBag`: a bag belongs to one unit of work, so the factory creates it.
+
+```cs snippet=SiteDependencyInjectionRegister
+```
+
+## Create a bag per unit of work
+
+Inject `IPropertyBagFactory` and call `Create()`. Each call returns a new, empty bag. A bag holds no lock, so create one for each request or operation instead of sharing one between threads.
+
+```cs snippet=SiteDependencyInjectionInject
+```
+
+## Use your own factory
+
+`IPropertyBagFactory` has one method, `Create()`. A factory you register before `AddPropertyBag()` is kept, because the registration only adds a factory when none is registered. The sample's `TenantBagFactory` returns a `DefaultPropertyBag` that already holds the key `Tenant` set to `"contoso"`.
+
+```cs snippet=SiteDependencyInjectionCustomFactory
+```
+
+## Without a container
+
+`PropertyBagFactory.Create()` returns `PropertyBagFactory.DefaultFactory.Create()`, and `DefaultFactory` is `DefaultPropertyBagFactory.Singleton` until you set it. Set it to make every static call use your factory, and put the default back when you are done.
+
+```cs snippet=SiteDependencyInjectionStatic
+```
+
+## Pitfalls
+
+- `PropertyBagFactory.DefaultFactory` and `DefaultPropertyBagFactory.Singleton` are process-wide. A test that sets one restores it in a `finally` block and runs alone, after the parallel test classes, so no other test creates a bag through the static factory meanwhile.
+- The container's factory is its own `DefaultPropertyBagFactory`, not `DefaultPropertyBagFactory.Singleton`. Setting `Singleton` or `DefaultFactory` does not change what the container returns, and registering a factory does not change what `PropertyBagFactory.Create()` returns.
+- Calling `AddPropertyBag()` twice registers one factory.
+- A bag created from the factory is not thread-safe. Do not store one in a singleton service that several requests share.
+
+See the [API map](/reference/api-map/) for every member of the factories, and [store and read values](/guides/store-and-read-values/) for what to do with the bag once you have it.
