@@ -1,3 +1,6 @@
+// Copyright © NCode Group
+// SPDX-License-Identifier: Apache-2.0
+
 namespace NCode.PropertyBag.Tests;
 
 using System.Collections;
@@ -74,10 +77,7 @@ public class DefaultPropertyBagTests
         var key2 = new PropertyBagKey<int>("Key2");
         var key3 = new PropertyBagKey<bool>("Key3");
 
-        propertyBag
-            .Set(key1, "Value1")
-            .Set(key2, 42)
-            .Set(key3, true);
+        propertyBag.Set(key1, "Value1").Set(key2, 42).Set(key3, true);
 
         Assert.True(propertyBag.TryGetValue(key1, out var value1));
         Assert.Equal("Value1", value1);
@@ -150,6 +150,20 @@ public class DefaultPropertyBagTests
         var result = propertyBag.TryGetValue(key, out _);
 
         Assert.False(result);
+    }
+
+    [Fact]
+    public void TryGetValue_WhenStoredValueIsNotOfRequestedType_ReturnsFalse()
+    {
+        var propertyBag = new DefaultPropertyBag();
+        var key = new PropertyBagKey<WrongTypeClone>("TestKey");
+        propertyBag.Set(key, new WrongTypeClone());
+
+        // Clone deep-copies an ICloneable value, and this one's Clone returns another type.
+        var clone = propertyBag.Clone();
+
+        Assert.False(clone.TryGetValue(key, out var value));
+        Assert.Null(value);
     }
 
     #endregion
@@ -375,6 +389,23 @@ public class DefaultPropertyBagTests
         Assert.False(dict.ContainsKey(key));
     }
 
+    [Fact]
+    public void Scope_WhenKeyHadValue_RestoresPreviousValueOnDispose()
+    {
+        var propertyBag = new DefaultPropertyBag();
+        var key = new PropertyBagKey<string>("TestKey");
+        propertyBag.Set(key, "Outer");
+
+        using (propertyBag.Scope(key, "Inner"))
+        {
+            Assert.True(propertyBag.TryGetValue(key, out var inner));
+            Assert.Equal("Inner", inner);
+        }
+
+        Assert.True(propertyBag.TryGetValue(key, out var restored));
+        Assert.Equal("Outer", restored);
+    }
+
     #endregion
 
     #region IReadOnlyDictionary Tests
@@ -570,9 +601,78 @@ public class DefaultPropertyBagTests
         Assert.NotNull(enumerator.Current);
     }
 
+    [Fact]
+    public void Count_AfterAddingItems_CountsThroughIReadOnlyCollection()
+    {
+        var propertyBag = new DefaultPropertyBag();
+        propertyBag.Set(new PropertyBagKey<string>("Key1"), "Value1");
+        propertyBag.Set(new PropertyBagKey<int>("Key2"), 42);
+
+        IReadOnlyCollection<KeyValuePair<PropertyBagKey, object?>> collection = propertyBag;
+
+        var count = collection.Count;
+
+        Assert.Equal(2, count);
+    }
+
+    [Fact]
+    public void Count_WhenEmpty_IsZeroThroughIReadOnlyCollection()
+    {
+        IReadOnlyCollection<KeyValuePair<PropertyBagKey, object?>> collection =
+            new DefaultPropertyBag();
+
+        // Reads the Count member itself: Assert.Empty would enumerate instead of calling it.
+        var count = collection.Count;
+
+        Assert.Equal(0, count);
+    }
+
+    [Fact]
+    public void GetEnumerator_WhenNotEmpty_EnumeratesEveryEntry()
+    {
+        var propertyBag = new DefaultPropertyBag();
+        var key1 = new PropertyBagKey<string>("Key1");
+        var key2 = new PropertyBagKey<int>("Key2");
+        propertyBag.Set(key1, "Value1").Set(key2, 42);
+        IEnumerable<KeyValuePair<PropertyBagKey, object?>> typed = propertyBag;
+
+        var entries = typed.ToArray();
+
+        Assert.Equal(2, entries.Length);
+        Assert.Contains(entries, pair => pair.Key == key1 && (string?)pair.Value == "Value1");
+        Assert.Contains(entries, pair => pair.Key == key2 && (int?)pair.Value == 42);
+    }
+
+    [Fact]
+    public void GetEnumerator_WhenEmpty_EnumeratesNothing()
+    {
+        IEnumerable<KeyValuePair<PropertyBagKey, object?>> typed = new DefaultPropertyBag();
+
+        using var enumerator = typed.GetEnumerator();
+        var hasEntry = enumerator.MoveNext();
+
+        Assert.False(hasEntry);
+    }
+
+    [Fact]
+    public void NonGenericGetEnumerator_WhenEmpty_EnumeratesNothing()
+    {
+        IEnumerable untyped = new DefaultPropertyBag();
+
+        var enumerator = untyped.GetEnumerator();
+        var hasEntry = enumerator.MoveNext();
+
+        Assert.False(hasEntry);
+    }
+
     #endregion
 
     #region Helper Classes
+
+    private sealed class WrongTypeClone : ICloneable
+    {
+        public object Clone() => "not a WrongTypeClone";
+    }
 
     private sealed class CloneableValue : ICloneable
     {

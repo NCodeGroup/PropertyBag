@@ -14,7 +14,7 @@ and [ADR-0150](decisions/project-template/0150-a-workflow-raises-the-package-val
 ## What checks it
 
 1. The PublicAPI analyzer, on every build: `RS0016` for a public symbol that is not listed and `RS0017` for a listed symbol that is gone, against `PublicAPI.Shipped.txt` and `PublicAPI.Unshipped.txt`.
-2. Package validation (`CP` diagnostics), on every `dotnet pack`: the full `./build/dod.ps1` and CI, but not `./build/dod.ps1 -Fast`. It compares each target framework with the others and, once the project sets a baseline, the package with the last published one.
+2. Package validation (`CP` diagnostics), on every `dotnet pack`: the full `./build/gate.ps1`, which wraps `./build/dod.ps1`, and CI, but not `./build/gate.ps1 -Fast`. It compares each target framework with the others and, once the project sets a baseline, the package with the last published one.
 
 ## Changing the public API
 

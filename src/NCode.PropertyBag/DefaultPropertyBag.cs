@@ -1,21 +1,5 @@
-#region Copyright Preamble
-
-//
-//    Copyright @ 2023 NCode Group
-//
-//    Licensed under the Apache License, Version 2.0 (the "License");
-//    you may not use this file except in compliance with the License.
-//    You may obtain a copy of the License at
-//
-//        http://www.apache.org/licenses/LICENSE-2.0
-//
-//    Unless required by applicable law or agreed to in writing, software
-//    distributed under the License is distributed on an "AS IS" BASIS,
-//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//    See the License for the specific language governing permissions and
-//    limitations under the License.
-
-#endregion
+// Copyright © NCode Group
+// SPDX-License-Identifier: Apache-2.0
 
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
@@ -55,8 +39,15 @@ namespace NCode.PropertyBag;
 /// <seealso cref="IPropertyBag"/>
 /// <seealso cref="IReadOnlyPropertyBag"/>
 /// <seealso cref="DefaultPropertyBagFactory"/>
-[SuppressMessage("Naming", "CA1710:Identifiers should have correct suffix", Justification = "DefaultPropertyBag is the published type name; renaming it would be a breaking change.")]
-public class DefaultPropertyBag : IPropertyBag, IReadOnlyDictionary<PropertyBagKey, object?>, ICloneable
+[SuppressMessage(
+    "Naming",
+    "CA1710:Identifiers should have correct suffix",
+    Justification = "DefaultPropertyBag is the published type name; renaming it would be a breaking change."
+)]
+public class DefaultPropertyBag
+    : IPropertyBag,
+        IReadOnlyDictionary<PropertyBagKey, object?>,
+        ICloneable
 {
     /// <summary>
     /// The underlying dictionary storage, or <c>null</c> if no values have been set yet.
@@ -66,7 +57,8 @@ public class DefaultPropertyBag : IPropertyBag, IReadOnlyDictionary<PropertyBagK
     /// <summary>
     /// Gets the underlying dictionary, initializing it if necessary.
     /// </summary>
-    private Dictionary<PropertyBagKey, object?> Items => ItemsOrNull ??= new Dictionary<PropertyBagKey, object?>();
+    private Dictionary<PropertyBagKey, object?> Items =>
+        ItemsOrNull ??= new Dictionary<PropertyBagKey, object?>();
 
     /// <inheritdoc />
     /// <remarks>
@@ -93,7 +85,8 @@ public class DefaultPropertyBag : IPropertyBag, IReadOnlyDictionary<PropertyBagK
         var newItems = items.Select(item =>
             item.Value is ICloneable cloneable
                 ? new KeyValuePair<PropertyBagKey, object?>(item.Key, cloneable.Clone())
-                : item);
+                : item
+        );
 
         newBag.ItemsOrNull = new Dictionary<PropertyBagKey, object?>(newItems);
 
@@ -162,7 +155,7 @@ public class DefaultPropertyBag : IPropertyBag, IReadOnlyDictionary<PropertyBagK
         }
         else
         {
-            ItemsOrNull?.Remove(key);
+            Items.Remove(key);
         }
     }
 
@@ -227,15 +220,15 @@ public class DefaultPropertyBag : IPropertyBag, IReadOnlyDictionary<PropertyBagK
     /// Returns an enumerator that iterates through the property bag's key-value pairs.
     /// </summary>
     /// <returns>An enumerator for the collection.</returns>
-    IEnumerator<KeyValuePair<PropertyBagKey, object?>> IEnumerable<KeyValuePair<PropertyBagKey, object?>>.
-        GetEnumerator() =>
+    IEnumerator<KeyValuePair<PropertyBagKey, object?>> IEnumerable<
+        KeyValuePair<PropertyBagKey, object?>
+    >.GetEnumerator() =>
         (ItemsOrNull ?? Enumerable.Empty<KeyValuePair<PropertyBagKey, object?>>()).GetEnumerator();
 
     /// <summary>
     /// Gets the number of key-value pairs in the property bag.
     /// </summary>
-    int IReadOnlyCollection<KeyValuePair<PropertyBagKey, object?>>.Count =>
-        ItemsOrNull?.Count ?? 0;
+    int IReadOnlyCollection<KeyValuePair<PropertyBagKey, object?>>.Count => ItemsOrNull?.Count ?? 0;
 
     /// <summary>
     /// Gets a collection containing the keys in the property bag.
@@ -274,8 +267,10 @@ public class DefaultPropertyBag : IPropertyBag, IReadOnlyDictionary<PropertyBagK
     /// otherwise, <c>null</c>. This parameter is passed uninitialized.
     /// </param>
     /// <returns><c>true</c> if the property bag contains an element with the specified key; otherwise, <c>false</c>.</returns>
-    bool IReadOnlyDictionary<PropertyBagKey, object?>.TryGetValue(PropertyBagKey key, out object? value) =>
-        TryGetBase(key, out value);
+    bool IReadOnlyDictionary<PropertyBagKey, object?>.TryGetValue(
+        PropertyBagKey key,
+        out object? value
+    ) => TryGetBase(key, out value);
 
     #endregion
 }

@@ -78,7 +78,7 @@ The [passing criteria](https://www.bestpractices.dev/en/criteria/0), 67 in all.
 
 | Criterion | Req | N/A | URL | Answer and evidence |
 | --- | --- | --- | --- | --- |
-| `build` | MUST | yes | no | **Met**: `dotnet build`, and `./build/dod.ps1` in CI. |
+| `build` | MUST | yes | no | **Met**: `dotnet build`, and `./build/gate.ps1`, which wraps `./build/dod.ps1`, in CI. |
 | `build_common_tools` | SUGGESTED | yes | no | **Met**: the .NET SDK and MSBuild. |
 | `build_floss_tools` | SHOULD | yes | no | **Met**: the .NET SDK is FLOSS. |
 | `test` | MUST | no | no | **Check**: Met once the project has an automated test suite: [CONTRIBUTING.md](../CONTRIBUTING.md), Build and Test, names its command, and `.github/workflows/ci.yml` runs it. |

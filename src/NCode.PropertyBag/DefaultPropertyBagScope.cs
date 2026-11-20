@@ -1,20 +1,5 @@
-#region Copyright Preamble
-
-// Copyright @ 2024 NCode Group
-//
-//    Licensed under the Apache License, Version 2.0 (the "License");
-//    you may not use this file except in compliance with the License.
-//    You may obtain a copy of the License at
-//
-//        http://www.apache.org/licenses/LICENSE-2.0
-//
-//    Unless required by applicable law or agreed to in writing, software
-//    distributed under the License is distributed on an "AS IS" BASIS,
-//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//    See the License for the specific language governing permissions and
-//    limitations under the License.
-
-#endregion
+// Copyright © NCode Group
+// SPDX-License-Identifier: Apache-2.0
 
 namespace NCode.PropertyBag;
 
@@ -57,7 +42,8 @@ namespace NCode.PropertyBag;
 /// <seealso cref="IPropertyBagScope"/>
 /// <seealso cref="IPropertyBag.Scope{T}"/>
 /// <seealso cref="DefaultPropertyBag"/>
-public class DefaultPropertyBagScope(IPropertyBag propertyBag, PropertyBagKey key) : IPropertyBagScope
+public class DefaultPropertyBagScope(IPropertyBag propertyBag, PropertyBagKey key)
+    : IPropertyBagScope
 {
     /// <summary>
     /// Initializes a new scope whose <see cref="Dispose"/> hands the captured state back to the bag
@@ -75,7 +61,8 @@ public class DefaultPropertyBagScope(IPropertyBag propertyBag, PropertyBagKey ke
         DefaultPropertyBag propertyBag,
         PropertyBagKey key,
         bool hadPreviousValue,
-        object? previousValue)
+        object? previousValue
+    )
         : this(propertyBag, key)
     {
         RestoreTarget = propertyBag;

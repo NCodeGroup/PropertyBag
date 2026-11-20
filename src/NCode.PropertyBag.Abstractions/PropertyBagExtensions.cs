@@ -1,21 +1,5 @@
-#region Copyright Preamble
-
-//
-//    Copyright @ 2023 NCode Group
-//
-//    Licensed under the Apache License, Version 2.0 (the "License");
-//    you may not use this file except in compliance with the License.
-//    You may obtain a copy of the License at
-//
-//        http://www.apache.org/licenses/LICENSE-2.0
-//
-//    Unless required by applicable law or agreed to in writing, software
-//    distributed under the License is distributed on an "AS IS" BASIS,
-//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//    See the License for the specific language governing permissions and
-//    limitations under the License.
-
-#endregion
+// Copyright © NCode Group
+// SPDX-License-Identifier: Apache-2.0
 
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
@@ -50,7 +34,11 @@ namespace NCode.PropertyBag;
 /// <seealso cref="IReadOnlyPropertyBag"/>
 /// <seealso cref="PropertyBagKey{T}"/>
 [PublicAPI]
-[SuppressMessage("Naming", "CA1708:Identifiers should differ by more than case", Justification = "The compiler-generated names of the extension blocks differ only by case in the analyzer's view; renaming public members would be a breaking change.")]
+[SuppressMessage(
+    "Naming",
+    "CA1708:Identifiers should differ by more than case",
+    Justification = "The compiler-generated names of the extension blocks differ only by case in the analyzer's view; renaming public members would be a breaking change."
+)]
 public static class PropertyBagExtensions
 {
     /// <summary>
@@ -102,10 +90,8 @@ public static class PropertyBagExtensions
         /// </example>
         public IPropertyBag Set<T>(
             T? value,
-            [CallerArgumentExpression(nameof(value))]
-            string? name = null
-        ) =>
-            bag.Set(new PropertyBagKey<T>(name ?? string.Empty), value);
+            [CallerArgumentExpression(nameof(value))] string? name = null
+        ) => bag.Set(new PropertyBagKey<T>(name ?? string.Empty), value);
     }
 
     /// <summary>
@@ -163,9 +149,7 @@ public static class PropertyBagExtensions
         /// <seealso cref="IReadOnlyPropertyBag.TryGetValue{T}"/>
         public bool TryGet<T>(
             out T? value,
-            [CallerArgumentExpression(nameof(value))]
-            string? name = null
-        ) =>
-            bag.TryGetValue(new PropertyBagKey<T>(name ?? string.Empty), out value);
+            [CallerArgumentExpression(nameof(value))] string? name = null
+        ) => bag.TryGetValue(new PropertyBagKey<T>(name ?? string.Empty), out value);
     }
 }

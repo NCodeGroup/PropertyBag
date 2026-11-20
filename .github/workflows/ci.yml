@@ -48,10 +48,24 @@ jobs:
             ${{ runner.os }}-nuget-
       - name: Check the decision index
         run: ./.template/Test-AdrIndex.ps1
-      # The Definition of Done builds, tests and, for a library, packs, as build/dod.ps1 says.
+      # The gate checks the formatting with CSharpier (ADR-0148 in docs/decisions/project-template/), then runs the
+      # Definition of Done, which builds, tests and, for a library, packs and validates the package.
       - name: Definition of Done
         if: hashFiles('**/*.csproj', '**/*.sln', '**/*.slnx') != ''
-        run: ./build/dod.ps1
+        run: ./build/gate.ps1
+      # Fails the build when line or branch coverage drops below build/Test-Coverage.ps1's minimums.
+      - name: Code coverage
+        if: hashFiles('**/*.csproj', '**/*.sln', '**/*.slnx') != ''
+        run: ./build/Test-Coverage.ps1 -ReportDirectory artifacts/coverage
+      # The Cobertura report, kept to inspect; .github/workflows/coverage.yml publishes it to Codecov.
+      - name: Upload coverage report
+        if: hashFiles('**/*.csproj', '**/*.sln', '**/*.slnx') != ''
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: coverage
+          path: artifacts/coverage/
+          retention-days: 14
+          if-no-files-found: error
       # A TRX file per test project, kept after a failure too, to see which test failed.
       - name: Upload test results
         if: always()

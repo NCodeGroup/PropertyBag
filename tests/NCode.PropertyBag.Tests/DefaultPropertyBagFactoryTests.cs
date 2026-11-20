@@ -1,5 +1,9 @@
+// Copyright © NCode Group
+// SPDX-License-Identifier: Apache-2.0
+
 namespace NCode.PropertyBag.Tests;
 
+[Collection(StaticFactoryCollection.Name)]
 public class DefaultPropertyBagFactoryTests
 {
     #region Singleton Property Tests

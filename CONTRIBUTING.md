@@ -18,11 +18,13 @@ Once in each clone, run `git config core.hooksPath .githooks`. It turns on `.git
 | --- | --- |
 | Build | `dotnet build` |
 | Test | `dotnet test` |
-| Definition of Done, the full gate | `./build/dod.ps1` |
-| The local gate before a push | `./build/dod.ps1 -Fast` |
-| Only the tests a filter matches | `./build/dod.ps1 -Fast -Filter 'FullyQualifiedName~OrderStore'` |
+| Format | `dotnet tool restore` once, then `dotnet csharpier format .` |
+| The full gate | `./build/gate.ps1` |
+| The local gate before a push | `./build/gate.ps1 -Fast` |
+| Only the tests a filter matches | `./build/gate.ps1 -Fast -Filter 'FullyQualifiedName~OrderStore'` |
+| Code coverage: lists every line no test runs, and fails below 98% line or branch coverage, as CI does; `-ReportDirectory artifacts/coverage` also keeps the Cobertura report | `./build/Test-Coverage.ps1` |
 
-The Definition of Done checks the decision index, builds in Release with warnings as errors, runs the tests, packs and ends with `Definition of Done: PASSED`. CI runs `./build/dod.ps1` on every pull request.
+The gate checks the formatting with CSharpier, then runs the Definition of Done, `./build/dod.ps1`, which checks the decision index, builds in Release with warnings as errors, runs the tests, packs and ends with `Definition of Done: PASSED`. CI runs `./build/gate.ps1` and `./build/Test-Coverage.ps1` on every pull request. Every C# file starts with the two lines `// Copyright © NCode Group` and `// SPDX-License-Identifier: Apache-2.0`.
 
 ## Make a Change
 
@@ -30,7 +32,7 @@ The Definition of Done checks the decision index, builds in Release with warning
 2. A change consumers can observe, such as to the public API, behavior, validation or security posture, stored data or a wire format, has its decision recorded in [docs/decisions/](docs/decisions/README.md) before or with the pull request that builds it; that folder's README says how. Bug fixes and internal changes need no record.
 3. Work on a short-lived branch from the default branch. A change that adds or changes behavior adds or updates the automated tests that cover it.
 4. Add an entry for each change consumers can see to `CHANGELOG.md`, under `## [Unreleased]`, in the [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.1.0/) format: grouped under `### Added`, `### Changed`, `### Deprecated`, `### Removed`, `### Fixed` or `### Security`. The first such change creates the file. A release moves the entries into its version's section.
-5. Before you push, pass the gate: `./build/dod.ps1 -Fast`.
+5. Before you push, format the code with `dotnet csharpier format .` and pass the gate: `./build/gate.ps1 -Fast`.
 6. Open a pull request into the default branch whose description ends with a `Closes #<issue>` line. The default branch takes changes only through pull requests: a maintainer merges yours once CI passes, NCode Review has approved it and every conversation is resolved. Open it as a draft and mark it ready once you have reviewed it yourself: NCode Review reviews a draft too, and its approval is what lets the pull request merge ([the decision](docs/decisions/project-template/0022-ncode-reviews-approval-gates-the-merge.md)). A push dismisses the approval and starts no review, so someone with write access comments `/review` after one. NCode Review skips a pull request from a fork or one a bot opened, such as Dependabot's: a maintainer approves it.
 
 ## Review Requirements
