@@ -24,6 +24,7 @@
         "guides/scope-a-value",
         "guides/infer-key-names",
         "guides/share-a-bag",
+        "guides/layer-bags",
         "guides/dependency-injection"
       ]
     },
