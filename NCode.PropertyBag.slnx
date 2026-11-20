@@ -1,5 +1,7 @@
 <Solution>
-  <Project Path="NCode.PropertyBag.Abstractions/NCode.PropertyBag.Abstractions.csproj" />
+  <Folder Name="/src/">
+    <Project Path="src/NCode.PropertyBag.Abstractions/NCode.PropertyBag.Abstractions.csproj" />
+    <Project Path="src/NCode.PropertyBag/NCode.PropertyBag.csproj" />
+  </Folder>
   <Project Path="NCode.PropertyBag.Tests/NCode.PropertyBag.Tests.csproj" />
-  <Project Path="NCode.PropertyBag/NCode.PropertyBag.csproj" />
 </Solution>

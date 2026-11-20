@@ -20,7 +20,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\NCode.PropertyBag\NCode.PropertyBag.csproj" />
+      <ProjectReference Include="..\src\NCode.PropertyBag\NCode.PropertyBag.csproj" />
     </ItemGroup>
 
 </Project>
