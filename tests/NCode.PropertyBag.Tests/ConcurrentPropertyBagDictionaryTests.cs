@@ -5,6 +5,28 @@ namespace NCode.PropertyBag.Tests;
 
 public class ConcurrentPropertyBagDictionaryTests
 {
+    /// <summary>The number of tasks the many-thread tests run.</summary>
+    private const int ThreadCount = 4;
+
+    /// <summary>The number of keys each task writes.</summary>
+    private const int KeysPerThread = 250;
+
+    /// <summary>Gets how long a task waits for the others at the barrier.</summary>
+    private static TimeSpan BarrierTimeout { get; } = TimeSpan.FromSeconds(30);
+
+    /// <summary>Runs the body on <see cref="ThreadCount"/> tasks and completes when all finish.</summary>
+    private static Task RunOnThreadsAsync(Action<int> body)
+    {
+        var tasks = new Task[ThreadCount];
+        for (var index = 0; index < ThreadCount; index++)
+        {
+            var thread = index;
+            tasks[index] = Task.Run(() => body(thread));
+        }
+
+        return Task.WhenAll(tasks);
+    }
+
     #region SetValue Tests
 
     [Fact]
@@ -56,16 +78,31 @@ public class ConcurrentPropertyBagDictionaryTests
     }
 
     [Fact]
-    public void SetValue_FromManyThreads_StoresEveryValue()
+    public async Task SetValue_FromManyThreads_StoresEveryValue()
     {
         var propertyBag = new ConcurrentPropertyBagDictionary();
+        using var barrier = new Barrier(ThreadCount);
+        var started = new bool[ThreadCount];
 
-        Parallel.For(0, 1000, i => propertyBag.SetValue(new PropertyBagKey<int>($"k{i}"), i));
-
-        for (var i = 0; i < 1000; i++)
+        await RunOnThreadsAsync(thread =>
         {
-            Assert.True(propertyBag.TryGetValue(new PropertyBagKey<int>($"k{i}"), out var value));
-            Assert.Equal(i, value);
+            started[thread] = barrier.SignalAndWait(BarrierTimeout);
+            for (var n = 0; n < KeysPerThread; n++)
+            {
+                propertyBag.SetValue(new PropertyBagKey<int>($"k{thread}-{n}"), n);
+            }
+        });
+
+        Assert.DoesNotContain(false, started);
+        for (var thread = 0; thread < ThreadCount; thread++)
+        {
+            for (var n = 0; n < KeysPerThread; n++)
+            {
+                var key = new PropertyBagKey<int>($"k{thread}-{n}");
+                var found = propertyBag.TryGetValue(key, out var value);
+                Assert.True(found);
+                Assert.Equal(n, value);
+            }
         }
     }
 
@@ -318,17 +355,23 @@ public class ConcurrentPropertyBagDictionaryTests
     }
 
     [Fact]
-    public void GetOrAdd_FromManyThreads_ReturnsOneValue()
+    public async Task GetOrAdd_FromManyThreads_ReturnsOneValue()
     {
         var bag = new ConcurrentPropertyBagDictionary();
         var key = new PropertyBagKey<object>("TestKey");
-        var results = new object?[100];
+        using var barrier = new Barrier(ThreadCount);
+        var inFactory = new bool[ThreadCount];
+        var results = new object?[ThreadCount];
 
-        Parallel.For(0, results.Length, index =>
-            results[index] = bag.GetOrAdd(key, _ => new object())
-        );
+        await RunOnThreadsAsync(thread => results[thread] = bag.GetOrAdd(key, _ =>
+            {
+                inFactory[thread] = barrier.SignalAndWait(BarrierTimeout);
+                return new object();
+            }));
 
-        Assert.Single(results.Distinct(ReferenceEqualityComparer.Instance));
+        Assert.DoesNotContain(false, inFactory);
+        var distinct = results.Distinct(ReferenceEqualityComparer.Instance);
+        Assert.Single(distinct);
     }
 
     #endregion
