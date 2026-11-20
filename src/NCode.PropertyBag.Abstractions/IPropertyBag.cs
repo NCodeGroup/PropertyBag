@@ -1,7 +1,6 @@
 // Copyright © NCode Group
 // SPDX-License-Identifier: Apache-2.0
 
-using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
 
 namespace NCode.PropertyBag;
@@ -36,49 +35,6 @@ namespace NCode.PropertyBag;
 [PublicAPI]
 public interface IPropertyBag : IReadOnlyPropertyBag
 {
-    /// <summary>
-    /// Sets a strongly typed value for the specified <paramref name="key"/> in the property bag.
-    /// </summary>
-    /// <param name="key">The <see cref="PropertyBagKey{T}"/> that identifies the value to set.</param>
-    /// <param name="value">
-    /// The strongly typed value to associate with the specified key.
-    /// This value may be <c>null</c> for reference types and nullable value types.
-    /// </param>
-    /// <typeparam name="T">The type of the value to set in the property bag.</typeparam>
-    /// <returns>The current <see cref="IPropertyBag"/> instance for method chaining.</returns>
-    /// <remarks>
-    /// <para>
-    /// If a value with the same key already exists, it will be overwritten with the new value.
-    /// </para>
-    /// <para>
-    /// This method returns the same <see cref="IPropertyBag"/> instance to allow fluent method chaining,
-    /// enabling multiple values to be set in a single expression.
-    /// </para>
-    /// <para>
-    /// Setting a <c>null</c> value explicitly stores <c>null</c> in the property bag. This is different
-    /// from removing the key entirely. When <see cref="IReadOnlyPropertyBag.TryGetValue{T}"/> is called
-    /// for a key with a stored <c>null</c> value, it returns <c>true</c> with the output value set to <c>null</c>.
-    /// </para>
-    /// </remarks>
-    /// <example>
-    /// <code>
-    /// var nameKey = new PropertyBagKey&lt;string&gt;("Name");
-    /// var ageKey = new PropertyBagKey&lt;int&gt;("Age");
-    /// var optionalKey = new PropertyBagKey&lt;string?&gt;("Optional");
-    ///
-    /// propertyBag
-    ///     .Set(nameKey, "Alice")
-    ///     .Set(ageKey, 30)
-    ///     .Set(optionalKey, null); // Explicitly stores null
-    /// </code>
-    /// </example>
-    [SuppressMessage(
-        "Naming",
-        "CA1716:Identifiers should not match keywords",
-        Justification = "Set is the published API name; renaming it would be a breaking change."
-    )]
-    IPropertyBag Set<T>(PropertyBagKey<T> key, T? value);
-
     /// <summary>
     /// Sets a strongly typed value for the specified <paramref name="key"/> in the property bag.
     /// </summary>

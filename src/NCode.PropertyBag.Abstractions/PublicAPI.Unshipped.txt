@@ -6,3 +6,9 @@ NCode.PropertyBag.ReadOnlyPropertyBagExtensions.extension(NCode.PropertyBag.IRea
 NCode.PropertyBag.ReadOnlyPropertyBagExtensions.extension(NCode.PropertyBag.IReadOnlyPropertyBag!).TryGetValue<T>(out T? value, string? name = null) -> bool
 static NCode.PropertyBag.PropertyBagExtensions.SetValue<T>(this NCode.PropertyBag.IPropertyBag! bag, T? value, string? name = null) -> NCode.PropertyBag.IPropertyBag!
 static NCode.PropertyBag.ReadOnlyPropertyBagExtensions.TryGetValue<T>(this NCode.PropertyBag.IReadOnlyPropertyBag! bag, out T? value, string? name = null) -> bool
+*REMOVED*NCode.PropertyBag.IPropertyBag.Set<T>(NCode.PropertyBag.PropertyBagKey<T> key, T? value) -> NCode.PropertyBag.IPropertyBag!
+*REMOVED*NCode.PropertyBag.PropertyBagExtensions.extension(NCode.PropertyBag.IPropertyBag!).Set<T>(T? value, string? name = null) -> NCode.PropertyBag.IPropertyBag!
+*REMOVED*NCode.PropertyBag.PropertyBagExtensions.extension(NCode.PropertyBag.IReadOnlyPropertyBag!)
+*REMOVED*NCode.PropertyBag.PropertyBagExtensions.extension(NCode.PropertyBag.IReadOnlyPropertyBag!).TryGet<T>(out T? value, string? name = null) -> bool
+*REMOVED*static NCode.PropertyBag.PropertyBagExtensions.Set<T>(this NCode.PropertyBag.IPropertyBag! bag, T? value, string? name = null) -> NCode.PropertyBag.IPropertyBag!
+*REMOVED*static NCode.PropertyBag.PropertyBagExtensions.TryGet<T>(this NCode.PropertyBag.IReadOnlyPropertyBag! bag, out T? value, string? name = null) -> bool

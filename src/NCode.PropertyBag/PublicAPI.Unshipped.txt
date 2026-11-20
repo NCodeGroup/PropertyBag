@@ -1,2 +1,3 @@
 #nullable enable
 NCode.PropertyBag.DefaultPropertyBag.SetValue<T>(NCode.PropertyBag.PropertyBagKey<T> key, T? value) -> NCode.PropertyBag.IPropertyBag!
+*REMOVED*NCode.PropertyBag.DefaultPropertyBag.Set<T>(NCode.PropertyBag.PropertyBagKey<T> key, T? value) -> NCode.PropertyBag.IPropertyBag!
