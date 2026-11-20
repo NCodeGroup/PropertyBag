@@ -33,7 +33,7 @@ Scopes disposed out of order restore what each one captured when it began, so th
 ```cs snippet=SiteScopeAValueOutOfOrder
 ```
 
-A `Set` made inside a scope does not outlast it. Disposing the scope restores the captured value over whatever was set:
+A `SetValue` made inside a scope does not outlast it. Disposing the scope restores the captured value over whatever was set:
 
 ```cs snippet=SiteScopeAValueSetInside
 ```

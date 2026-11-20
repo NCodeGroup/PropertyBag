@@ -1,13 +1,13 @@
 ---
-title: How DefaultPropertyBag works
+title: How PropertyBagDictionary works
 description: How the default implementation stores values, creates its storage, restores scopes, clones and shares across threads.
 ---
 
-`DefaultPropertyBag` is the implementation of `IPropertyBag` that ships with the library. This page explains how it stores values, how it reads them, what a scope remembers, and what it does and does not do across threads. To use it, see the [guides](/guides/store-and-read-values/). Every member is listed in the [API map](/reference/api-map/).
+`PropertyBagDictionary` is the implementation of `IPropertyBag` that ships with the library. This page explains how it stores values, how it reads them, what a scope remembers, and what it does and does not do across threads. To use it, see the [guides](/guides/store-and-read-values/). Every member is listed in the [API map](/reference/api-map/).
 
 ## Storage
 
-A `DefaultPropertyBag` keeps its entries in a `Dictionary<PropertyBagKey, object?>`. The bag creates that dictionary on the first `Set`, `Remove` or `Scope`. `TryGetValue`, `Clone`, `Count` and enumeration of an empty bag create none, so a bag that is only read costs no dictionary. Values are stored as `object`, so a value type is boxed.
+A `PropertyBagDictionary` keeps its entries in a `Dictionary<PropertyBagKey, object?>`. The bag creates that dictionary on the first `SetValue`, `Remove` or `Scope`. `TryGetValue`, `Clone`, `Count` and enumeration of an empty bag create none, so a bag that is only read costs no dictionary. Values are stored as `object`, so a value type is boxed.
 
 ```cs snippet=SiteHowTheDefaultBagWorksEmpty
 ```

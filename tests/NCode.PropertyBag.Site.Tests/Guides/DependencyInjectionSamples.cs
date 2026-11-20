@@ -15,11 +15,11 @@ namespace SiteSamples.Guides;
 public class DependencyInjectionSamples
 {
     // begin-snippet: SiteDependencyInjectionInject
-    private static readonly PropertyBagKey<string> OrderIdKey = new("OrderId");
+    private static readonly PropertyBagKey<string> OrderKey = new("OrderId");
 
     private sealed class OrderHandler(IPropertyBagFactory factory)
     {
-        public IPropertyBag Handle(string id) => factory.Create().Set(OrderIdKey, id);
+        public IPropertyBag Handle(string id) => factory.Create().SetValue(OrderKey, id);
     }
 
     // end-snippet
@@ -30,8 +30,8 @@ public class DependencyInjectionSamples
     {
         public IPropertyBag Create()
         {
-            IPropertyBag bag = new DefaultPropertyBag();
-            return bag.Set(TenantKey, "contoso");
+            IPropertyBag bag = new PropertyBagDictionary();
+            return bag.SetValue(TenantKey, "contoso");
         }
     }
 
@@ -64,10 +64,10 @@ public class DependencyInjectionSamples
         IPropertyBag first = handler.Handle("17");
         IPropertyBag second = handler.Handle("18");
 
-        bool firstFound = first.TryGetValue(OrderIdKey, out string? firstId);
+        bool firstFound = first.TryGetValue(OrderKey, out string? firstId);
         Assert.True(firstFound);
         Assert.Equal("17", firstId);
-        bool secondFound = second.TryGetValue(OrderIdKey, out string? secondId);
+        bool secondFound = second.TryGetValue(OrderKey, out string? secondId);
         Assert.True(secondFound);
         Assert.Equal("18", secondId);
         Assert.NotSame(first, second);

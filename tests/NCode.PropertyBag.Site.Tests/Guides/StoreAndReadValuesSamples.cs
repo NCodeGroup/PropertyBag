@@ -13,14 +13,14 @@ public class StoreAndReadValuesSamples
     public void SiteStoreAndReadValuesSetSample_Runs()
     {
         // begin-snippet: SiteStoreAndReadValuesSet
-        IPropertyBag bag = new DefaultPropertyBag();
+        IPropertyBag bag = new PropertyBagDictionary();
         PropertyBagKey<string> userKey = new("User");
         PropertyBagKey<int> retriesKey = new("Retries");
 
-        bag.Set(userKey, "alice").Set(retriesKey, 3);
+        bag.SetValue(userKey, "alice").SetValue(retriesKey, 3);
 
         // Replaces the earlier value
-        bag.Set(userKey, "bob");
+        bag.SetValue(userKey, "bob");
         // end-snippet
 
         bool hasUser = bag.TryGetValue(userKey, out string? user);
@@ -36,7 +36,7 @@ public class StoreAndReadValuesSamples
     public void SiteStoreAndReadValuesMissingSample_Runs()
     {
         // begin-snippet: SiteStoreAndReadValuesMissing
-        IPropertyBag bag = new DefaultPropertyBag();
+        IPropertyBag bag = new PropertyBagDictionary();
         PropertyBagKey<int> countKey = new("Count");
 
         // false, and count is 0
@@ -51,9 +51,9 @@ public class StoreAndReadValuesSamples
     public void SiteStoreAndReadValuesRemoveSample_Runs()
     {
         // begin-snippet: SiteStoreAndReadValuesRemove
-        IPropertyBag bag = new DefaultPropertyBag();
+        IPropertyBag bag = new PropertyBagDictionary();
         PropertyBagKey<string> key = new("Token");
-        bag.Set(key, "abc");
+        bag.SetValue(key, "abc");
 
         // The typed key converts to the non-generic PropertyBagKey
         bag.Remove(key);
@@ -72,10 +72,10 @@ public class StoreAndReadValuesSamples
     public void SiteStoreAndReadValuesNullSample_Runs()
     {
         // begin-snippet: SiteStoreAndReadValuesNull
-        IPropertyBag bag = new DefaultPropertyBag();
+        IPropertyBag bag = new PropertyBagDictionary();
         PropertyBagKey<string?> nicknameKey = new("Nickname");
         PropertyBagKey<string?> missingKey = new("Missing");
-        bag.Set(nicknameKey, null);
+        bag.SetValue(nicknameKey, null);
 
         // true, and nickname is null: null is a stored value
         bool hasNickname = bag.TryGetValue(nicknameKey, out var nickname);

@@ -19,8 +19,8 @@ public class ShareABagSamples
             return settings.TryGetValue(regionKey, out string? value) ? value : null;
         }
 
-        IPropertyBag bag = new DefaultPropertyBag();
-        bag.Set(new PropertyBagKey<string>("Region"), "eu-west");
+        IPropertyBag bag = new PropertyBagDictionary();
+        bag.SetValue(new PropertyBagKey<string>("Region"), "eu-west");
 
         string? current = ReadRegion(bag);
         // end-snippet
@@ -35,13 +35,13 @@ public class ShareABagSamples
         PropertyBagKey<string> nameKey = new("Name");
         PropertyBagKey<string> roleKey = new("Role");
 
-        IPropertyBag bag = new DefaultPropertyBag();
-        bag.Set(nameKey, "alice").Set(roleKey, "admin");
+        IPropertyBag bag = new PropertyBagDictionary();
+        bag.SetValue(nameKey, "alice").SetValue(roleKey, "admin");
 
         IPropertyBag copy = bag.Clone();
 
         // The change stays in the copy: the original still holds "alice"
-        copy.Set(nameKey, "bob");
+        copy.SetValue(nameKey, "bob");
 
         // The removal stays in the original: the copy still holds "admin"
         bag.Remove(roleKey);
@@ -71,8 +71,8 @@ public class ShareABagSamples
         int[] numbers = [1, 2, 3];
         List<int> items = [1, 2, 3];
 
-        IPropertyBag bag = new DefaultPropertyBag();
-        bag.Set(arrayKey, numbers).Set(listKey, items);
+        IPropertyBag bag = new PropertyBagDictionary();
+        bag.SetValue(arrayKey, numbers).SetValue(listKey, items);
 
         IPropertyBag copy = bag.Clone();
 
@@ -94,9 +94,9 @@ public class ShareABagSamples
     public void SiteShareABagEnumerateSample_Runs()
     {
         // begin-snippet: SiteShareABagEnumerate
-        IPropertyBag bag = new DefaultPropertyBag();
-        bag.Set(new PropertyBagKey<string>("Region"), "eu-west");
-        bag.Set(new PropertyBagKey<int>("Retries"), 3);
+        IPropertyBag bag = new PropertyBagDictionary();
+        bag.SetValue(new PropertyBagKey<string>("Region"), "eu-west");
+        bag.SetValue(new PropertyBagKey<int>("Retries"), 3);
 
         var entries = (IReadOnlyDictionary<PropertyBagKey, object?>)bag;
 

@@ -29,7 +29,7 @@ public class QuickStartSamples
         // begin-snippet: SiteQuickStartStore
         IPropertyBag bag = PropertyBagFactory.Create();
 
-        bag.Set(UserNameKey, "alice").Set(RetryCountKey, 3);
+        bag.SetValue(UserNameKey, "alice").SetValue(RetryCountKey, 3);
 
         bool found = bag.TryGetValue(RetryCountKey, out int retries); // true, 3
 
@@ -48,7 +48,7 @@ public class QuickStartSamples
     public void SiteQuickStartScopeSample_Runs()
     {
         IPropertyBag bag = PropertyBagFactory.Create();
-        bag.Set(UserNameKey, "alice");
+        bag.SetValue(UserNameKey, "alice");
 
         // begin-snippet: SiteQuickStartScope
         string? inside;
@@ -68,7 +68,7 @@ public class QuickStartSamples
     public void SiteQuickStartRemoveSample_Runs()
     {
         IPropertyBag bag = PropertyBagFactory.Create();
-        bag.Set(UserNameKey, "alice");
+        bag.SetValue(UserNameKey, "alice");
 
         // begin-snippet: SiteQuickStartRemove
         bag.Remove(UserNameKey);

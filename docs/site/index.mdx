@@ -23,16 +23,16 @@ import { CardGrid, LinkCard } from '@ncodegroup/docs/components';
 dotnet add package NCode.PropertyBag
 ```
 
-Code that only passes or reads bags can reference `NCode.PropertyBag.Abstractions` alone. Both packages target net8.0 and net10.0 and are licensed under Apache-2.0.
+Code that only passes or reads bags can reference `NCode.PropertyBag.Abstractions` alone. Both packages are licensed under Apache-2.0, and nuget.org lists their target frameworks on the [Frameworks tab](https://www.nuget.org/packages/NCode.PropertyBag#supportedframeworks-body-tab).
 
 ## At a glance
 
 A key names a value and fixes its type, so the bag hands the value back without a cast.
 
-```cs snippet=ReadmeDefineKeys
+```cs snippet=DefineKeys
 ```
 
-```cs snippet=ReadmeBasicUsage
+```cs snippet=BasicUsage
 ```
 
 A key is a type and a name, and `TryGetValue` returns `false` for a key the bag does not hold, never an exception.

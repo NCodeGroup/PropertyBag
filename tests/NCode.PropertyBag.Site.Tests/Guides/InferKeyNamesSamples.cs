@@ -12,14 +12,14 @@ public class InferKeyNamesSamples
     [Fact]
     public void SiteInferKeyNamesSetSample_Runs()
     {
-        IPropertyBag bag = new DefaultPropertyBag();
+        IPropertyBag bag = new PropertyBagDictionary();
 
         // begin-snippet: SiteInferKeyNamesSet
         var timeout = TimeSpan.FromSeconds(30);
         const string region = "eu-west";
 
         // Keys "timeout" (TimeSpan) and "region" (string)
-        bag.Set(timeout).Set(region);
+        bag.SetValue(timeout).SetValue(region);
         // end-snippet
 
         bool foundTimeout = bag.TryGetValue(
@@ -40,15 +40,15 @@ public class InferKeyNamesSamples
     [Fact]
     public void SiteInferKeyNamesTryGetSample_Runs()
     {
-        IPropertyBag bag = new DefaultPropertyBag();
-        bag.Set(new PropertyBagKey<string>("region"), "eu-west");
+        IPropertyBag bag = new PropertyBagDictionary();
+        bag.SetValue(new PropertyBagKey<string>("region"), "eu-west");
 
         // begin-snippet: SiteInferKeyNamesTryGet
         string? region;
         bool found = false;
 
         // Declared first, so the key is "region"
-        if (bag.TryGet(out region))
+        if (bag.TryGetValue(out region))
         {
             found = true;
         }
@@ -61,13 +61,13 @@ public class InferKeyNamesSamples
     [Fact]
     public void SiteInferKeyNamesExpressionSample_Runs()
     {
-        IPropertyBag bag = new DefaultPropertyBag();
+        IPropertyBag bag = new PropertyBagDictionary();
 
         // begin-snippet: SiteInferKeyNamesExpression
         var order = new { Region = "eu-west" };
 
         // The key is the whole expression: "order.Region"
-        bag.Set(order.Region);
+        bag.SetValue(order.Region);
         // end-snippet
 
         bool found = bag.TryGetValue(
@@ -82,13 +82,13 @@ public class InferKeyNamesSamples
     [Fact]
     public void SiteInferKeyNamesExplicitSample_Runs()
     {
-        IPropertyBag bag = new DefaultPropertyBag();
+        IPropertyBag bag = new PropertyBagDictionary();
 
         // begin-snippet: SiteInferKeyNamesExplicit
         const string currentRegion = "eu-west";
 
         // An explicit name wins
-        bag.Set(currentRegion, name: "region");
+        bag.SetValue(currentRegion, name: "region");
         // end-snippet
 
         bool found = bag.TryGetValue(
@@ -103,12 +103,12 @@ public class InferKeyNamesSamples
     [Fact]
     public void SiteInferKeyNamesInlineOutSample_Runs()
     {
-        IPropertyBag bag = new DefaultPropertyBag();
-        bag.Set(new PropertyBagKey<string>("region"), "eu-west");
+        IPropertyBag bag = new PropertyBagDictionary();
+        bag.SetValue(new PropertyBagKey<string>("region"), "eu-west");
 
         // begin-snippet: SiteInferKeyNamesInlineOut
         // false: the key is "string? region"
-        bool found = bag.TryGet(out string? region);
+        bool found = bag.TryGetValue(out string? region);
         // end-snippet
 
         Assert.False(found);

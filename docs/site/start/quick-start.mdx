@@ -22,7 +22,7 @@ A key is a `PropertyBagKey<T>`: the type of the value and a name. Declare each k
 
 ## Store and read a value
 
-`PropertyBagFactory.Create()` returns a new `DefaultPropertyBag`. `Set` returns the bag, so calls chain. `TryGetValue` returns `false` and `default` for a key the bag does not hold, and never throws.
+`PropertyBagFactory.Create()` returns a new `PropertyBagDictionary`. `SetValue` returns the bag, so calls chain. `TryGetValue` returns `false` and `default` for a key the bag does not hold, and never throws.
 
 ```cs snippet=SiteQuickStartStore
 ```

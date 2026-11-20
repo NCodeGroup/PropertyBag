@@ -177,7 +177,7 @@
       "signatures": [
         "public interface IReadOnlyPropertyBag"
       ],
-      "summary": "The read-only view: `TryGetValue` and `Clone`. A narrower view, not a protection: a `DefaultPropertyBag` passed as one can be cast back.",
+      "summary": "The read-only view: `TryGetValue` and `Clone`. A narrower view, not a protection: a `PropertyBagDictionary` passed as one can be cast back.",
       "page": "/guides/share-a-bag/",
       "api": [
         "NCode.PropertyBag.IReadOnlyPropertyBag"
@@ -219,24 +219,24 @@
       "signatures": [
         "public interface IPropertyBag : IReadOnlyPropertyBag"
       ],
-      "summary": "The mutable bag: `Set`, `Remove` and `Scope`. `Set` and `Remove` return the same bag, for chaining.",
+      "summary": "The mutable bag: `SetValue`, `Remove` and `Scope`. `SetValue` and `Remove` return the same bag, for chaining.",
       "page": "/guides/store-and-read-values/",
       "api": [
         "NCode.PropertyBag.IPropertyBag"
       ]
     },
     {
-      "id": "ipropertybag-set",
+      "id": "ipropertybag-setvalue",
       "group": "bags",
       "type": "IPropertyBag",
-      "member": "Set",
+      "member": "SetValue",
       "signatures": [
-        "IPropertyBag Set<T>(PropertyBagKey<T> key, T? value)"
+        "IPropertyBag SetValue<T>(PropertyBagKey<T> key, T? value)"
       ],
       "summary": "Stores the value, replacing one the key held. `null` is stored as a value, unlike a removed key.",
       "page": "/guides/store-and-read-values/",
       "api": [
-        "NCode.PropertyBag.IPropertyBag.Set<T>(NCode.PropertyBag.PropertyBagKey<T> key, T? value) -> NCode.PropertyBag.IPropertyBag!"
+        "NCode.PropertyBag.IPropertyBag.SetValue<T>(NCode.PropertyBag.PropertyBagKey<T> key, T? value) -> NCode.PropertyBag.IPropertyBag!"
       ]
     },
     {
@@ -293,77 +293,91 @@
       "signatures": [
         "public static class PropertyBagExtensions"
       ],
-      "summary": "Extension members, in C# 14 extension blocks, that name the key after the argument passed (`[CallerArgumentExpression]`). Earlier C# versions call them as ordinary extension methods.",
+      "summary": "The extension member on `IPropertyBag`, in a C# 14 extension block, that names the key after the argument passed (`[CallerArgumentExpression]`). Earlier C# versions call it as an ordinary extension method.",
       "page": "/guides/infer-key-names/",
       "api": [
         "NCode.PropertyBag.PropertyBagExtensions",
-        "NCode.PropertyBag.PropertyBagExtensions.extension(NCode.PropertyBag.IPropertyBag!)",
-        "NCode.PropertyBag.PropertyBagExtensions.extension(NCode.PropertyBag.IReadOnlyPropertyBag!)"
+        "NCode.PropertyBag.PropertyBagExtensions.extension(NCode.PropertyBag.IPropertyBag!)"
       ]
     },
     {
-      "id": "propertybagextensions-set",
+      "id": "propertybagextensions-setvalue",
       "group": "extensions",
       "type": "PropertyBagExtensions",
-      "member": "Set",
+      "member": "SetValue",
       "signatures": [
-        "public IPropertyBag Set<T>(T? value, [CallerArgumentExpression(nameof(value))] string? name = null)"
+        "public IPropertyBag SetValue<T>(T? value, [CallerArgumentExpression(nameof(value))] string? name = null)"
       ],
-      "summary": "`bag.Set(timeout)` stores under `new PropertyBagKey<T>(\"timeout\")`.",
+      "summary": "`bag.SetValue(timeout)` stores under `new PropertyBagKey<T>(\"timeout\")`. Throws `ArgumentNullException` for a `null` bag.",
       "page": "/guides/infer-key-names/",
       "api": [
-        "NCode.PropertyBag.PropertyBagExtensions.extension(NCode.PropertyBag.IPropertyBag!).Set<T>(T? value, string? name = null) -> NCode.PropertyBag.IPropertyBag!",
-        "static NCode.PropertyBag.PropertyBagExtensions.Set<T>(this NCode.PropertyBag.IPropertyBag! bag, T? value, string? name = null) -> NCode.PropertyBag.IPropertyBag!"
+        "NCode.PropertyBag.PropertyBagExtensions.extension(NCode.PropertyBag.IPropertyBag!).SetValue<T>(T? value, string? name = null) -> NCode.PropertyBag.IPropertyBag!",
+        "static NCode.PropertyBag.PropertyBagExtensions.SetValue<T>(this NCode.PropertyBag.IPropertyBag! bag, T? value, string? name = null) -> NCode.PropertyBag.IPropertyBag!"
       ]
     },
     {
-      "id": "propertybagextensions-tryget",
+      "id": "readonlypropertybagextensions",
       "group": "extensions",
-      "type": "PropertyBagExtensions",
-      "member": "TryGet",
-      "signatures": [
-        "public bool TryGet<T>(out T? value, [CallerArgumentExpression(nameof(value))] string? name = null)"
-      ],
-      "summary": "Reads the key named after the variable. Declare the variable first: `out string? x` names the key `string? x`.",
-      "page": "/guides/infer-key-names/",
-      "api": [
-        "NCode.PropertyBag.PropertyBagExtensions.extension(NCode.PropertyBag.IReadOnlyPropertyBag!).TryGet<T>(out T? value, string? name = null) -> bool",
-        "static NCode.PropertyBag.PropertyBagExtensions.TryGet<T>(this NCode.PropertyBag.IReadOnlyPropertyBag! bag, out T? value, string? name = null) -> bool"
-      ]
-    },
-    {
-      "id": "defaultpropertybag",
-      "group": "default",
-      "type": "DefaultPropertyBag",
+      "type": "ReadOnlyPropertyBagExtensions",
       "member": null,
       "signatures": [
-        "public class DefaultPropertyBag : IPropertyBag, IReadOnlyDictionary<PropertyBagKey, object?>, ICloneable"
+        "public static class ReadOnlyPropertyBagExtensions"
       ],
-      "summary": "The implementation: a dictionary created on the first `Set`, `Remove` or `Scope`. Enumerate it as an `IReadOnlyDictionary<PropertyBagKey, object?>`, whose indexer returns `null` for a missing key. It holds no lock.",
-      "page": "/concepts/how-the-default-bag-works/",
+      "summary": "The extension member on `IReadOnlyPropertyBag`, in a C# 14 extension block, that names the key after the argument passed (`[CallerArgumentExpression]`). Earlier C# versions call it as an ordinary extension method.",
+      "page": "/guides/infer-key-names/",
       "api": [
-        "NCode.PropertyBag.DefaultPropertyBag",
-        "NCode.PropertyBag.DefaultPropertyBag.DefaultPropertyBag() -> void"
+        "NCode.PropertyBag.ReadOnlyPropertyBagExtensions",
+        "NCode.PropertyBag.ReadOnlyPropertyBagExtensions.extension(NCode.PropertyBag.IReadOnlyPropertyBag!)"
       ]
     },
     {
-      "id": "defaultpropertybag-set",
-      "group": "default",
-      "type": "DefaultPropertyBag",
-      "member": "Set",
+      "id": "readonlypropertybagextensions-trygetvalue",
+      "group": "extensions",
+      "type": "ReadOnlyPropertyBagExtensions",
+      "member": "TryGetValue",
       "signatures": [
-        "public IPropertyBag Set<T>(PropertyBagKey<T> key, T? value)"
+        "public bool TryGetValue<T>(out T? value, [CallerArgumentExpression(nameof(value))] string? name = null)"
+      ],
+      "summary": "Reads the key named after the variable. Declare the variable first: `out string? x` names the key `string? x`. Throws `ArgumentNullException` for a `null` bag.",
+      "page": "/guides/infer-key-names/",
+      "api": [
+        "NCode.PropertyBag.ReadOnlyPropertyBagExtensions.extension(NCode.PropertyBag.IReadOnlyPropertyBag!).TryGetValue<T>(out T? value, string? name = null) -> bool",
+        "static NCode.PropertyBag.ReadOnlyPropertyBagExtensions.TryGetValue<T>(this NCode.PropertyBag.IReadOnlyPropertyBag! bag, out T? value, string? name = null) -> bool"
+      ]
+    },
+    {
+      "id": "propertybagdictionary",
+      "group": "default",
+      "type": "PropertyBagDictionary",
+      "member": null,
+      "signatures": [
+        "public sealed class PropertyBagDictionary : IPropertyBag, IReadOnlyDictionary<PropertyBagKey, object?>, ICloneable"
+      ],
+      "summary": "The implementation: a dictionary created on the first `SetValue`, `Remove` or `Scope`. Enumerate it as an `IReadOnlyDictionary<PropertyBagKey, object?>`, whose indexer returns `null` for a missing key. It holds no lock.",
+      "page": "/concepts/how-the-default-bag-works/",
+      "api": [
+        "NCode.PropertyBag.PropertyBagDictionary",
+        "NCode.PropertyBag.PropertyBagDictionary.PropertyBagDictionary() -> void"
+      ]
+    },
+    {
+      "id": "propertybagdictionary-setvalue",
+      "group": "default",
+      "type": "PropertyBagDictionary",
+      "member": "SetValue",
+      "signatures": [
+        "public IPropertyBag SetValue<T>(PropertyBagKey<T> key, T? value)"
       ],
       "summary": "As `IPropertyBag.Set`. A value is stored as `object`, so a value type is boxed.",
       "page": "/guides/store-and-read-values/",
       "api": [
-        "NCode.PropertyBag.DefaultPropertyBag.Set<T>(NCode.PropertyBag.PropertyBagKey<T> key, T? value) -> NCode.PropertyBag.IPropertyBag!"
+        "NCode.PropertyBag.PropertyBagDictionary.SetValue<T>(NCode.PropertyBag.PropertyBagKey<T> key, T? value) -> NCode.PropertyBag.IPropertyBag!"
       ]
     },
     {
-      "id": "defaultpropertybag-remove",
+      "id": "propertybagdictionary-remove",
       "group": "default",
-      "type": "DefaultPropertyBag",
+      "type": "PropertyBagDictionary",
       "member": "Remove",
       "signatures": [
         "public IPropertyBag Remove(PropertyBagKey key)"
@@ -371,13 +385,13 @@
       "summary": "As `IPropertyBag.Remove`.",
       "page": "/guides/store-and-read-values/",
       "api": [
-        "NCode.PropertyBag.DefaultPropertyBag.Remove(NCode.PropertyBag.PropertyBagKey key) -> NCode.PropertyBag.IPropertyBag!"
+        "NCode.PropertyBag.PropertyBagDictionary.Remove(NCode.PropertyBag.PropertyBagKey key) -> NCode.PropertyBag.IPropertyBag!"
       ]
     },
     {
-      "id": "defaultpropertybag-trygetvalue",
+      "id": "propertybagdictionary-trygetvalue",
       "group": "default",
-      "type": "DefaultPropertyBag",
+      "type": "PropertyBagDictionary",
       "member": "TryGetValue",
       "signatures": [
         "public bool TryGetValue<T>(PropertyBagKey<T> key, out T? value)"
@@ -385,13 +399,13 @@
       "summary": "Returns a value only when the stored object is `null` or a `T`, and never throws `InvalidCastException`.",
       "page": "/concepts/how-the-default-bag-works/",
       "api": [
-        "NCode.PropertyBag.DefaultPropertyBag.TryGetValue<T>(NCode.PropertyBag.PropertyBagKey<T> key, out T? value) -> bool"
+        "NCode.PropertyBag.PropertyBagDictionary.TryGetValue<T>(NCode.PropertyBag.PropertyBagKey<T> key, out T? value) -> bool"
       ]
     },
     {
-      "id": "defaultpropertybag-scope",
+      "id": "propertybagdictionary-scope",
       "group": "default",
-      "type": "DefaultPropertyBag",
+      "type": "PropertyBagDictionary",
       "member": "Scope",
       "signatures": [
         "public IPropertyBagScope Scope<T>(PropertyBagKey<T> key, T? value)"
@@ -399,21 +413,21 @@
       "summary": "Captures whether the key held a value and which, sets the new one, and returns a scope that restores the captured state on its first `Dispose`.",
       "page": "/guides/scope-a-value/",
       "api": [
-        "NCode.PropertyBag.DefaultPropertyBag.Scope<T>(NCode.PropertyBag.PropertyBagKey<T> key, T? value) -> NCode.PropertyBag.IPropertyBagScope!"
+        "NCode.PropertyBag.PropertyBagDictionary.Scope<T>(NCode.PropertyBag.PropertyBagKey<T> key, T? value) -> NCode.PropertyBag.IPropertyBagScope!"
       ]
     },
     {
-      "id": "defaultpropertybag-clone",
+      "id": "propertybagdictionary-clone",
       "group": "default",
-      "type": "DefaultPropertyBag",
+      "type": "PropertyBagDictionary",
       "member": "Clone",
       "signatures": [
         "public IPropertyBag Clone()"
       ],
-      "summary": "A new `DefaultPropertyBag` with the same entries. A value that implements `ICloneable` is copied with its own `Clone()`; any other value is shared.",
+      "summary": "A new `PropertyBagDictionary` with the same entries. A value that implements `ICloneable` is copied with its own `Clone()`; any other value is shared.",
       "page": "/guides/share-a-bag/",
       "api": [
-        "NCode.PropertyBag.DefaultPropertyBag.Clone() -> NCode.PropertyBag.IPropertyBag!"
+        "NCode.PropertyBag.PropertyBagDictionary.Clone() -> NCode.PropertyBag.IPropertyBag!"
       ]
     },
     {
@@ -422,9 +436,9 @@
       "type": "DefaultPropertyBagScope",
       "member": null,
       "signatures": [
-        "public class DefaultPropertyBagScope(IPropertyBag propertyBag, PropertyBagKey key) : IPropertyBagScope"
+        "public sealed class DefaultPropertyBagScope(IPropertyBag propertyBag, PropertyBagKey key) : IPropertyBagScope"
       ],
-      "summary": "The scope `DefaultPropertyBag.Scope` returns. One built with this constructor removes its key on `Dispose`, for an `IPropertyBag` of your own.",
+      "summary": "The scope `PropertyBagDictionary.Scope` returns. One built with this constructor removes its key on `Dispose`, for an `IPropertyBag` of your own.",
       "page": "/concepts/how-the-default-bag-works/",
       "api": [
         "NCode.PropertyBag.DefaultPropertyBagScope",
@@ -495,10 +509,10 @@
       "type": "DefaultPropertyBagFactory",
       "member": null,
       "signatures": [
-        "public class DefaultPropertyBagFactory : IPropertyBagFactory",
+        "public sealed class DefaultPropertyBagFactory : IPropertyBagFactory",
         "public IPropertyBag Create()"
       ],
-      "summary": "`Create()` returns a new, empty `DefaultPropertyBag`.",
+      "summary": "`Create()` returns a new, empty `PropertyBagDictionary`.",
       "page": "/guides/dependency-injection/",
       "api": [
         "NCode.PropertyBag.DefaultPropertyBagFactory",
@@ -575,7 +589,7 @@
       "signatures": [
         "public IServiceCollection AddPropertyBag()"
       ],
-      "summary": "Registers `DefaultPropertyBagFactory` as the singleton `IPropertyBagFactory` with `TryAddSingleton`, so a factory registered first is kept. It registers no `IPropertyBag`.",
+      "summary": "Registers `DefaultPropertyBagFactory` as the singleton `IPropertyBagFactory` with `TryAddSingleton`, so a factory registered first is kept. It registers no `IPropertyBag`. Throws `ArgumentNullException` for a `null` service collection.",
       "page": "/guides/dependency-injection/",
       "api": [
         "NCode.PropertyBag.DefaultRegistration.extension(Microsoft.Extensions.DependencyInjection.IServiceCollection!).AddPropertyBag() -> Microsoft.Extensions.DependencyInjection.IServiceCollection!",

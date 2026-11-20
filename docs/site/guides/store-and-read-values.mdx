@@ -7,7 +7,7 @@ A bag holds one value for each key. This page shows how to store a value, read i
 
 ## Set values
 
-`Set` stores a value under a key, or replaces the value the key held. It returns the same `IPropertyBag`, so calls chain.
+`SetValue` stores a value under a key, or replaces the value the key held. It returns the same `IPropertyBag`, so calls chain.
 
 ```cs snippet=SiteStoreAndReadValuesSet
 ```
@@ -40,4 +40,4 @@ A bag holds one value for each key. This page shows how to store a value, read i
 - A key of another type finds nothing and returns `false`, with no cast and no exception.
 - `Remove` with a key of another type removes nothing.
 
-To have the key named after a variable instead, see [name keys after variables](/guides/infer-key-names/) for `Set(value)` and `TryGet(out value)`.
+To have the key named after a variable instead, see [name keys after variables](/guides/infer-key-names/) for `SetValue(value)` and `TryGetValue(out value)`.

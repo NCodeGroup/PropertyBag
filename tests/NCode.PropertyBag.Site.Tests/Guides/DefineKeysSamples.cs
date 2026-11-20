@@ -21,9 +21,9 @@ public class DefineKeysSamples
     [Fact]
     public void SiteDefineKeysDeclareSample_Runs()
     {
-        IPropertyBag bag = new DefaultPropertyBag();
+        IPropertyBag bag = new PropertyBagDictionary();
 
-        bag.Set(RequestKeys.RequestId, "abc-123").Set(RequestKeys.Attempt, 2);
+        bag.SetValue(RequestKeys.RequestId, "abc-123").SetValue(RequestKeys.Attempt, 2);
 
         bool foundRequestId = bag.TryGetValue(
             RequestKeys.RequestId,
@@ -41,12 +41,12 @@ public class DefineKeysSamples
     public void SiteDefineKeysSameNameSample_Runs()
     {
         // begin-snippet: SiteDefineKeysSameName
-        IPropertyBag bag = new DefaultPropertyBag();
+        IPropertyBag bag = new PropertyBagDictionary();
 
         // Two keys: the same name with another type
         PropertyBagKey<string> textKey = new("Id");
         PropertyBagKey<int> numberKey = new("Id");
-        bag.Set(textKey, "order-17").Set(numberKey, 17);
+        bag.SetValue(textKey, "order-17").SetValue(numberKey, 17);
         // end-snippet
 
         bool foundText = bag.TryGetValue(textKey, out string? text);
@@ -62,8 +62,8 @@ public class DefineKeysSamples
     public void SiteDefineKeysNewInstanceSample_Runs()
     {
         // begin-snippet: SiteDefineKeysNewInstance
-        IPropertyBag bag = new DefaultPropertyBag();
-        bag.Set(new PropertyBagKey<string>("Region"), "eu-west");
+        IPropertyBag bag = new PropertyBagDictionary();
+        bag.SetValue(new PropertyBagKey<string>("Region"), "eu-west");
 
         // Equal keys, not the same instance, find the value
         PropertyBagKey<string> sameKey = new("Region");
@@ -80,8 +80,8 @@ public class DefineKeysSamples
         // begin-snippet: SiteDefineKeysPitfalls
         PropertyBagKey<string> unnamed = default; // Name is null
 
-        IPropertyBag bag = new DefaultPropertyBag();
-        bag.Set(new PropertyBagKey<string>("UserName"), "alice");
+        IPropertyBag bag = new PropertyBagDictionary();
+        bag.SetValue(new PropertyBagKey<string>("UserName"), "alice");
 
         // false: names are case-sensitive
         PropertyBagKey<string> lowerCase = new("username");

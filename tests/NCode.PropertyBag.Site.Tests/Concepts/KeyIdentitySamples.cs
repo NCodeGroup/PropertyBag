@@ -29,9 +29,9 @@ public class KeyIdentitySamples
     public void SiteKeyIdentityNullableSample_Runs()
     {
         // begin-snippet: SiteKeyIdentityNullable
-        IPropertyBag bag = new DefaultPropertyBag();
-        bag.Set(new PropertyBagKey<string>("Name"), "alice");
-        bag.Set(new PropertyBagKey<int>("Count"), 3);
+        IPropertyBag bag = new PropertyBagDictionary();
+        bag.SetValue(new PropertyBagKey<string>("Name"), "alice");
+        bag.SetValue(new PropertyBagKey<int>("Count"), 3);
 
         PropertyBagKey<string?> nameKey = new("Name");
         PropertyBagKey<int?> countKey = new("Count");
@@ -53,8 +53,8 @@ public class KeyIdentitySamples
     public void SiteKeyIdentityDeclaredTypeSample_Runs()
     {
         // begin-snippet: SiteKeyIdentityDeclaredType
-        IPropertyBag bag = new DefaultPropertyBag();
-        bag.Set(new PropertyBagKey<object>("Value"), "text");
+        IPropertyBag bag = new PropertyBagDictionary();
+        bag.SetValue(new PropertyBagKey<object>("Value"), "text");
 
         PropertyBagKey<string> textKey = new("Value");
 

@@ -21,7 +21,7 @@ Inject `IPropertyBagFactory` and call `Create()`. Each call returns a new, empty
 
 ## Use your own factory
 
-`IPropertyBagFactory` has one method, `Create()`. A factory you register before `AddPropertyBag()` is kept, because the registration only adds a factory when none is registered. The sample's `TenantBagFactory` returns a `DefaultPropertyBag` that already holds the key `Tenant` set to `"contoso"`.
+`IPropertyBagFactory` has one method, `Create()`. A factory you register before `AddPropertyBag()` is kept, because the registration only adds a factory when none is registered. The sample's `TenantBagFactory` returns a `PropertyBagDictionary` that already holds the key `Tenant` set to `"contoso"`.
 
 ```cs snippet=SiteDependencyInjectionCustomFactory
 ```

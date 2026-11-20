@@ -31,9 +31,9 @@ every member that ships has an entry.
 
 ## Extension members
 
-`PropertyBagExtensions.Set`, `PropertyBagExtensions.TryGet` and `DefaultRegistration.AddPropertyBag` are declared in
+`PropertyBagExtensions.SetValue`, `ReadOnlyPropertyBagExtensions.TryGetValue` and `DefaultRegistration.AddPropertyBag` are declared in
 C# 14 `extension` blocks and compiled to ordinary static extension methods, so a project on an earlier C# version calls
-them the same way, or in their static form, `PropertyBagExtensions.Set(bag, timeout)`.
+them the same way, or in their static form, `PropertyBagExtensions.SetValue(bag, timeout)`.
 [Name keys after variables](/guides/infer-key-names/) explains how each call names its key.
 
 ## Package
@@ -51,4 +51,4 @@ dotnet add package NCode.PropertyBag.Abstractions
 
 This package holds the contracts, for code that only passes or reads bags.
 
-Both packages target net8.0 and net10.0.
+nuget.org lists the target frameworks of each package on its [Frameworks tab](https://www.nuget.org/packages/NCode.PropertyBag#supportedframeworks-body-tab).

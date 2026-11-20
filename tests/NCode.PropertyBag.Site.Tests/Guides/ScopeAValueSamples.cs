@@ -13,9 +13,9 @@ public class ScopeAValueSamples
     public void SiteScopeAValueOverrideSample_Runs()
     {
         // begin-snippet: SiteScopeAValueOverride
-        IPropertyBag bag = new DefaultPropertyBag();
+        IPropertyBag bag = new PropertyBagDictionary();
         PropertyBagKey<string> cultureKey = new("Culture");
-        bag.Set(cultureKey, "en-US");
+        bag.SetValue(cultureKey, "en-US");
 
         string? inside;
         using (bag.Scope(cultureKey, "fr-FR"))
@@ -34,7 +34,7 @@ public class ScopeAValueSamples
     public void SiteScopeAValueNoPreviousSample_Runs()
     {
         // begin-snippet: SiteScopeAValueNoPrevious
-        IPropertyBag bag = new DefaultPropertyBag();
+        IPropertyBag bag = new PropertyBagDictionary();
         PropertyBagKey<string> traceKey = new("TraceId");
 
         using (bag.Scope(traceKey, "t-1"))
@@ -54,9 +54,9 @@ public class ScopeAValueSamples
     public void SiteScopeAValueNestedSample_Runs()
     {
         // begin-snippet: SiteScopeAValueNested
-        IPropertyBag bag = new DefaultPropertyBag();
+        IPropertyBag bag = new PropertyBagDictionary();
         PropertyBagKey<string> levelKey = new("Level");
-        bag.Set(levelKey, "original");
+        bag.SetValue(levelKey, "original");
 
         string? atOuter;
         string? atInner;
@@ -82,9 +82,9 @@ public class ScopeAValueSamples
     public void SiteScopeAValueOutOfOrderSample_Runs()
     {
         // begin-snippet: SiteScopeAValueOutOfOrder
-        IPropertyBag bag = new DefaultPropertyBag();
+        IPropertyBag bag = new PropertyBagDictionary();
         PropertyBagKey<string> key = new("Mode");
-        bag.Set(key, "A");
+        bag.SetValue(key, "A");
 
         var first = bag.Scope(key, "B");
         var second = bag.Scope(key, "C");
@@ -102,13 +102,13 @@ public class ScopeAValueSamples
     public void SiteScopeAValueSetInsideSample_Runs()
     {
         // begin-snippet: SiteScopeAValueSetInside
-        IPropertyBag bag = new DefaultPropertyBag();
+        IPropertyBag bag = new PropertyBagDictionary();
         PropertyBagKey<string> key = new("Mode");
-        bag.Set(key, "A");
+        bag.SetValue(key, "A");
 
         using (bag.Scope(key, "B"))
         {
-            bag.Set(key, "changed");
+            bag.SetValue(key, "changed");
         }
 
         // The restore replaces the value set inside the scope

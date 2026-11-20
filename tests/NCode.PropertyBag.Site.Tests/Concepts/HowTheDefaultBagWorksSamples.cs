@@ -13,7 +13,7 @@ public class HowTheDefaultBagWorksSamples
     public void SiteHowTheDefaultBagWorksEmptySample_Runs()
     {
         // begin-snippet: SiteHowTheDefaultBagWorksEmpty
-        var bag = new DefaultPropertyBag();
+        var bag = new PropertyBagDictionary();
 
         bool found = bag.TryGetValue(new PropertyBagKey<int>("Count"), out _); // false
 
@@ -29,7 +29,7 @@ public class HowTheDefaultBagWorksSamples
     public void SiteHowTheDefaultBagWorksLockSample_Runs()
     {
         // begin-snippet: SiteHowTheDefaultBagWorksLock
-        var bag = new DefaultPropertyBag();
+        var bag = new PropertyBagDictionary();
         var gate = new Lock();
 
         // The bag holds no lock, so concurrent writers share one
@@ -37,7 +37,7 @@ public class HowTheDefaultBagWorksSamples
         {
             lock (gate)
             {
-                bag.Set(new PropertyBagKey<int>($"item{i}"), i);
+                bag.SetValue(new PropertyBagKey<int>($"item{i}"), i);
             }
         });
         // end-snippet
@@ -50,9 +50,9 @@ public class HowTheDefaultBagWorksSamples
     public void SiteHowTheDefaultBagWorksDirectScopeSample_Runs()
     {
         // begin-snippet: SiteHowTheDefaultBagWorksDirectScope
-        IPropertyBag bag = new DefaultPropertyBag();
+        IPropertyBag bag = new PropertyBagDictionary();
         PropertyBagKey<string> key = new("Culture");
-        bag.Set(key, "A");
+        bag.SetValue(key, "A");
 
         var scope = new DefaultPropertyBagScope(bag, key);
 
