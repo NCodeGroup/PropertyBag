@@ -1,6 +1,8 @@
 // Copyright © NCode Group
 // SPDX-License-Identifier: Apache-2.0
 
+using System.Collections.Concurrent;
+
 namespace NCode.PropertyBag.Tests;
 
 public class ConcurrentPropertyBagDictionaryTests
@@ -164,6 +166,135 @@ public class ConcurrentPropertyBagDictionaryTests
         Assert.False(propertyBag.TryGetValue(key1, out _));
         Assert.True(propertyBag.TryGetValue(key2, out var value2));
         Assert.Equal("Value2", value2);
+    }
+
+    #endregion
+
+    #region TryAdd Tests
+
+    [Fact]
+    public void TryAdd_WhenKeyDoesNotExist_StoresValueAndReturnsTrue()
+    {
+        var bag = new ConcurrentPropertyBagDictionary();
+        var key = new PropertyBagKey<string>("TestKey");
+
+        Assert.True(bag.TryAdd(key, "First"));
+
+        Assert.True(bag.TryGetValue(key, out var value));
+        Assert.Equal("First", value);
+    }
+
+    [Fact]
+    public void TryAdd_WhenKeyExists_KeepsValueAndReturnsFalse()
+    {
+        var bag = new ConcurrentPropertyBagDictionary();
+        var key = new PropertyBagKey<string?>("TestKey");
+        bag.SetValue(key, null);
+
+        Assert.False(bag.TryAdd(key, "Second"));
+
+        Assert.True(bag.TryGetValue(key, out var value));
+        Assert.Null(value);
+    }
+
+    #endregion
+
+    #region TryRemove Tests
+
+    [Fact]
+    public void TryRemove_WhenKeyExists_RemovesAndReturnsValue()
+    {
+        var bag = new ConcurrentPropertyBagDictionary();
+        var key = new PropertyBagKey<string>("TestKey");
+        bag.SetValue(key, "Value");
+
+        Assert.True(bag.TryRemove(key, out var value));
+
+        Assert.Equal("Value", value);
+        Assert.False(bag.TryGetValue(key, out _));
+    }
+
+    [Fact]
+    public void TryRemove_WhenKeyDoesNotExist_ReturnsFalseAndDefault()
+    {
+        var bag = new ConcurrentPropertyBagDictionary();
+        var key = new PropertyBagKey<string>("TestKey");
+
+        Assert.False(bag.TryRemove(key, out var value));
+
+        Assert.Null(value);
+    }
+
+    #endregion
+
+    #region GetOrAdd Tests
+
+    [Fact]
+    public void GetOrAdd_WithNullFactory_Throws()
+    {
+        var bag = new ConcurrentPropertyBagDictionary();
+        var key = new PropertyBagKey<string>("TestKey");
+
+        Assert.Throws<ArgumentNullException>(() => bag.GetOrAdd(key, null!));
+    }
+
+    [Fact]
+    public void GetOrAdd_WhenKeyExists_ReturnsValueWithoutCallingFactory()
+    {
+        var bag = new ConcurrentPropertyBagDictionary();
+        var key = new PropertyBagKey<string>("TestKey");
+        bag.SetValue(key, "Existing");
+
+        var result = bag.GetOrAdd(key, _ =>
+        {
+            Assert.Fail("The factory must not run.");
+            return "Created";
+        });
+
+        Assert.Equal("Existing", result);
+    }
+
+    [Fact]
+    public void GetOrAdd_WhenKeyDoesNotExist_StoresAndReturnsCreatedValue()
+    {
+        var bag = new ConcurrentPropertyBagDictionary();
+        var key = new PropertyBagKey<string>("TestKey");
+
+        var result = bag.GetOrAdd(key, k => k.Name + "!");
+
+        Assert.Equal("TestKey!", result);
+        Assert.True(bag.TryGetValue(key, out var value));
+        Assert.Equal("TestKey!", value);
+    }
+
+    [Fact]
+    public void GetOrAdd_WhenAnotherThreadStoresDuringFactory_ReturnsStoredValue()
+    {
+        var bag = new ConcurrentPropertyBagDictionary();
+        var key = new PropertyBagKey<object>("TestKey");
+        var other = new object();
+
+        var result = bag.GetOrAdd(key, k =>
+        {
+            bag.SetValue(k, other);
+            return new object();
+        });
+
+        Assert.Same(other, result);
+        Assert.True(bag.TryGetValue(key, out var value));
+        Assert.Same(other, value);
+    }
+
+    [Fact]
+    public void GetOrAdd_FromManyThreads_ReturnsOneValue()
+    {
+        var bag = new ConcurrentPropertyBagDictionary();
+        var key = new PropertyBagKey<object>("TestKey");
+        var results = new ConcurrentBag<object>();
+
+        Parallel.For(0, 100, _ => results.Add(bag.GetOrAdd(key, _ => new object())!));
+
+        Assert.Single(results.Distinct(ReferenceEqualityComparer.Instance));
     }
 
     #endregion

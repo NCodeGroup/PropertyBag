@@ -2,7 +2,10 @@
 NCode.PropertyBag.ConcurrentPropertyBagDictionary
 NCode.PropertyBag.ConcurrentPropertyBagDictionary.Clone() -> NCode.PropertyBag.IPropertyBag!
 NCode.PropertyBag.ConcurrentPropertyBagDictionary.ConcurrentPropertyBagDictionary() -> void
+NCode.PropertyBag.ConcurrentPropertyBagDictionary.GetOrAdd<T>(NCode.PropertyBag.PropertyBagKey<T> key, System.Func<NCode.PropertyBag.PropertyBagKey<T>, T?>! valueFactory) -> T?
 NCode.PropertyBag.ConcurrentPropertyBagDictionary.Remove(NCode.PropertyBag.PropertyBagKey key) -> NCode.PropertyBag.IPropertyBag!
 NCode.PropertyBag.ConcurrentPropertyBagDictionary.Scope<T>(NCode.PropertyBag.PropertyBagKey<T> key, T? value) -> NCode.PropertyBag.IPropertyBagScope!
 NCode.PropertyBag.ConcurrentPropertyBagDictionary.SetValue<T>(NCode.PropertyBag.PropertyBagKey<T> key, T? value) -> NCode.PropertyBag.IPropertyBag!
+NCode.PropertyBag.ConcurrentPropertyBagDictionary.TryAdd<T>(NCode.PropertyBag.PropertyBagKey<T> key, T? value) -> bool
 NCode.PropertyBag.ConcurrentPropertyBagDictionary.TryGetValue<T>(NCode.PropertyBag.PropertyBagKey<T> key, out T? value) -> bool
+NCode.PropertyBag.ConcurrentPropertyBagDictionary.TryRemove<T>(NCode.PropertyBag.PropertyBagKey<T> key, out T? value) -> bool

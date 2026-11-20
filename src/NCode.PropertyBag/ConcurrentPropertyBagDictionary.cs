@@ -180,6 +180,100 @@ public sealed class ConcurrentPropertyBagDictionary
         return false;
     }
 
+    /// <summary>
+    /// Stores the value for the key only when the bag holds no value for it, in one atomic step.
+    /// </summary>
+    /// <param name="key">The key of the value to add.</param>
+    /// <param name="value">The value to store.</param>
+    /// <typeparam name="T">The type of the value to store.</typeparam>
+    /// <returns>
+    /// <c>true</c> if the value was stored; <c>false</c> if the bag already held a value for
+    /// <paramref name="key"/>, which is left unchanged.
+    /// </returns>
+    /// <remarks>
+    /// A stored <c>null</c> counts as a value, so the key is not added again.
+    /// </remarks>
+    public bool TryAdd<T>(PropertyBagKey<T> key, T? value)
+    {
+        lock (Gate)
+        {
+            return Items.TryAdd(key, value);
+        }
+    }
+
+    /// <summary>
+    /// Retrieves the value stored for the key, or creates it with a factory and stores it.
+    /// </summary>
+    /// <param name="key">The key of the value to retrieve or add.</param>
+    /// <param name="valueFactory">The function that creates the value when the bag holds none.</param>
+    /// <typeparam name="T">The type of the value to retrieve or store.</typeparam>
+    /// <returns>
+    /// The value stored for <paramref name="key"/>, which may be <c>null</c>.
+    /// </returns>
+    /// <exception cref="ArgumentNullException"><paramref name="valueFactory"/> is <c>null</c>.</exception>
+    /// <remarks>
+    /// The factory runs outside the lock, so it may run more than once when several threads add the same
+    /// key at once. Only one result is stored, and every caller gets that one.
+    /// </remarks>
+    public T? GetOrAdd<T>(PropertyBagKey<T> key, Func<PropertyBagKey<T>, T?> valueFactory)
+    {
+        ArgumentNullException.ThrowIfNull(valueFactory);
+
+        if (TryGetValue<T>(key, out var existing))
+        {
+            return existing;
+        }
+
+        var created = valueFactory(key);
+
+        lock (Gate)
+        {
+            if (
+                Items.TryGetValue(key, out var stored)
+                && PropertyBagValue.TryCast(stored, out T? winner)
+            )
+            {
+                return winner;
+            }
+
+            Items[key] = created;
+            return created;
+        }
+    }
+
+    /// <summary>
+    /// Removes the value stored for the key and returns it, in one atomic step.
+    /// </summary>
+    /// <param name="key">The key of the value to remove.</param>
+    /// <param name="value">
+    /// When this method returns, contains the removed value if the key was found; otherwise, the default
+    /// value for type <typeparamref name="T"/>.
+    /// </param>
+    /// <typeparam name="T">The type of the value to remove.</typeparam>
+    /// <returns>
+    /// <c>true</c> if the bag held a value for <paramref name="key"/> and it was removed; otherwise,
+    /// <c>false</c>.
+    /// </returns>
+    public bool TryRemove<T>(PropertyBagKey<T> key, out T? value)
+    {
+        bool removed;
+        object? stored;
+
+        lock (Gate)
+        {
+            removed = Items.Remove(key, out stored);
+        }
+
+        if (removed)
+        {
+            PropertyBagValue.TryCast(stored, out value);
+            return true;
+        }
+
+        value = default;
+        return false;
+    }
+
     /// <inheritdoc />
     /// <remarks>
     /// <para>
