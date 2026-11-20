@@ -5,7 +5,8 @@ using NCode.PropertyBag;
 
 namespace SiteSamples.Start;
 
-// The samples of docs/site/start/quick-start.mdx. The site's build includes each begin-snippet region in the page by its key (ADR-1004).
+// The samples of docs/site/start/quick-start.mdx. The site's build includes each begin-snippet region in the page by
+// its key (ADR-1004).
 public class QuickStartSamples
 {
     // begin-snippet: SiteQuickStartKeys

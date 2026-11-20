@@ -5,7 +5,8 @@ using NCode.PropertyBag;
 
 namespace SiteSamples.Guides;
 
-// The samples of docs/site/guides/store-and-read-values.mdx. The site's build includes each begin-snippet region in the page by its key (ADR-1004).
+// The samples of docs/site/guides/store-and-read-values.mdx. The site's build includes each begin-snippet region in
+// the page by its key (ADR-1004).
 public class StoreAndReadValuesSamples
 {
     [Fact]
@@ -22,9 +23,12 @@ public class StoreAndReadValuesSamples
         bag.Set(userKey, "bob");
         // end-snippet
 
-        Assert.True(bag.TryGetValue(userKey, out string? user));
+        bool hasUser = bag.TryGetValue(userKey, out string? user);
+        bool hasRetries = bag.TryGetValue(retriesKey, out int retries);
+
+        Assert.True(hasUser);
         Assert.Equal("bob", user);
-        Assert.True(bag.TryGetValue(retriesKey, out int retries));
+        Assert.True(hasRetries);
         Assert.Equal(3, retries);
     }
 
@@ -58,7 +62,9 @@ public class StoreAndReadValuesSamples
         bag.Remove(key);
         // end-snippet
 
-        Assert.False(bag.TryGetValue(key, out string? token));
+        bool hasToken = bag.TryGetValue(key, out string? token);
+
+        Assert.False(hasToken);
         Assert.Null(token);
     }
 
