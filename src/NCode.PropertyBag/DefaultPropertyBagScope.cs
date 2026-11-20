@@ -9,7 +9,7 @@ namespace NCode.PropertyBag;
 /// </summary>
 /// <remarks>
 /// <para>
-/// A scope created by <see cref="DefaultPropertyBag.Scope{T}"/> restores the value its key held when the scope
+/// A scope created by <see cref="PropertyBagDictionary.Scope{T}"/> restores the value its key held when the scope
 /// was created, or removes the key when it held none, when the scope is disposed.
 /// </para>
 /// <para>
@@ -41,7 +41,7 @@ namespace NCode.PropertyBag;
 /// </param>
 /// <seealso cref="IPropertyBagScope"/>
 /// <seealso cref="IPropertyBag.Scope{T}"/>
-/// <seealso cref="DefaultPropertyBag"/>
+/// <seealso cref="PropertyBagDictionary"/>
 public class DefaultPropertyBagScope(IPropertyBag propertyBag, PropertyBagKey key)
     : IPropertyBagScope
 {
@@ -49,7 +49,7 @@ public class DefaultPropertyBagScope(IPropertyBag propertyBag, PropertyBagKey ke
     /// Initializes a new scope whose <see cref="Dispose"/> hands the captured state back to the bag
     /// instead of removing the key.
     /// </summary>
-    /// <param name="propertyBag">The <see cref="DefaultPropertyBag"/> instance that contains the scoped value.</param>
+    /// <param name="propertyBag">The <see cref="PropertyBagDictionary"/> instance that contains the scoped value.</param>
     /// <param name="key">The <see cref="PropertyBagKey"/> that identifies the scoped value.</param>
     /// <param name="hadPreviousValue">
     /// <c>true</c> if the key held a value when the scope was created; otherwise, <c>false</c>.
@@ -58,7 +58,7 @@ public class DefaultPropertyBagScope(IPropertyBag propertyBag, PropertyBagKey ke
     /// The value the key held when the scope was created, when <paramref name="hadPreviousValue"/> is <c>true</c>.
     /// </param>
     internal DefaultPropertyBagScope(
-        DefaultPropertyBag propertyBag,
+        PropertyBagDictionary propertyBag,
         PropertyBagKey key,
         bool hadPreviousValue,
         object? previousValue
@@ -84,7 +84,7 @@ public class DefaultPropertyBagScope(IPropertyBag propertyBag, PropertyBagKey ke
     /// Gets the bag that <see cref="Dispose"/> hands the captured state back to,
     /// or <c>null</c> for a scope that removes its key.
     /// </summary>
-    private DefaultPropertyBag? RestoreTarget { get; }
+    private PropertyBagDictionary? RestoreTarget { get; }
 
     /// <summary>
     /// Gets a value that indicates whether the key held a value when the scope was created.
@@ -106,7 +106,7 @@ public class DefaultPropertyBagScope(IPropertyBag propertyBag, PropertyBagKey ke
     /// </summary>
     /// <remarks>
     /// <para>
-    /// For a scope created by <see cref="DefaultPropertyBag.Scope{T}"/>, this method restores the value
+    /// For a scope created by <see cref="PropertyBagDictionary.Scope{T}"/>, this method restores the value
     /// that <see cref="Key"/> held when the scope was created, or removes the key when it held none.
     /// For a scope built with the public constructor, it removes the value associated with <see cref="Key"/>
     /// from the <see cref="PropertyBag"/> by calling <see cref="IPropertyBag.Remove"/>.

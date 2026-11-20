@@ -10,7 +10,7 @@ public class DefaultPropertyBagScopeTests
     [Fact]
     public void Constructor_WithValidParameters_SetsProperties()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         var key = new PropertyBagKey<string>("TestKey");
 
         var scope = new DefaultPropertyBagScope(propertyBag, key);
@@ -22,7 +22,7 @@ public class DefaultPropertyBagScopeTests
     [Fact]
     public void Constructor_WithDifferentKeyTypes_SetsCorrectKey()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         var intKey = new PropertyBagKey<int>("IntKey");
 
         var scope = new DefaultPropertyBagScope(propertyBag, intKey);
@@ -38,7 +38,7 @@ public class DefaultPropertyBagScopeTests
     [Fact]
     public void PropertyBag_ReturnsConstructorParameter()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         var key = new PropertyBagKey<string>("TestKey");
 
         var scope = new DefaultPropertyBagScope(propertyBag, key);
@@ -53,7 +53,7 @@ public class DefaultPropertyBagScopeTests
     [Fact]
     public void Key_ReturnsConstructorParameter()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         var key = new PropertyBagKey<string>("TestKey");
 
         var scope = new DefaultPropertyBagScope(propertyBag, key);
@@ -64,7 +64,7 @@ public class DefaultPropertyBagScopeTests
     [Fact]
     public void Key_PreservesTypeAndName()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         var key = new PropertyBagKey<DateTime>("DateKey");
 
         var scope = new DefaultPropertyBagScope(propertyBag, key);
@@ -80,7 +80,7 @@ public class DefaultPropertyBagScopeTests
     [Fact]
     public void Dispose_RemovesValueFromPropertyBag()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         var key = new PropertyBagKey<string>("TestKey");
         propertyBag.SetValue(key, "TestValue");
 
@@ -96,7 +96,7 @@ public class DefaultPropertyBagScopeTests
     [Fact]
     public void Dispose_WhenKeyDoesNotExist_DoesNotThrow()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         var key = new PropertyBagKey<string>("NonExistentKey");
 
         var scope = new DefaultPropertyBagScope(propertyBag, key);
@@ -109,7 +109,7 @@ public class DefaultPropertyBagScopeTests
     [Fact]
     public void Dispose_CalledMultipleTimes_DoesNotThrow()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         var key = new PropertyBagKey<string>("TestKey");
         propertyBag.SetValue(key, "TestValue");
 
@@ -128,7 +128,7 @@ public class DefaultPropertyBagScopeTests
     [Fact]
     public void Dispose_FromScopeMethod_CalledTwice_RestoresOnce()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         var key = new PropertyBagKey<int>("Counter");
         propertyBag.SetValue(key, 1);
 
@@ -145,7 +145,7 @@ public class DefaultPropertyBagScopeTests
     [Fact]
     public void Dispose_CalledTwice_RemovesOnce()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         var key = new PropertyBagKey<string>("TestKey");
         propertyBag.SetValue(key, "First");
 
@@ -162,7 +162,7 @@ public class DefaultPropertyBagScopeTests
     [Fact]
     public void Dispose_OnlyRemovesSpecifiedKey()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         var key1 = new PropertyBagKey<string>("Key1");
         var key2 = new PropertyBagKey<string>("Key2");
         propertyBag.SetValue(key1, "Value1");
@@ -184,7 +184,7 @@ public class DefaultPropertyBagScopeTests
     [Fact]
     public void UsingStatement_RemovesValueAfterBlock()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         var key = new PropertyBagKey<string>("TestKey");
         propertyBag.SetValue(key, "TestValue");
 
@@ -200,7 +200,7 @@ public class DefaultPropertyBagScopeTests
     [Fact]
     public void UsingStatement_WithScopeMethod_TemporarilyOverridesValue()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         var key = new PropertyBagKey<string>("Culture");
         propertyBag.SetValue(key, "en-US");
 
@@ -219,7 +219,7 @@ public class DefaultPropertyBagScopeTests
     [Fact]
     public void UsingStatement_WhenExceptionThrown_StillRemovesValue()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         var key = new PropertyBagKey<string>("TestKey");
         propertyBag.SetValue(key, "TestValue");
 
@@ -245,7 +245,7 @@ public class DefaultPropertyBagScopeTests
     [Fact]
     public void NestedScopes_RestoreInReverseOrder()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         var key = new PropertyBagKey<int>("Counter");
         propertyBag.SetValue(key, 1);
 
@@ -275,7 +275,7 @@ public class DefaultPropertyBagScopeTests
     [Fact]
     public void Dispose_WhenNestedScopesDisposedOutOfOrder_LeavesValueCapturedByLastDisposed()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         var key = new PropertyBagKey<int>("Counter");
         propertyBag.SetValue(key, 1);
         var outer = propertyBag.Scope(key, 2);
@@ -297,7 +297,7 @@ public class DefaultPropertyBagScopeTests
     [Fact]
     public void Scope_WhenKeyHeldNull_RestoresNull()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         var key = new PropertyBagKey<string?>("Nullable");
         propertyBag.SetValue(key, null);
 
@@ -319,7 +319,7 @@ public class DefaultPropertyBagScopeTests
     [Fact]
     public void Scope_WithDifferentTypes_WorksIndependently()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         var stringKey = new PropertyBagKey<string>("Value");
         var intKey = new PropertyBagKey<int>("Value");
 

@@ -10,7 +10,7 @@ public class ReadOnlyPropertyBagExtensionsTests
     [Fact]
     public void TryGetValue_WhenValueExists_ReturnsTrueAndValue()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         propertyBag.SetValue("TestUser", "testKey");
 
         var result = propertyBag.TryGetValue(out string? value, "testKey");
@@ -22,7 +22,7 @@ public class ReadOnlyPropertyBagExtensionsTests
     [Fact]
     public void TryGetValue_WhenValueNotExists_ReturnsFalseAndDefault()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
 
         string? userName;
         var result = propertyBag.TryGetValue(out userName);
@@ -34,7 +34,7 @@ public class ReadOnlyPropertyBagExtensionsTests
     [Fact]
     public void TryGetValue_WithIntValue_ReturnsTrueAndValue()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         propertyBag.SetValue(42, "testKey");
 
         var result = propertyBag.TryGetValue(out int value, "testKey");
@@ -46,7 +46,7 @@ public class ReadOnlyPropertyBagExtensionsTests
     [Fact]
     public void TryGetValue_WithIntValue_WhenNotExists_ReturnsFalseAndZero()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
 
         int userId;
         var result = propertyBag.TryGetValue(out userId);
@@ -58,7 +58,7 @@ public class ReadOnlyPropertyBagExtensionsTests
     [Fact]
     public void TryGetValue_WithExplicitName_UsesProvidedName()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         var key = new PropertyBagKey<string>("customKeyName");
         propertyBag.SetValue(key, "TestValue");
 
@@ -71,7 +71,7 @@ public class ReadOnlyPropertyBagExtensionsTests
     [Fact]
     public void TryGetValue_WithNullName_UsesEmptyString()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         var key = new PropertyBagKey<string>(string.Empty);
         propertyBag.SetValue(key, "TestValue");
 
@@ -84,7 +84,7 @@ public class ReadOnlyPropertyBagExtensionsTests
     [Fact]
     public void TryGetValue_WithComplexType_ReturnsTrueAndValue()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         var original = new TestConfiguration { Timeout = 30, Endpoint = "https://api.example.com" };
         propertyBag.SetValue(original, "testKey");
 
@@ -99,7 +99,7 @@ public class ReadOnlyPropertyBagExtensionsTests
     [Fact]
     public void TryGetValue_WithWrongType_ReturnsFalse()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         var key = new PropertyBagKey<string>("value");
         propertyBag.SetValue(key, "StringValue");
 
@@ -113,7 +113,7 @@ public class ReadOnlyPropertyBagExtensionsTests
     [Fact]
     public void TryGetValue_OnReadOnlyPropertyBag_Works()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         propertyBag.SetValue("TestUser", "testKey");
         IReadOnlyPropertyBag readOnlyBag = propertyBag;
 
@@ -126,7 +126,7 @@ public class ReadOnlyPropertyBagExtensionsTests
     [Fact]
     public void TryGetValue_WithDeclaredVariable_ReadsTheKeyNamedAfterIt()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         propertyBag.SetValue(new PropertyBagKey<string>("connectionString"), "Server=localhost");
 
         string? connectionString;

@@ -10,7 +10,7 @@ public class PropertyBagExtensionsTests
     [Fact]
     public void SetValue_WithValue_InfersKeyNameFromVariable()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         const string userName = "TestUser";
 
         propertyBag.SetValue(userName);
@@ -23,7 +23,7 @@ public class PropertyBagExtensionsTests
     [Fact]
     public void SetValue_WithIntValue_InfersKeyNameFromVariable()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         const int userId = 42;
 
         propertyBag.SetValue(userId);
@@ -36,7 +36,7 @@ public class PropertyBagExtensionsTests
     [Fact]
     public void SetValue_WithNullableValue_InfersKeyNameFromVariable()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         string? optionalValue = "HasValue";
 
         propertyBag.SetValue(optionalValue);
@@ -49,7 +49,7 @@ public class PropertyBagExtensionsTests
     [Fact]
     public void SetValue_ReturnsPropertyBagForChaining()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         const string value1 = "First";
         const int value2 = 100;
 
@@ -61,7 +61,7 @@ public class PropertyBagExtensionsTests
     [Fact]
     public void SetValue_WithExplicitName_UsesProvidedName()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         const string someVariable = "TestValue";
 
         propertyBag.SetValue(someVariable, "customKeyName");
@@ -74,7 +74,7 @@ public class PropertyBagExtensionsTests
     [Fact]
     public void SetValue_WithNullName_UsesEmptyString()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         const string value = "TestValue";
 
         propertyBag.SetValue(value, null);
@@ -87,7 +87,7 @@ public class PropertyBagExtensionsTests
     [Fact]
     public void SetValue_OverwritesExistingValue()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         var key = new PropertyBagKey<string>("testValue");
         propertyBag.SetValue(key, "Original");
         const string testValue = "Updated";
@@ -101,7 +101,7 @@ public class PropertyBagExtensionsTests
     [Fact]
     public void SetValue_WithComplexType_InfersKeyName()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         var configuration = new TestConfiguration
         {
             Timeout = 30,
@@ -120,7 +120,7 @@ public class PropertyBagExtensionsTests
     [Fact]
     public void SetValue_WithDateTimeValue_InfersKeyName()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         var createdAt = new DateTime(2026, 1, 18, 12, 0, 0, DateTimeKind.Utc);
 
         propertyBag.SetValue(createdAt);
@@ -133,7 +133,7 @@ public class PropertyBagExtensionsTests
     [Fact]
     public void SetValue_ChainMultipleValues_AllValuesStored()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         const string name = "Alice";
         const int age = 30;
         const bool isActive = true;
@@ -155,7 +155,7 @@ public class PropertyBagExtensionsTests
     [Fact]
     public void SetValue_WithKeyAndStringValue_CallsTheInterfaceMethod()
     {
-        IPropertyBag propertyBag = new DefaultPropertyBag();
+        IPropertyBag propertyBag = new PropertyBagDictionary();
         var key = new PropertyBagKey<string>("UserName");
 
         propertyBag.SetValue(key, "Alice");
@@ -174,7 +174,7 @@ public class PropertyBagExtensionsTests
     [Fact]
     public void SetValueAndTryGetValue_WithSameVariableName_RoundTrips()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         const string userName = "TestUser";
 
         propertyBag.SetValue(userName);
@@ -188,7 +188,7 @@ public class PropertyBagExtensionsTests
     [Fact]
     public void SetValueAndTryGetValue_WithExplicitMatchingNames_RoundTrips()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         const string inputValue = "TestValue";
 
         propertyBag.SetValue(inputValue, "sharedKey");
@@ -201,7 +201,7 @@ public class PropertyBagExtensionsTests
     [Fact]
     public void SetValueAndTryGetValue_MultipleTypes_RoundTrips()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
 
         propertyBag
             .SetValue("Alice", "name")
@@ -226,7 +226,7 @@ public class PropertyBagExtensionsTests
     [Fact]
     public void SetValue_CallerArgumentExpression_CapturesVariableName()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         const string myVariableName = "TestValue";
 
         propertyBag.SetValue(myVariableName);
@@ -240,7 +240,7 @@ public class PropertyBagExtensionsTests
     [Fact]
     public void SetValue_CallerArgumentExpression_CapturesPropertyAccess()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         var config = new TestConfiguration { Timeout = 60 };
 
         propertyBag.SetValue(config.Timeout);
@@ -256,7 +256,7 @@ public class PropertyBagExtensionsTests
     {
         // CallerArgumentExpression on an out parameter captures the variable name
         // when using an existing variable (not inline declaration)
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
 
         // Store with key name matching the out variable name
         var key = new PropertyBagKey<string>("retrievedValue");
@@ -273,7 +273,7 @@ public class PropertyBagExtensionsTests
     [Fact]
     public void TryGetValue_CallerArgumentExpression_DifferentVariableName_ReturnsFalse()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         var key = new PropertyBagKey<string>("storedKey");
         propertyBag.SetValue(key, "TestValue");
 
@@ -288,7 +288,7 @@ public class PropertyBagExtensionsTests
     [Fact]
     public void SetValueAndTryGetValue_CallerArgumentExpression_MatchingVariableNames_RoundTrips()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         const string sharedKeyName = "StoredValue";
 
         // Set using CallerArgumentExpression (key = "sharedKeyName")
@@ -305,7 +305,7 @@ public class PropertyBagExtensionsTests
     [Fact]
     public void SetValueAndTryGetValue_CallerArgumentExpression_SameVariableNameReused_RoundTrips()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         string? userName = "Alice";
 
         // Set using CallerArgumentExpression (key = "userName")
@@ -324,7 +324,7 @@ public class PropertyBagExtensionsTests
     [Fact]
     public void SetValueAndTryGetValue_CallerArgumentExpression_IntType_RoundTrips()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         int counter = 42;
 
         // Set using CallerArgumentExpression (key = "counter")
@@ -343,7 +343,7 @@ public class PropertyBagExtensionsTests
     [Fact]
     public void SetValueAndTryGetValue_CallerArgumentExpression_MultipleValues_RoundTrips()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         string? name = "Alice";
         int age = 30;
         bool isActive = true;
@@ -369,7 +369,7 @@ public class PropertyBagExtensionsTests
     [Fact]
     public void SetThenTryGet_WithMatchingVariableNames_Works()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
 
         // Using variable with same name for both Set and TryGet
         string connectionString = "Server=localhost";

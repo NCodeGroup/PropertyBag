@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
 using System.Collections;
-using System.Diagnostics.CodeAnalysis;
 
 namespace NCode.PropertyBag;
 
@@ -25,7 +24,7 @@ namespace NCode.PropertyBag;
 /// </remarks>
 /// <example>
 /// <code>
-/// var propertyBag = new DefaultPropertyBag();
+/// var propertyBag = new PropertyBagDictionary();
 /// var key = new PropertyBagKey&lt;string&gt;("UserName");
 ///
 /// propertyBag.Set(key, "Alice");
@@ -39,12 +38,7 @@ namespace NCode.PropertyBag;
 /// <seealso cref="IPropertyBag"/>
 /// <seealso cref="IReadOnlyPropertyBag"/>
 /// <seealso cref="DefaultPropertyBagFactory"/>
-[SuppressMessage(
-    "Naming",
-    "CA1710:Identifiers should have correct suffix",
-    Justification = "DefaultPropertyBag is the published type name; renaming it would be a breaking change."
-)]
-public class DefaultPropertyBag
+public class PropertyBagDictionary
     : IPropertyBag,
         IReadOnlyDictionary<PropertyBagKey, object?>,
         ICloneable
@@ -63,7 +57,7 @@ public class DefaultPropertyBag
     /// <inheritdoc />
     /// <remarks>
     /// <para>
-    /// Creates a new <see cref="DefaultPropertyBag"/> instance containing copies of all key-value pairs.
+    /// Creates a new <see cref="PropertyBagDictionary"/> instance containing copies of all key-value pairs.
     /// </para>
     /// <para>
     /// Values that implement <see cref="ICloneable"/> are deep-cloned by calling their
@@ -76,7 +70,7 @@ public class DefaultPropertyBag
     /// </remarks>
     public IPropertyBag Clone()
     {
-        var newBag = new DefaultPropertyBag();
+        var newBag = new PropertyBagDictionary();
 
         var items = ItemsOrNull;
         if (items is not { Count: > 0 })

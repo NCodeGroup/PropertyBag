@@ -82,7 +82,7 @@ public class DefaultPropertyBagFactoryTests
 
         var propertyBag = factory.Create();
 
-        Assert.IsType<DefaultPropertyBag>(propertyBag);
+        Assert.IsType<PropertyBagDictionary>(propertyBag);
     }
 
     [Fact]
@@ -143,7 +143,7 @@ public class DefaultPropertyBagFactoryTests
         var propertyBag = factory.Create();
 
         Assert.NotNull(propertyBag);
-        Assert.IsType<DefaultPropertyBag>(propertyBag);
+        Assert.IsType<PropertyBagDictionary>(propertyBag);
     }
 
     #endregion

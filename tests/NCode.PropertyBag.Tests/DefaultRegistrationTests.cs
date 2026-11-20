@@ -74,6 +74,6 @@ public class DefaultRegistrationTests
 
     private sealed class CustomFactory : IPropertyBagFactory
     {
-        public IPropertyBag Create() => new DefaultPropertyBag();
+        public IPropertyBag Create() => new PropertyBagDictionary();
     }
 }

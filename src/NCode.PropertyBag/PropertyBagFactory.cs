@@ -15,7 +15,7 @@ namespace NCode.PropertyBag;
 /// </para>
 /// <para>
 /// The default implementation is <see cref="DefaultPropertyBagFactory"/>, which creates
-/// <see cref="DefaultPropertyBag"/> instances.
+/// <see cref="PropertyBagDictionary"/> instances.
 /// </para>
 /// </remarks>
 /// <example>
