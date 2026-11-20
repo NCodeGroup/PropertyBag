@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.
 
 ## [Unreleased]
 
+### Added
+
+- FsCheck property tests for `PropertyBagKey`, `PropertyBagKey<T>`, `PropertyBagDictionary` and the name-inferring `SetValue` and `TryGetValue` extensions, with a fixed seed so every run is deterministic; OpenSSF Scorecard's Fuzzing check counts them.
+
 ### Changed
 
 - Package validation compares each package with the published 2.0.1 package.

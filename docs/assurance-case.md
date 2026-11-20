@@ -124,6 +124,11 @@ privilege and open design."
   ([ADR-0102](decisions/project-template/0102-disallowed-apis-are-banned-at-build-time.md)), and runs the tests; CI runs
   the gate on every pull request, then `./build/Test-Coverage.ps1`, which fails below 98% line or branch coverage
   ([ADR-0026](decisions/project-template/0026-tests-gate-coverage-at-the-gold-thresholds-and-a-release-waits-for-them.md)).
+- **Property tests:** FsCheck tests in `tests/NCode.PropertyBag.Tests`, the `*PropertyTests` classes, check generated
+  keys and operation sequences: key equality and hash codes agree with the type and the ordinal name (R1), a value is
+  read back only under its key's type (R1), the default bag matches a dictionary model under any mix of sets and
+  removes, nested scopes restore each enclosing value as they are disposed, and a clone and its original stay
+  independent. They replay one fixed seed, `20261120,12345`, so every run checks the same generated cases.
 - **Static analysis:** with CodeQL's default setup configured and analyzing at least one language, the repository
   ruleset blocks a pull request that adds a CodeQL alert at warning level or above, or a security alert of any severity
   ([ADR-0005](decisions/project-template/0005-the-default-branch-accepts-changes-only-through-pull-requests.md),
