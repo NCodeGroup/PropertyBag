@@ -73,3 +73,127 @@ if (propertyBag.TryGetValue(UserKeys.UserName, out var userName))
 }
 ```
 <!-- endSnippet -->
+
+## Usage
+
+### Scoped values
+
+`Scope` sets a value until the returned scope is disposed, then restores the value the key held before, or removes the key when it held none:
+
+<!-- snippet: ScopedValues -->
+```cs
+var cultureKey = new PropertyBagKey<string>("Culture");
+propertyBag.SetValue(cultureKey, "en-US");
+
+string? inScope;
+using (propertyBag.Scope(cultureKey, "fr-FR"))
+{
+    propertyBag.TryGetValue(cultureKey, out inScope); // "fr-FR"
+}
+
+propertyBag.TryGetValue(cultureKey, out var afterScope); // "en-US" again
+```
+<!-- endSnippet -->
+
+### Null values
+
+A bag stores null explicitly, and a stored null differs from a missing key:
+
+<!-- snippet: NullValues -->
+```cs
+var middleNameKey = new PropertyBagKey<string?>("MiddleName");
+propertyBag.SetValue(middleNameKey, null);
+
+// True, with a null value: the key holds null.
+var found = propertyBag.TryGetValue(middleNameKey, out var middleName);
+
+// False: a missing key differs from a stored null.
+var nicknameKey = new PropertyBagKey<string?>("Nickname");
+var missing = propertyBag.TryGetValue(nicknameKey, out var nickname);
+```
+<!-- endSnippet -->
+
+### Keys named after the variable
+
+The `SetValue` and `TryGetValue` extensions name the key after the argument expression, through `[CallerArgumentExpression]`:
+
+<!-- snippet: InferredKeys -->
+```cs
+using NCode.PropertyBag;
+
+public static class ConnectionSettings
+{
+    public static void Save(IPropertyBag propertyBag, string connectionString, TimeSpan timeout)
+    {
+        // The keys are named "connectionString" and "timeout", after the arguments.
+        propertyBag.SetValue(connectionString).SetValue(timeout);
+    }
+
+    public static string? LoadConnectionString(IReadOnlyPropertyBag propertyBag)
+    {
+        // Declare the variable first: an inline `out string? connectionString` would name
+        // the key "string? connectionString".
+        string? connectionString;
+        return propertyBag.TryGetValue(out connectionString) ? connectionString : null;
+    }
+}
+```
+<!-- endSnippet -->
+
+### Cloning
+
+`Clone` returns an independent bag: a value that implements `ICloneable` is copied through its own `Clone()`, and any other value is shared by reference:
+
+<!-- snippet: Clone -->
+```cs
+var copy = propertyBag.Clone();
+copy.SetValue(UserKeys.UserName, "Bob");
+
+propertyBag.TryGetValue(UserKeys.UserName, out var original); // still "Alice"
+```
+<!-- endSnippet -->
+
+### Enumerating entries
+
+`PropertyBagDictionary`, the default bag, is also an `IReadOnlyDictionary<PropertyBagKey, object?>`, keyed by each value's name and type:
+
+<!-- snippet: EnumerateEntries -->
+```cs
+var propertyBag = new PropertyBagDictionary();
+propertyBag.SetValue(UserKeys.UserName, "Alice").SetValue(UserKeys.UserAge, 30);
+
+IReadOnlyDictionary<PropertyBagKey, object?> entries = propertyBag;
+foreach (var (key, value) in entries)
+{
+    lines.Add($"{key.Name} ({key.Type.Name}) = {value}");
+}
+```
+<!-- endSnippet -->
+
+### Dependency injection
+
+`AddPropertyBag()` registers `IPropertyBagFactory` as a singleton, keeping one the application registered first:
+
+<!-- snippet: RegisterServices -->
+```cs
+var services = new ServiceCollection();
+services.AddPropertyBag();
+services.AddSingleton<RequestContextFactory>();
+```
+<!-- endSnippet -->
+
+Inject `IPropertyBagFactory` where a bag is needed:
+
+<!-- snippet: InjectFactory -->
+```cs
+using NCode.PropertyBag;
+
+public sealed class RequestContextFactory(IPropertyBagFactory propertyBagFactory)
+{
+    public IPropertyBag CreateContext(string userName) =>
+        propertyBagFactory.Create().SetValue(UserKeys.UserName, userName);
+}
+```
+<!-- endSnippet -->
+
+Without a container, `PropertyBagFactory.Create()` creates a bag through the settable `PropertyBagFactory.DefaultFactory`.
