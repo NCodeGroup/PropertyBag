@@ -1,1 +1,8 @@
 #nullable enable
+NCode.PropertyBag.ConcurrentPropertyBag
+NCode.PropertyBag.ConcurrentPropertyBag.Clone() -> NCode.PropertyBag.IPropertyBag!
+NCode.PropertyBag.ConcurrentPropertyBag.ConcurrentPropertyBag() -> void
+NCode.PropertyBag.ConcurrentPropertyBag.Remove(NCode.PropertyBag.PropertyBagKey key) -> NCode.PropertyBag.IPropertyBag!
+NCode.PropertyBag.ConcurrentPropertyBag.Scope<T>(NCode.PropertyBag.PropertyBagKey<T> key, T? value) -> NCode.PropertyBag.IPropertyBagScope!
+NCode.PropertyBag.ConcurrentPropertyBag.SetValue<T>(NCode.PropertyBag.PropertyBagKey<T> key, T? value) -> NCode.PropertyBag.IPropertyBag!
+NCode.PropertyBag.ConcurrentPropertyBag.TryGetValue<T>(NCode.PropertyBag.PropertyBagKey<T> key, out T? value) -> bool
