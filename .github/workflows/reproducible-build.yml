@@ -7,7 +7,8 @@
 #     result with the packages attached to that release.
 #
 # A .nupkg is a zip whose entries carry the time they were packed, so the packages' bytes always differ; the comparison
-# looks at each entry's name and bytes only. No job holds a write permission or a secret.
+# looks at each entry's name and bytes only. No job holds a write permission or a secret; the reproducible job reads
+# the release with the read-only github.token.
 name: Reproducible build
 
 on:
