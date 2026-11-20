@@ -1,2 +1,8 @@
 #nullable enable
 NCode.PropertyBag.IPropertyBag.SetValue<T>(NCode.PropertyBag.PropertyBagKey<T> key, T? value) -> NCode.PropertyBag.IPropertyBag!
+NCode.PropertyBag.PropertyBagExtensions.extension(NCode.PropertyBag.IPropertyBag!).SetValue<T>(T? value, string? name = null) -> NCode.PropertyBag.IPropertyBag!
+NCode.PropertyBag.ReadOnlyPropertyBagExtensions
+NCode.PropertyBag.ReadOnlyPropertyBagExtensions.extension(NCode.PropertyBag.IReadOnlyPropertyBag!)
+NCode.PropertyBag.ReadOnlyPropertyBagExtensions.extension(NCode.PropertyBag.IReadOnlyPropertyBag!).TryGetValue<T>(out T? value, string? name = null) -> bool
+static NCode.PropertyBag.PropertyBagExtensions.SetValue<T>(this NCode.PropertyBag.IPropertyBag! bag, T? value, string? name = null) -> NCode.PropertyBag.IPropertyBag!
+static NCode.PropertyBag.ReadOnlyPropertyBagExtensions.TryGetValue<T>(this NCode.PropertyBag.IReadOnlyPropertyBag! bag, out T? value, string? name = null) -> bool

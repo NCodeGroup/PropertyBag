@@ -92,6 +92,52 @@ public static class PropertyBagExtensions
             T? value,
             [CallerArgumentExpression(nameof(value))] string? name = null
         ) => bag.Set(new PropertyBagKey<T>(name ?? string.Empty), value);
+
+        /// <summary>
+        /// Sets a strongly typed value in the property bag, automatically inferring the key name
+        /// from the caller's argument expression.
+        /// </summary>
+        /// <param name="value">
+        /// The strongly typed value to store in the property bag.
+        /// This value may be <c>null</c> for reference types and nullable value types.
+        /// </param>
+        /// <param name="name">
+        /// The name of the key. This parameter is automatically populated by the compiler using
+        /// <see cref="CallerArgumentExpressionAttribute"/> based on the expression passed to <paramref name="value"/>.
+        /// Typically, you should not provide this parameter explicitly.
+        /// </param>
+        /// <typeparam name="T">The type of the value to store in the property bag.</typeparam>
+        /// <returns>The current <see cref="IPropertyBag"/> instance for method chaining.</returns>
+        /// <remarks>
+        /// <para>
+        /// This method provides a convenient way to set values without explicitly creating a
+        /// <see cref="PropertyBagKey{T}"/>. The key name is inferred from the variable or expression
+        /// passed as the <paramref name="value"/> argument.
+        /// </para>
+        /// <para>
+        /// If the value already exists for the inferred key, it will be overwritten.
+        /// </para>
+        /// <para>
+        /// Setting a <c>null</c> value explicitly stores <c>null</c> in the property bag. This is different
+        /// from removing the key entirely. When <see cref="IReadOnlyPropertyBag.TryGetValue{T}"/> is called
+        /// for a key with a stored <c>null</c> value, it returns <c>true</c> with the output value set to <c>null</c>.
+        /// </para>
+        /// </remarks>
+        /// <example>
+        /// <code>
+        /// var connectionString = "Server=localhost;Database=test";
+        /// var timeout = TimeSpan.FromSeconds(30);
+        ///
+        /// // Keys are inferred as "connectionString" and "timeout"
+        /// propertyBag
+        ///     .SetValue(connectionString)
+        ///     .SetValue(timeout);
+        /// </code>
+        /// </example>
+        public IPropertyBag SetValue<T>(
+            T? value,
+            [CallerArgumentExpression(nameof(value))] string? name = null
+        ) => bag.SetValue(new PropertyBagKey<T>(name ?? string.Empty), value);
     }
 
     /// <summary>
