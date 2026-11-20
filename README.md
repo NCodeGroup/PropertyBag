@@ -161,7 +161,7 @@ if (!propertyBag.TryGetValue(missingKey, out _))
 |------|-------------|
 | `DefaultPropertyBag` | Dictionary-based implementation with lazy initialization |
 | `DefaultPropertyBagFactory` | Default factory with singleton support |
-| `DefaultPropertyBagScope` | Scope implementation that removes values on dispose |
+| `DefaultPropertyBagScope` | Scope implementation that restores the previous value, or removes the key when it held none, on dispose |
 | `PropertyBagFactory` | Static convenience class for creating property bags |
 | `DefaultRegistration` | DI registration extension methods |
 
