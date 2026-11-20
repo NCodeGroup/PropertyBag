@@ -168,7 +168,8 @@ finally {
     $env:PATH = $savedPath
     $env:SITE_TEST_LOG = $savedLog
     $env:SITE_TEST_EXIT = $savedExit
-    try { $null = git -C $main worktree remove --force $wt 2>&1 } catch { }
+    $removal = git -C $main worktree remove --force $wt 2>&1
+    if ($LASTEXITCODE) { Write-Warning "git worktree remove $wt failed: $($removal -join ' ')" }
     Remove-Item -LiteralPath $root -Recurse -Force
 }
 # Every case passed.

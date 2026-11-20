@@ -60,8 +60,9 @@ and the site's build includes it in the page by its key. The README keeps Markdo
    a key that is not PascalCase letters and digits, on a key defined twice, on a site sample whose key lacks the prefix,
    on any other key that has it, and when it finds no key at all. `build/Test-AssertSampleKeys.ps1` runs it against
    fixture repositories: clean ones, which hold the lines and files it must read and those it must not, and one for
-   each failure. `build/gate.ps1` runs the test, then the check. It hashes `*.mdx` with `*.md` around
-   `dotnet mdsnippets` and fails when the tool changes either.
+   each failure. `build/gate.ps1` runs the test, then the check. `build/Assert-Markdown.ps1`, which
+   `build/Test-AssertMarkdown.ps1` tests offline, hashes `*.mdx` with `*.md` around `dotnet mdsnippets` and fails
+   when the tool changes either.
 7. `build/Test-Coverage.ps1` runs `tests/NCode.PropertyBag.Tests` alone, and the sample project references no coverage
    collector: a line of the library that only a sample runs counts as not covered.
 

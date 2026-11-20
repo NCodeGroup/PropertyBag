@@ -34,6 +34,7 @@ try {
     # -z prints each path as it is: without it, git quotes a name that holds a byte above 0x7F, and the quoted name
     # matches no file.
     $listed = (git ls-files -z --cached --others --exclude-standard -- '*.cs') -join "`n"
+    if ($LASTEXITCODE) { "Sample keys: FAILED. git ls-files failed with exit code $LASTEXITCODE."; exit 1 }
     $sources = @($listed.Split([char]0, [StringSplitOptions]::RemoveEmptyEntries) | Where-Object { Test-Path -LiteralPath $_ })
     $keys = [Collections.Generic.List[object]]::new()
     $markers = [Collections.Generic.List[string]]::new()

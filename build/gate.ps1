@@ -1,7 +1,7 @@
 #requires -version 7
 <#
 .SYNOPSIS
-    The project's gate: the sample key check, the README samples check, the API map check (build/Assert-ApiMap.ps1, whose rules build/Test-AssertApiMap.ps1 tests offline first) and the site script's offline test (build/Test-Site.ps1), then the Definition of Done, build/dod.ps1, whose Format stage runs the CSharpier check (project-template ADR-0148, ADR-1003, ADR-1006).
+    The project's gate: the sample key check, the README samples check (build/Assert-Markdown.ps1, tested offline by build/Test-AssertMarkdown.ps1), the API map check (build/Assert-ApiMap.ps1, whose rules build/Test-AssertApiMap.ps1 tests offline first) and the site script's offline test (build/Test-Site.ps1), then the Definition of Done, build/dod.ps1, whose Format stage runs the CSharpier check (project-template ADR-0148, ADR-1003, ADR-1006).
 .DESCRIPTION
     build/dod.ps1 is template-owned and has no stage for the samples, so this script runs those checks before it, as
     project-template ADR-0117 says. -Fast and -Filter are passed on to build/dod.ps1.
@@ -21,17 +21,13 @@ try {
     if ($LASTEXITCODE) { exit $LASTEXITCODE }
     ./build/Assert-SampleKeys.ps1
     if ($LASTEXITCODE) { exit $LASTEXITCODE }
-    # The READMEs' C# samples are copied from the tests (ADR-1003); a sample changed in only one place fails here.
-    # MarkdownSnippets would also rewrite a site page (.mdx) into HTML comments that MDX rejects, so mdsnippets.json
-    # excludes *.mdx, and the pages are hashed too: a page the tool changed fails here (ADR-1006).
-    $markdown = { git ls-files --cached --others --exclude-standard -- '*.md' '*.mdx' | Where-Object { Test-Path -LiteralPath $_ } | ForEach-Object { "$((Get-FileHash -LiteralPath $_).Hash) $_" } }
-    $before = & $markdown
-    dotnet mdsnippets
-    if ($LASTEXITCODE) { 'README samples: FAILED. dotnet mdsnippets could not merge the samples.'; exit 1 }
-    $changed = @(Compare-Object @(& $markdown) @($before) | ForEach-Object { ($_.InputObject -split ' ', 2)[1] } | Select-Object -Unique)
-    $pages = @($changed -like '*.mdx')
-    if ($pages) { "Site pages: FAILED. dotnet mdsnippets rewrote $($pages -join ', '); restore it, and keep *.mdx in ExcludeMarkdownFiles of mdsnippets.json."; exit 1 }
-    if ($changed) { "README samples: FAILED. dotnet mdsnippets updated $($changed -join ', ') from the tests; commit the result."; exit 1 }
+    # The READMEs' C# samples are copied from the tests (ADR-1003), and MarkdownSnippets must leave the site's pages
+    # alone (ADR-1006): build/Assert-Markdown.ps1 fails on a README or page dotnet mdsnippets changes. Its rules are
+    # tested offline first, so a rule broken in the check fails here instead of passing every README.
+    ./build/Test-AssertMarkdown.ps1
+    if ($LASTEXITCODE) { exit $LASTEXITCODE }
+    ./build/Assert-Markdown.ps1
+    if ($LASTEXITCODE) { exit $LASTEXITCODE }
     # The API map check's rules are tested offline first, so a rule broken in build/Assert-ApiMap.ps1 fails here
     # instead of passing every map.
     ./build/Test-AssertApiMap.ps1
