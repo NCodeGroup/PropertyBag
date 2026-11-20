@@ -62,6 +62,16 @@ public readonly struct PropertyBagKey(Type type, string name) : IEquatable<Prope
     public override int GetHashCode() => HashCode.Combine(Type, Name);
 
     /// <summary>
+    /// Returns the name and the value type of this key.
+    /// </summary>
+    /// <returns>The <see cref="Name"/> followed by the <see cref="Type"/> in parentheses, such as
+    /// <c>UserName (System.String)</c>.</returns>
+    /// <remarks>
+    /// A <c>default</c> key has no name and no type, so it gives <c> ()</c>.
+    /// </remarks>
+    public override string ToString() => $"{Name} ({Type})";
+
+    /// <summary>
     /// Determines whether two <see cref="PropertyBagKey"/> instances are equal.
     /// </summary>
     /// <param name="left">The first key to compare.</param>
@@ -156,6 +166,17 @@ public readonly struct PropertyBagKey<T>(string name) : IEquatable<PropertyBagKe
 
     /// <inheritdoc/>
     public override int GetHashCode() => HashCode.Combine(Type, Name);
+
+    /// <summary>
+    /// Returns the name and the value type of this key.
+    /// </summary>
+    /// <returns>The <see cref="Name"/> followed by the <see cref="Type"/> in parentheses, such as
+    /// <c>UserName (System.String)</c>.</returns>
+    /// <remarks>
+    /// A <c>default</c> key has no name, so it gives the name as an empty string followed by the
+    /// type of <typeparamref name="T"/> in parentheses, such as <c> (System.String)</c>.
+    /// </remarks>
+    public override string ToString() => $"{Name} ({Type})";
 
     /// <summary>
     /// Determines whether two <see cref="PropertyBagKey{T}"/> instances are equal.

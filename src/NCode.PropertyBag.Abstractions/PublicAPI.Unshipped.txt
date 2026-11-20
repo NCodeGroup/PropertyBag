@@ -1,1 +1,3 @@
 #nullable enable
+override NCode.PropertyBag.PropertyBagKey.ToString() -> string!
+override NCode.PropertyBag.PropertyBagKey<T>.ToString() -> string!

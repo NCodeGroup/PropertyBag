@@ -156,6 +156,26 @@ public class PropertyBagKeyTests
 
     #endregion
 
+    #region ToString Tests
+
+    [Fact]
+    public void ToString_ReturnsNameAndType()
+    {
+        var key = new PropertyBagKey(typeof(string), "UserName");
+
+        Assert.Equal("UserName (System.String)", key.ToString());
+    }
+
+    [Fact]
+    public void ToString_WhenDefault_ReturnsEmptyNameAndType()
+    {
+        var key = default(PropertyBagKey);
+
+        Assert.Equal(" ()", key.ToString());
+    }
+
+    #endregion
+
     #region Equality Operator Tests
 
     [Fact]
