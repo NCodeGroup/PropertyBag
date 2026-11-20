@@ -283,6 +283,23 @@ public class ConcurrentPropertyBagDictionaryTests
     }
 
     [Fact]
+    public void GetOrAdd_WhenStoredValueIsNotOfRequestedType_StoresAndReturnsCreatedValue()
+    {
+        var propertyBag = new ConcurrentPropertyBagDictionary();
+        var key = new PropertyBagKey<WrongTypeClone>("TestKey");
+        propertyBag.SetValue(key, new WrongTypeClone());
+        var clone = (ConcurrentPropertyBagDictionary)propertyBag.Clone();
+        var created = new WrongTypeClone();
+
+        var result = clone.GetOrAdd(key, _ => created);
+
+        Assert.Same(created, result);
+        var found = clone.TryGetValue(key, out var stored);
+        Assert.True(found);
+        Assert.Same(created, stored);
+    }
+
+    [Fact]
     public void GetOrAdd_WhenAnotherThreadStoresDuringFactory_ReturnsStoredValue()
     {
         var bag = new ConcurrentPropertyBagDictionary();

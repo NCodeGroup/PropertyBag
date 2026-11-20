@@ -12,6 +12,11 @@ public class LayeredPropertyBagTests
         public object Clone() => new Cell(Number);
     }
 
+    private sealed class WrongTypeClone : ICloneable
+    {
+        public object Clone() => "not a WrongTypeClone";
+    }
+
     #region Constructor Tests
 
     [Fact]
@@ -68,6 +73,24 @@ public class LayeredPropertyBagTests
 
         Assert.True(child.TryGetValue(key, out var value));
         Assert.Equal("Later", value);
+    }
+
+    [Fact]
+    public void TryGetValue_WhenLocalValueIsNotOfRequestedType_ReturnsFalseWithoutReadingParent()
+    {
+        var parent = new PropertyBagDictionary();
+        var key = new PropertyBagKey<WrongTypeClone>("TestKey");
+        parent.SetValue(key, new WrongTypeClone());
+        var child = new LayeredPropertyBag(parent);
+        child.SetValue(key, new WrongTypeClone());
+        var clone = child.Clone();
+        var parentFound = parent.TryGetValue(key, out _);
+        Assert.True(parentFound);
+
+        var found = clone.TryGetValue(key, out var value);
+
+        Assert.False(found);
+        Assert.Null(value);
     }
 
     #endregion
