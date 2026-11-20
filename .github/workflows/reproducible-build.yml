@@ -66,3 +66,55 @@ jobs:
         run: dotnet pack --configuration Release --output ../packages/second --nologo
       - name: Compare the packages
         run: ./first/build/Compare-Packages.ps1 -Expected packages/first -Actual packages/second
+
+  reproducible:
+    name: Rebuild a release and compare
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - name: Choose the release
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          TAG: ${{ inputs.tag }}
+        run: |
+          $tag = if ($env:TAG) { $env:TAG } else { gh release view --json tagName --jq .tagName }
+          if ($LASTEXITCODE) { throw "gh release view failed with exit code $LASTEXITCODE." }
+          if ($tag -notmatch '^v\d+\.\d+\.\d+(-[0-9A-Za-z.-]+)?$') { throw "The release tag '$tag' isn't a version such as v1.2.3." }
+          "tag=$tag" >> $env:GITHUB_OUTPUT
+      # This workflow's own commit holds the comparison script, which an older tag doesn't have.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: current
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: refs/tags/${{ steps.release.outputs.tag }}
+          path: rebuild
+          # Nerdbank.GitVersioning reads the history to compute the version.
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6.1.0
+        with:
+          global-json-file: rebuild/global.json
+      - name: Download the release's packages
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          TAG: ${{ steps.release.outputs.tag }}
+        run: |
+          gh release download $env:TAG --pattern '*.nupkg' --pattern '*.snupkg' --dir packages/released
+          if ($LASTEXITCODE) { throw "gh release download failed with exit code $LASTEXITCODE." }
+      # PublicRelease drops the -g<commit> suffix, as publish.yml packs a release.
+      - name: Rebuild the tagged commit as publish.yml packs it
+        working-directory: rebuild
+        run: dotnet pack --configuration Release --output ../packages/rebuilt --nologo -p:PublicRelease=true
+      - name: Compare the packages
+        run: ./current/build/Compare-Packages.ps1 -Expected packages/released -Actual packages/rebuilt
