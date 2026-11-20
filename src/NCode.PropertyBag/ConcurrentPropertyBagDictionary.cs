@@ -254,20 +254,22 @@ public sealed class ConcurrentPropertyBagDictionary
     /// <c>true</c> if the bag held a value for <paramref name="key"/> and it was removed; otherwise,
     /// <c>false</c>.
     /// </returns>
+    /// <remarks>
+    /// A stored value that is not a <typeparamref name="T"/> is left in place, and this method returns <c>false</c>, as
+    /// <see cref="TryGetValue{T}"/> does.
+    /// </remarks>
     public bool TryRemove<T>(PropertyBagKey<T> key, out T? value)
     {
-        bool removed;
-        object? stored;
-
         lock (Gate)
         {
-            removed = Items.Remove(key, out stored);
-        }
-
-        if (removed)
-        {
-            PropertyBagValue.TryCast(stored, out value);
-            return true;
+            if (
+                Items.TryGetValue(key, out var stored)
+                && PropertyBagValue.TryCast(stored, out value)
+            )
+            {
+                Items.Remove(key);
+                return true;
+            }
         }
 
         value = default;
