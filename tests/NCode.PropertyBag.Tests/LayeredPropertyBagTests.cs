@@ -22,8 +22,14 @@ public class LayeredPropertyBagTests
     [Fact]
     public void Constructor_WithNullParent_Throws()
     {
-        Assert.Throws<ArgumentNullException>(() => new LayeredPropertyBag(null!));
+        var exception = Assert.Throws<ArgumentNullException>(() => new LayeredPropertyBag(null!));
+
+        Assert.Equal("parent", exception.ParamName);
     }
+
+    #endregion
+
+    #region Parent Property Tests
 
     [Fact]
     public void Parent_ReturnsTheParent()
@@ -236,7 +242,8 @@ public class LayeredPropertyBagTests
         var child = new LayeredPropertyBag(parent);
         child.SetValue(localKey, "Local");
 
-        var clone = Assert.IsType<LayeredPropertyBag>(child.Clone());
+        var cloned = child.Clone();
+        var clone = Assert.IsType<LayeredPropertyBag>(cloned);
 
         Assert.NotSame(child, clone);
         Assert.Same(parent, clone.Parent);
@@ -275,7 +282,8 @@ public class LayeredPropertyBagTests
         parent.SetValue(key, "Parent");
         var child = new LayeredPropertyBag(parent);
 
-        var clone = Assert.IsType<LayeredPropertyBag>(child.Clone());
+        var cloned = child.Clone();
+        var clone = Assert.IsType<LayeredPropertyBag>(cloned);
 
         Assert.NotSame(child, clone);
         Assert.Same(parent, clone.Parent);
@@ -306,7 +314,8 @@ public class LayeredPropertyBagTests
         var key = new PropertyBagKey<string>("TestKey");
         child.SetValue(key, "Local");
 
-        var clone = Assert.IsType<LayeredPropertyBag>(((ICloneable)child).Clone());
+        var cloned = ((ICloneable)child).Clone();
+        var clone = Assert.IsType<LayeredPropertyBag>(cloned);
 
         Assert.NotSame(child, clone);
         Assert.Same(parent, clone.Parent);
