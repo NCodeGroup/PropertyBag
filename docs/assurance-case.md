@@ -91,7 +91,24 @@ privilege and open design."
 
 [//]: # "Maintainers: list the CWE ids the design counters, each with the requirement that counters it."
 
-Not written yet.
+- **[CWE-843](https://cwe.mitre.org/data/definitions/843.html) Access of Resource Using Incompatible Type ('Type
+  Confusion'):** a value is returned only under the key and type it was stored with (R1).
+- **[CWE-704](https://cwe.mitre.org/data/definitions/704.html) Incorrect Type Conversion or Cast:** `TryGetValue<T>`
+  tests the stored object with `is T`, never a cast (R1).
+- **[CWE-407](https://cwe.mitre.org/data/definitions/407.html) Inefficient Algorithmic Complexity:** randomized key
+  hashing (see the Threat Model).
+- **[CWE-476](https://cwe.mitre.org/data/definitions/476.html) NULL Pointer Dereference:** nullable reference types with
+  warnings as errors, the null-forgiving operator banned outside tests
+  ([ADR-0100](decisions/project-template/0100-warnings-are-errors-in-every-project.md)), and an explicit `null` value
+  contract (R1).
+- **[CWE-502](https://cwe.mitre.org/data/definitions/502.html) Deserialization of Untrusted Data:** the packages
+  deserialize nothing (R2).
+- **[CWE-1104](https://cwe.mitre.org/data/definitions/1104.html) Use of Unmaintained Third Party Components:** pinned
+  dependencies moved by Dependabot
+  ([ADR-0008](decisions/project-template/0008-external-inputs-are-pinned-and-kept-current.md)).
+- **[CWE-494](https://cwe.mitre.org/data/definitions/494.html) Download of Code Without Integrity Check:** nuget.org's
+  signature and the release's provenance attestation let a consumer check a package (R6,
+  [SECURITY.md](../SECURITY.md#verify-a-package)).
 
 ## Evidence
 
