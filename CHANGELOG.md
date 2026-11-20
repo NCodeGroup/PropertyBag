@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.
 
 ## [Unreleased]
 
+### Changed
+
+- Package validation compares each package with the published 2.0.2 package.
+
 ## [2.0.2] - 2026-11-20
 
 ### Added
