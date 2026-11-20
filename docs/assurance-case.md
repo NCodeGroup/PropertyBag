@@ -52,10 +52,14 @@ Not written yet.
   a new version ([ADR-0009](decisions/project-template/0009-new-dependency-versions-wait-a-cooldown.md)). Dependabot proposes the updates. Central package management keeps one version of each package
   ([ADR-0101](decisions/project-template/0101-central-package-management.md)).
 - **Release integrity:** packages are deterministic and source-linked
-  ([ADR-0130](decisions/project-template/0130-source-link-and-symbol-packages.md)). The `publish` job of
-  `.github/workflows/main.yml` builds them from the tagged commit of a published GitHub release, whose tag must match
-  `version.json` ([ADR-0138](decisions/project-template/0138-package-versions-come-from-version-json-through-nerdbank-gitversioning.md)),
-  and pushes them to nuget.org with the repository's NuGet API key; nuget.org signs each package it accepts.
+  ([ADR-0130](decisions/project-template/0130-source-link-and-symbol-packages.md)). The `build` job of
+  `.github/workflows/main.yml` builds and packs them from the tagged commit of a published GitHub release, whose tag must
+  match `version.json`
+  ([ADR-0138](decisions/project-template/0138-package-versions-come-from-version-json-through-nerdbank-gitversioning.md));
+  its `publish` job, which holds no repository permission, pushes them to nuget.org with the repository's NuGet API key,
+  and its `provenance` job signs a build-provenance attestation for them and attaches it to the release
+  ([ADR-0139](decisions/project-template/0139-releases-carry-build-provenance.md)); nuget.org signs each package it
+  accepts.
   [SECURITY.md](../SECURITY.md#verify-a-package) says how to verify a package.
 - **Response:** [SECURITY.md](../SECURITY.md) defines private reporting, coordinated disclosure and credit.
 

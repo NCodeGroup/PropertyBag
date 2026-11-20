@@ -24,7 +24,13 @@ Not described yet.
 ## Build and Release
 
 CI runs the project's commands on every pull request (`.github/workflows/ci.yml`), and `.github/workflows/main.yml`
-builds and tests every push and pull request too. A maintainer publishes each release as a GitHub release, once
+builds, tests and packs every push and pull request too. A maintainer publishes each release as a GitHub release, once
 `version.json` holds its version
 ([ADR-0138](decisions/project-template/0138-package-versions-come-from-version-json-through-nerdbank-gitversioning.md));
 the `publish` job of `main.yml` then pushes the release's packages to nuget.org with the repository's NuGet API key.
+Its `provenance` job then calls `release-provenance.yml`, which attests the packages and attaches them, a signed
+provenance file and an SBOM to the release
+([ADR-0139](decisions/project-template/0139-releases-carry-build-provenance.md)), and for a stable version its
+`baseline` job calls `raise-baseline.yml`, which opens the pull request that raises the package validation baseline
+([ADR-0150](decisions/project-template/0150-a-workflow-raises-the-package-validation-baseline-after-each-release.md),
+[ADR-0151](decisions/project-template/0151-release-follow-ups-are-jobs-publish-calls.md)).
