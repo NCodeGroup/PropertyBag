@@ -232,8 +232,10 @@ privilege and open design."
      Review's model, which its author could try to steer into approving; an approval never merges by itself, a
      maintainer merges.
   4. Branch protection: the `main` ruleset requires pull requests, the `build-and-test` check, resolved conversations
-     and CodeQL, but no approving review and no approval of the last push (OpenSSF Scorecard alert #8); recommended:
-     one approval and approval of the last push.
+     and CodeQL, but no approving review and no approval of the last push (OpenSSF Scorecard alert #8). While the
+     maintainer is the only person with write access, it has to stay that way: GitHub doesn't count NCode Review's
+     approval toward a required approval, and approval of the last push asks for someone other than the pusher, so
+     either setting blocks every merge. Both are turned on once a second collaborator with write access exists.
   5. Release integrity: the rebuilt `v2.0.1` packages match the released ones entry for entry; `Copyright` held the
      build's year, which `Directory.Build.props` removes
      ([ADR-1010](decisions/1010-package-builds-are-reproducible-and-ci-compares-rebuilds-entry-by-entry.md),
