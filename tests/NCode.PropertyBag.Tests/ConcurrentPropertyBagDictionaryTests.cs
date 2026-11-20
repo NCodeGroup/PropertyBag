@@ -1,8 +1,6 @@
 // Copyright © NCode Group
 // SPDX-License-Identifier: Apache-2.0
 
-using System.Collections.Concurrent;
-
 namespace NCode.PropertyBag.Tests;
 
 public class ConcurrentPropertyBagDictionaryTests
@@ -290,9 +288,11 @@ public class ConcurrentPropertyBagDictionaryTests
     {
         var bag = new ConcurrentPropertyBagDictionary();
         var key = new PropertyBagKey<object>("TestKey");
-        var results = new ConcurrentBag<object>();
+        var results = new object?[100];
 
-        Parallel.For(0, 100, _ => results.Add(bag.GetOrAdd(key, _ => new object())!));
+        Parallel.For(0, results.Length, index =>
+            results[index] = bag.GetOrAdd(key, _ => new object())
+        );
 
         Assert.Single(results.Distinct(ReferenceEqualityComparer.Instance));
     }
@@ -583,30 +583,22 @@ public class ConcurrentPropertyBagDictionaryTests
     }
 
     [Fact]
-    public async Task Enumerate_WhileAnotherThreadSets_DoesNotThrow()
+    public void Enumerate_WhenBagChangesDuringEnumeration_WalksTheSnapshot()
     {
-        var bag = new ConcurrentPropertyBagDictionary();
-        IReadOnlyDictionary<PropertyBagKey, object?> dict = bag;
+        var bag = CreateBag(out _, out _);
+        var dictionary = (IReadOnlyDictionary<PropertyBagKey, object?>)bag;
+        var names = new List<string>();
 
-        var writer = Task.Run(() =>
+        foreach (var pair in dictionary)
         {
-            for (var i = 0; i < 1000; i++)
-            {
-                bag.SetValue(new PropertyBagKey<int>($"Key{i}"), i);
-            }
-        });
-
-        while (!writer.IsCompleted)
-        {
-            foreach (var pair in dict)
-            {
-                Assert.IsType<int>(pair.Value);
-            }
+            bag.SetValue(new PropertyBagKey<int>($"Added{names.Count}"), 1);
+            names.Add(pair.Key.Name);
         }
 
-        await writer;
-
-        Assert.Equal(1000, dict.Count);
+        Assert.Equal(2, names.Count);
+        Assert.Contains("Key1", names);
+        Assert.Contains("Key2", names);
+        Assert.Equal(4, dictionary.Count);
     }
 
     #endregion
