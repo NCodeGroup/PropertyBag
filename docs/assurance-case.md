@@ -206,4 +206,33 @@ privilege and open design."
 
 [//]: # "Maintainers: record each security review, newest first: its date, who did it, what it covered (the security requirements and the trust boundary above) and what it found. The OpenSSF Best Practices gold level asks for one in the last five years."
 
-None recorded yet.
+### 2026-11-20: the library and its release workflows
+
+- **Who:** [@polewskm](https://github.com/polewskm), the maintainer, with an agent-assisted review: GitHub Copilot read
+  the code and wrote these findings while planning [#46](https://github.com/NCodeGroup/PropertyBag/issues/46), and the
+  maintainer accepts them by merging the pull request that records them.
+- **Scope:** the security requirements R1 to R6 and the trust boundary above: every C# file in `src/` at commit
+  f4f264d, the twelve workflows in `.github/workflows/` and `.github/actions/install-dotnet`, and a rebuild of
+  `v2.0.1`. The NCode Review action's own code, in NCodeGroup/code-review, is outside it.
+- **Method:** each public entry point read against R1 to R5 and the tests that check them; each workflow's triggers,
+  permissions, action pins, secrets and the places pull request or issue content reaches a step listed; the `v2.0.1`
+  tag rebuilt in `mcr.microsoft.com/dotnet/sdk:10.0.404` and its packages compared with the release's.
+- **Findings:**
+  1. No vulnerability in the library; R1 to R5 hold as stated.
+  2. Low, robustness: `DefaultPropertyBagScope`'s public constructor takes a `null` bag and fails only in `Dispose`;
+     every caller is trusted code, so it is no vulnerability;
+     [#47](https://github.com/NCodeGroup/PropertyBag/issues/47) tracks the fix.
+  3. Workflows: every action from outside the repository is pinned to a full commit SHA; each workflow's top-level
+     permissions are `{}` or `contents: read`, with write permissions granted per job; no `run:` script expands an
+     expression from an event or an input, values reach scripts through `env:`; the two `pull_request_target`
+     workflows run only for pull requests from this repository's branches, which only people with write access push,
+     and check out no pull request code (see Dismissed alerts). Accepted risk: a pull request's text reaches NCode
+     Review's model, which its author could try to steer into approving; an approval never merges by itself, a
+     maintainer merges.
+  4. Branch protection: the `main` ruleset requires pull requests, the `build-and-test` check, resolved conversations
+     and CodeQL, but no approving review and no approval of the last push (OpenSSF Scorecard alert #8); recommended:
+     one approval and approval of the last push.
+  5. Release integrity: the rebuilt `v2.0.1` packages match the released ones entry for entry; `Copyright` held the
+     build's year, which `Directory.Build.props` removes
+     ([ADR-1010](decisions/1010-package-builds-are-reproducible-and-ci-compares-rebuilds-entry-by-entry.md),
+     [NCodeGroup/project-template#454](https://github.com/NCodeGroup/project-template/issues/454)).
