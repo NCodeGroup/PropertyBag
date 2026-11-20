@@ -18,6 +18,7 @@ maintainers say whether it fits.
   ([ADR-0008](docs/decisions/project-template/0008-external-inputs-are-pinned-and-kept-current.md)),
   and raise the OpenSSF Scorecard score where the repository controls it
   ([ADR-0020](docs/decisions/project-template/0020-github-projects-are-scored-by-openssf-scorecard.md)).
+- **Quality.** Keep line and branch coverage at 98% or more, and property tests on the keys and the default bag.
 - **OpenSSF Best Practices.** Reach the silver level, which needs a second owner for continuity
   ([GOVERNANCE.md](GOVERNANCE.md#continuity), [docs/best-practices-badge.md](docs/best-practices-badge.md)).
 
