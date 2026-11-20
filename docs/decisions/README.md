@@ -64,3 +64,4 @@ override in `AGENTS.md`.
 | --- | --- | --- |
 | [1000](1000-disposing-a-scope-restores-the-previous-value.md) | Disposing a scope restores the previous value | Accepted |
 | [1001](1001-public-names-that-trip-naming-analyzers-keep-their-suppressions-until-the-next-major-version.md) | Public names that trip naming analyzers keep their suppressions until the next major version | Accepted |
+| [1002](1002-the-packages-target-only-supported-lts-dotnet-versions.md) | The packages target only supported LTS .NET versions | Accepted |
