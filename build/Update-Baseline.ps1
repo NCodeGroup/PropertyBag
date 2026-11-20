@@ -1,3 +1,6 @@
+# Copyright © NCode Group
+# SPDX-License-Identifier: Apache-2.0
+
 <#
 .SYNOPSIS
     Raises PackageValidationBaselineVersion to a released version once nuget.org lists it, the template's ADR-0150.

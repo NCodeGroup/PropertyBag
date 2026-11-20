@@ -1,3 +1,6 @@
+# Copyright © NCode Group
+# SPDX-License-Identifier: Apache-2.0
+
 <#
 .SYNOPSIS
     Installs the .NET SDK global.json selects and the runtimes build/Get-TestRuntimes.ps1 names.

@@ -1,3 +1,6 @@
+# Copyright © NCode Group
+# SPDX-License-Identifier: Apache-2.0
+
 <#
 .SYNOPSIS
 Runs the tests with coverage, lists every line no test runs, and fails below the minimum coverage.
