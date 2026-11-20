@@ -63,8 +63,8 @@ function Invoke-Case {
 
         $printed = @(& $script -Expected (Join-Path $root 'expected') -Actual (Join-Path $root 'actual'))
 
-        $code = $LASTEXITCODE
-        if ($code -ne $Code) { throw "exited $code instead of $Code" }
+        $actualCode = $LASTEXITCODE
+        if ($actualCode -ne $Code) { throw "exited $actualCode instead of $Code" }
         if (($printed -join "`n") -cne ($Lines -join "`n")) { throw "printed:`n$($printed -join "`n")" }
     }
     catch { Write-Host "FAILED: $Name`n$_"; exit 1 }
