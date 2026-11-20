@@ -63,6 +63,7 @@ override in `AGENTS.md`.
 | ADR | Decision | Status |
 | --- | --- | --- |
 | [1000](1000-disposing-a-scope-restores-the-previous-value.md) | Disposing a scope restores the previous value | Accepted |
-| [1001](1001-public-names-that-trip-naming-analyzers-keep-their-suppressions-until-the-next-major-version.md) | Public names that trip naming analyzers keep their suppressions until the next major version | Accepted |
+| [1001](1001-public-names-that-trip-naming-analyzers-keep-their-suppressions-until-the-next-major-version.md) | Public names that trip naming analyzers keep their suppressions until the next major version | Superseded by 1004 |
 | [1002](1002-the-packages-target-only-supported-lts-dotnet-versions.md) | The packages target only supported LTS .NET versions | Accepted |
 | [1003](1003-readme-samples-are-compiled-tests-that-markdownsnippets-copies-into-the-readmes.md) | README samples are compiled tests that MarkdownSnippets copies into the READMEs | Accepted |
+| [1004](1004-public-names-pass-the-naming-analyzers-without-suppressions.md) | Public names pass the naming analyzers without suppressions | Accepted |
