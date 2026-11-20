@@ -9,3 +9,11 @@ NCode.PropertyBag.ConcurrentPropertyBagDictionary.SetValue<T>(NCode.PropertyBag.
 NCode.PropertyBag.ConcurrentPropertyBagDictionary.TryAdd<T>(NCode.PropertyBag.PropertyBagKey<T> key, T? value) -> bool
 NCode.PropertyBag.ConcurrentPropertyBagDictionary.TryGetValue<T>(NCode.PropertyBag.PropertyBagKey<T> key, out T? value) -> bool
 NCode.PropertyBag.ConcurrentPropertyBagDictionary.TryRemove<T>(NCode.PropertyBag.PropertyBagKey<T> key, out T? value) -> bool
+NCode.PropertyBag.LayeredPropertyBag
+NCode.PropertyBag.LayeredPropertyBag.Clone() -> NCode.PropertyBag.IPropertyBag!
+NCode.PropertyBag.LayeredPropertyBag.LayeredPropertyBag(NCode.PropertyBag.IReadOnlyPropertyBag! parent) -> void
+NCode.PropertyBag.LayeredPropertyBag.Parent.get -> NCode.PropertyBag.IReadOnlyPropertyBag!
+NCode.PropertyBag.LayeredPropertyBag.Remove(NCode.PropertyBag.PropertyBagKey key) -> NCode.PropertyBag.IPropertyBag!
+NCode.PropertyBag.LayeredPropertyBag.Scope<T>(NCode.PropertyBag.PropertyBagKey<T> key, T? value) -> NCode.PropertyBag.IPropertyBagScope!
+NCode.PropertyBag.LayeredPropertyBag.SetValue<T>(NCode.PropertyBag.PropertyBagKey<T> key, T? value) -> NCode.PropertyBag.IPropertyBag!
+NCode.PropertyBag.LayeredPropertyBag.TryGetValue<T>(NCode.PropertyBag.PropertyBagKey<T> key, out T? value) -> bool
