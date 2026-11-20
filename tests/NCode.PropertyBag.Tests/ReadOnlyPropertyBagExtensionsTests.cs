@@ -8,6 +8,20 @@ public class ReadOnlyPropertyBagExtensionsTests
     #region TryGetValue Extension Method Tests
 
     [Fact]
+    public void TryGetValue_WhenBagIsNull_ThrowsArgumentNullException()
+    {
+        IReadOnlyPropertyBag? propertyBag = null;
+        string? userName = null;
+
+        var exception = Assert.Throws<ArgumentNullException>(() =>
+            propertyBag!.TryGetValue(out userName)
+        );
+
+        Assert.Equal("bag", exception.ParamName);
+        Assert.Null(userName);
+    }
+
+    [Fact]
     public void TryGetValue_WhenValueExists_ReturnsTrueAndValue()
     {
         var propertyBag = new PropertyBagDictionary();

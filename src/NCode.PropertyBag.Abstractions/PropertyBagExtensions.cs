@@ -56,6 +56,7 @@ public static class PropertyBagExtensions
         /// </param>
         /// <typeparam name="T">The type of the value to store in the property bag.</typeparam>
         /// <returns>The current <see cref="IPropertyBag"/> instance for method chaining.</returns>
+        /// <exception cref="ArgumentNullException">The property bag is <c>null</c>.</exception>
         /// <remarks>
         /// <para>
         /// This method provides a convenient way to set values without explicitly creating a
@@ -85,6 +86,10 @@ public static class PropertyBagExtensions
         public IPropertyBag SetValue<T>(
             T? value,
             [CallerArgumentExpression(nameof(value))] string? name = null
-        ) => bag.SetValue(new PropertyBagKey<T>(name ?? string.Empty), value);
+        )
+        {
+            ArgumentNullException.ThrowIfNull(bag);
+            return bag.SetValue(new PropertyBagKey<T>(name ?? string.Empty), value);
+        }
     }
 }

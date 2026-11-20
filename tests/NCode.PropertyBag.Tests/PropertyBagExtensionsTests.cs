@@ -8,6 +8,17 @@ public class PropertyBagExtensionsTests
     #region SetValue Extension Method Tests
 
     [Fact]
+    public void SetValue_WhenBagIsNull_ThrowsArgumentNullException()
+    {
+        IPropertyBag? propertyBag = null;
+        const string userName = "Alice";
+
+        var exception = Assert.Throws<ArgumentNullException>(() => propertyBag!.SetValue(userName));
+
+        Assert.Equal("bag", exception.ParamName);
+    }
+
+    [Fact]
     public void SetValue_WithValue_InfersKeyNameFromVariable()
     {
         var propertyBag = new PropertyBagDictionary();

@@ -38,6 +38,7 @@ public static class ReadOnlyPropertyBagExtensions
         /// <returns>
         /// <c>true</c> if the property bag contains a value with the inferred key; otherwise, <c>false</c>.
         /// </returns>
+        /// <exception cref="ArgumentNullException">The property bag is <c>null</c>.</exception>
         /// <remarks>
         /// <para>
         /// This method provides a convenient way to retrieve values without explicitly creating a
@@ -68,6 +69,10 @@ public static class ReadOnlyPropertyBagExtensions
         public bool TryGetValue<T>(
             out T? value,
             [CallerArgumentExpression(nameof(value))] string? name = null
-        ) => bag.TryGetValue(new PropertyBagKey<T>(name ?? string.Empty), out value);
+        )
+        {
+            ArgumentNullException.ThrowIfNull(bag);
+            return bag.TryGetValue(new PropertyBagKey<T>(name ?? string.Empty), out value);
+        }
     }
 }
