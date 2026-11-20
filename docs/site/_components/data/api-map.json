@@ -168,6 +168,168 @@
         "static NCode.PropertyBag.PropertyBagKey.operator !=(NCode.PropertyBag.PropertyBagKey left, NCode.PropertyBag.PropertyBagKey right) -> bool",
         "static NCode.PropertyBag.PropertyBagKey.operator ==(NCode.PropertyBag.PropertyBagKey left, NCode.PropertyBag.PropertyBagKey right) -> bool"
       ]
+    },
+    {
+      "id": "ireadonlypropertybag",
+      "group": "bags",
+      "type": "IReadOnlyPropertyBag",
+      "member": null,
+      "signatures": [
+        "public interface IReadOnlyPropertyBag"
+      ],
+      "summary": "The read-only view: `TryGetValue` and `Clone`. A narrower view, not a protection: a `DefaultPropertyBag` passed as one can be cast back.",
+      "page": "/guides/share-a-bag/",
+      "api": [
+        "NCode.PropertyBag.IReadOnlyPropertyBag"
+      ]
+    },
+    {
+      "id": "ireadonlypropertybag-trygetvalue",
+      "group": "bags",
+      "type": "IReadOnlyPropertyBag",
+      "member": "TryGetValue",
+      "signatures": [
+        "bool TryGetValue<T>(PropertyBagKey<T> key, out T? value)"
+      ],
+      "summary": "`true` and the value when the key holds one, a stored `null` included; otherwise `false` and `default(T)`. A missing key never throws.",
+      "page": "/guides/store-and-read-values/",
+      "api": [
+        "NCode.PropertyBag.IReadOnlyPropertyBag.TryGetValue<T>(NCode.PropertyBag.PropertyBagKey<T> key, out T? value) -> bool"
+      ]
+    },
+    {
+      "id": "ireadonlypropertybag-clone",
+      "group": "bags",
+      "type": "IReadOnlyPropertyBag",
+      "member": "Clone",
+      "signatures": [
+        "IPropertyBag Clone()"
+      ],
+      "summary": "A new bag with the same entries, whose changes do not reach the original.",
+      "page": "/guides/share-a-bag/",
+      "api": [
+        "NCode.PropertyBag.IReadOnlyPropertyBag.Clone() -> NCode.PropertyBag.IPropertyBag!"
+      ]
+    },
+    {
+      "id": "ipropertybag",
+      "group": "bags",
+      "type": "IPropertyBag",
+      "member": null,
+      "signatures": [
+        "public interface IPropertyBag : IReadOnlyPropertyBag"
+      ],
+      "summary": "The mutable bag: `Set`, `Remove` and `Scope`. `Set` and `Remove` return the same bag, for chaining.",
+      "page": "/guides/store-and-read-values/",
+      "api": [
+        "NCode.PropertyBag.IPropertyBag"
+      ]
+    },
+    {
+      "id": "ipropertybag-set",
+      "group": "bags",
+      "type": "IPropertyBag",
+      "member": "Set",
+      "signatures": [
+        "IPropertyBag Set<T>(PropertyBagKey<T> key, T? value)"
+      ],
+      "summary": "Stores the value, replacing one the key held. `null` is stored as a value, unlike a removed key.",
+      "page": "/guides/store-and-read-values/",
+      "api": [
+        "NCode.PropertyBag.IPropertyBag.Set<T>(NCode.PropertyBag.PropertyBagKey<T> key, T? value) -> NCode.PropertyBag.IPropertyBag!"
+      ]
+    },
+    {
+      "id": "ipropertybag-remove",
+      "group": "bags",
+      "type": "IPropertyBag",
+      "member": "Remove",
+      "signatures": [
+        "IPropertyBag Remove(PropertyBagKey key)"
+      ],
+      "summary": "Removes the key's value; a key the bag does not hold is ignored.",
+      "page": "/guides/store-and-read-values/",
+      "api": [
+        "NCode.PropertyBag.IPropertyBag.Remove(NCode.PropertyBag.PropertyBagKey key) -> NCode.PropertyBag.IPropertyBag!"
+      ]
+    },
+    {
+      "id": "ipropertybag-scope",
+      "group": "bags",
+      "type": "IPropertyBag",
+      "member": "Scope",
+      "signatures": [
+        "IPropertyBagScope Scope<T>(PropertyBagKey<T> key, T? value)"
+      ],
+      "summary": "Sets the value until the returned scope is disposed, which restores the value the key held, or removes the key when it held none.",
+      "page": "/guides/scope-a-value/",
+      "api": [
+        "NCode.PropertyBag.IPropertyBag.Scope<T>(NCode.PropertyBag.PropertyBagKey<T> key, T? value) -> NCode.PropertyBag.IPropertyBagScope!"
+      ]
+    },
+    {
+      "id": "ipropertybagscope",
+      "group": "bags",
+      "type": "IPropertyBagScope",
+      "member": null,
+      "signatures": [
+        "public interface IPropertyBagScope : IDisposable",
+        "IPropertyBag PropertyBag { get; }",
+        "PropertyBagKey Key { get; }"
+      ],
+      "summary": "The `IDisposable` that `Scope` returns, naming its bag and its key.",
+      "page": "/guides/scope-a-value/",
+      "api": [
+        "NCode.PropertyBag.IPropertyBagScope",
+        "NCode.PropertyBag.IPropertyBagScope.Key.get -> NCode.PropertyBag.PropertyBagKey",
+        "NCode.PropertyBag.IPropertyBagScope.PropertyBag.get -> NCode.PropertyBag.IPropertyBag!"
+      ]
+    },
+    {
+      "id": "propertybagextensions",
+      "group": "extensions",
+      "type": "PropertyBagExtensions",
+      "member": null,
+      "signatures": [
+        "public static class PropertyBagExtensions"
+      ],
+      "summary": "Extension members, in C# 14 extension blocks, that name the key after the argument passed (`[CallerArgumentExpression]`). Earlier C# versions call them as ordinary extension methods.",
+      "page": "/guides/infer-key-names/",
+      "api": [
+        "NCode.PropertyBag.PropertyBagExtensions",
+        "NCode.PropertyBag.PropertyBagExtensions.extension(NCode.PropertyBag.IPropertyBag!)",
+        "NCode.PropertyBag.PropertyBagExtensions.extension(NCode.PropertyBag.IReadOnlyPropertyBag!)"
+      ]
+    },
+    {
+      "id": "propertybagextensions-set",
+      "group": "extensions",
+      "type": "PropertyBagExtensions",
+      "member": "Set",
+      "signatures": [
+        "public IPropertyBag Set<T>(T? value, [CallerArgumentExpression(nameof(value))] string? name = null)"
+      ],
+      "summary": "`bag.Set(timeout)` stores under `new PropertyBagKey<T>(\"timeout\")`.",
+      "page": "/guides/infer-key-names/",
+      "api": [
+        "NCode.PropertyBag.PropertyBagExtensions.extension(NCode.PropertyBag.IPropertyBag!).Set<T>(T? value, string? name = null) -> NCode.PropertyBag.IPropertyBag!",
+        "static NCode.PropertyBag.PropertyBagExtensions.Set<T>(this NCode.PropertyBag.IPropertyBag! bag, T? value, string? name = null) -> NCode.PropertyBag.IPropertyBag!"
+      ]
+    },
+    {
+      "id": "propertybagextensions-tryget",
+      "group": "extensions",
+      "type": "PropertyBagExtensions",
+      "member": "TryGet",
+      "signatures": [
+        "public bool TryGet<T>(out T? value, [CallerArgumentExpression(nameof(value))] string? name = null)"
+      ],
+      "summary": "Reads the key named after the variable. Declare the variable first: `out string? x` names the key `string? x`.",
+      "page": "/guides/infer-key-names/",
+      "api": [
+        "NCode.PropertyBag.PropertyBagExtensions.extension(NCode.PropertyBag.IReadOnlyPropertyBag!).TryGet<T>(out T? value, string? name = null) -> bool",
+        "static NCode.PropertyBag.PropertyBagExtensions.TryGet<T>(this NCode.PropertyBag.IReadOnlyPropertyBag! bag, out T? value, string? name = null) -> bool"
+      ]
     }
   ]
 }
