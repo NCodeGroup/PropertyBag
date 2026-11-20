@@ -70,6 +70,18 @@ public class DefaultRegistrationTests
         Assert.Single(descriptors);
     }
 
+    [Fact]
+    public void AddPropertyBag_WhenServicesIsNull_ThrowsArgumentNullException()
+    {
+        IServiceCollection? serviceCollection = null;
+
+        var exception = Assert.Throws<ArgumentNullException>(() =>
+            serviceCollection!.AddPropertyBag()
+        );
+
+        Assert.Equal("serviceCollection", exception.ParamName);
+    }
+
     #endregion
 
     private sealed class CustomFactory : IPropertyBagFactory
