@@ -13,7 +13,8 @@ three levels to the answer to expect and its evidence, and holds the prompt that
   src="https://www.bestpractices.dev/projects/16954/badge"></a>
 ```
 
-The root [README.md](../README.md) shows it; the package READMEs don't, because it describes the repository rather than a package.
+The root [README.md](../README.md) shows it; the package READMEs don't, because it describes the repository rather than
+a package.
 
 OpenSSF Scorecard's CII-Best-Practices check scores the badge level: in progress 2, passing 5, silver 7, gold 10
 ([ADR-0020](decisions/project-template/0020-github-projects-are-scored-by-openssf-scorecard.md)).
@@ -43,7 +44,11 @@ The silver criteria that need a document point to these:
 
 [//]: # "Maintainers: once registered, say which level the site shows and what keeps the next one from being earned, naming the criteria, not a percentage."
 
-Registered as [project 16954](https://www.bestpractices.dev/en/projects/16954). On 2026-11-20 the site showed the passing level in progress, with `dynamic_analysis_enable_assertions` its one unanswered criterion. Silver stops at `access_continuity`, which only a second owner meets. Gold also needs a second maintainer (`bus_factor`, `two_person_review`), two significant contributors from different organizations (`contributors_unassociated`), and an owner's confirmation of the organization's two-factor settings (`require_2FA`, `secure_2FA`).
+Registered as [project 16954](https://www.bestpractices.dev/en/projects/16954). On 2026-11-20 the site showed the
+passing level in progress, with `dynamic_analysis_enable_assertions` its one unanswered criterion. Silver stops at
+`access_continuity`, which only a second owner meets. Gold also needs a second maintainer (`bus_factor`,
+`two_person_review`), two significant contributors from different organizations (`contributors_unassociated`), and an
+owner's confirmation of the organization's two-factor settings (`require_2FA`, `secure_2FA`).
 
 ## Needs a Person
 
@@ -52,9 +57,11 @@ Registered as [project 16954](https://www.bestpractices.dev/en/projects/16954). 
 - `bus_factor` (silver SHOULD, gold MUST): a bus factor of 2 or more, which the same second owner gives.
 - `two_person_review` (gold MUST): a second maintainer.
 - `contributors_unassociated` (gold MUST): two significant contributors from different organizations.
-- `require_2FA` (gold MUST) and `secure_2FA` (gold SHOULD): the GitHub organization requires two-factor authentication, with
-  secure methods only, which only an owner can set and confirm. GitHub's API reported the requirement enabled on 2026-11-20; an owner confirms that only secure methods are allowed.
-- `security_review` (gold MUST): the review of 2026-11-20 in [assurance-case.md](assurance-case.md#security-reviews) meets it until 2031-11-20; record the next one there before then.
+- `require_2FA` (gold MUST) and `secure_2FA` (gold SHOULD): the GitHub organization requires two-factor
+  authentication, with secure methods only, which only an owner can set and confirm. GitHub's API reported the
+  requirement enabled on 2026-11-20; an owner confirms that only secure methods are allowed.
+- `security_review` (gold MUST): the review of 2026-11-20 in [assurance-case.md](assurance-case.md#security-reviews)
+  meets it until 2031-11-20; record the next one there before then.
 - `dco` (silver SHOULD): unmet. The project doesn't ask for `Signed-off-by`
   ([ADR-0023](decisions/project-template/0023-a-project-ships-the-documents-the-best-practices-silver-level-asks-for.md)).
 
