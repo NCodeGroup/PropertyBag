@@ -330,6 +330,148 @@
         "NCode.PropertyBag.PropertyBagExtensions.extension(NCode.PropertyBag.IReadOnlyPropertyBag!).TryGet<T>(out T? value, string? name = null) -> bool",
         "static NCode.PropertyBag.PropertyBagExtensions.TryGet<T>(this NCode.PropertyBag.IReadOnlyPropertyBag! bag, out T? value, string? name = null) -> bool"
       ]
+    },
+    {
+      "id": "defaultpropertybag",
+      "group": "default",
+      "type": "DefaultPropertyBag",
+      "member": null,
+      "signatures": [
+        "public class DefaultPropertyBag : IPropertyBag, IReadOnlyDictionary<PropertyBagKey, object?>, ICloneable"
+      ],
+      "summary": "The implementation: a dictionary created on the first `Set`, `Remove` or `Scope`. Enumerate it as an `IReadOnlyDictionary<PropertyBagKey, object?>`, whose indexer returns `null` for a missing key. It holds no lock.",
+      "page": "/concepts/how-the-default-bag-works/",
+      "api": [
+        "NCode.PropertyBag.DefaultPropertyBag",
+        "NCode.PropertyBag.DefaultPropertyBag.DefaultPropertyBag() -> void"
+      ]
+    },
+    {
+      "id": "defaultpropertybag-set",
+      "group": "default",
+      "type": "DefaultPropertyBag",
+      "member": "Set",
+      "signatures": [
+        "public IPropertyBag Set<T>(PropertyBagKey<T> key, T? value)"
+      ],
+      "summary": "As `IPropertyBag.Set`. A value is stored as `object`, so a value type is boxed.",
+      "page": "/guides/store-and-read-values/",
+      "api": [
+        "NCode.PropertyBag.DefaultPropertyBag.Set<T>(NCode.PropertyBag.PropertyBagKey<T> key, T? value) -> NCode.PropertyBag.IPropertyBag!"
+      ]
+    },
+    {
+      "id": "defaultpropertybag-remove",
+      "group": "default",
+      "type": "DefaultPropertyBag",
+      "member": "Remove",
+      "signatures": [
+        "public IPropertyBag Remove(PropertyBagKey key)"
+      ],
+      "summary": "As `IPropertyBag.Remove`.",
+      "page": "/guides/store-and-read-values/",
+      "api": [
+        "NCode.PropertyBag.DefaultPropertyBag.Remove(NCode.PropertyBag.PropertyBagKey key) -> NCode.PropertyBag.IPropertyBag!"
+      ]
+    },
+    {
+      "id": "defaultpropertybag-trygetvalue",
+      "group": "default",
+      "type": "DefaultPropertyBag",
+      "member": "TryGetValue",
+      "signatures": [
+        "public bool TryGetValue<T>(PropertyBagKey<T> key, out T? value)"
+      ],
+      "summary": "Returns a value only when the stored object is `null` or a `T`, and never throws `InvalidCastException`.",
+      "page": "/concepts/how-the-default-bag-works/",
+      "api": [
+        "NCode.PropertyBag.DefaultPropertyBag.TryGetValue<T>(NCode.PropertyBag.PropertyBagKey<T> key, out T? value) -> bool"
+      ]
+    },
+    {
+      "id": "defaultpropertybag-scope",
+      "group": "default",
+      "type": "DefaultPropertyBag",
+      "member": "Scope",
+      "signatures": [
+        "public IPropertyBagScope Scope<T>(PropertyBagKey<T> key, T? value)"
+      ],
+      "summary": "Captures whether the key held a value and which, sets the new one, and returns a scope that restores the captured state on its first `Dispose`.",
+      "page": "/guides/scope-a-value/",
+      "api": [
+        "NCode.PropertyBag.DefaultPropertyBag.Scope<T>(NCode.PropertyBag.PropertyBagKey<T> key, T? value) -> NCode.PropertyBag.IPropertyBagScope!"
+      ]
+    },
+    {
+      "id": "defaultpropertybag-clone",
+      "group": "default",
+      "type": "DefaultPropertyBag",
+      "member": "Clone",
+      "signatures": [
+        "public IPropertyBag Clone()"
+      ],
+      "summary": "A new `DefaultPropertyBag` with the same entries. A value that implements `ICloneable` is copied with its own `Clone()`; any other value is shared.",
+      "page": "/guides/share-a-bag/",
+      "api": [
+        "NCode.PropertyBag.DefaultPropertyBag.Clone() -> NCode.PropertyBag.IPropertyBag!"
+      ]
+    },
+    {
+      "id": "defaultpropertybagscope",
+      "group": "default",
+      "type": "DefaultPropertyBagScope",
+      "member": null,
+      "signatures": [
+        "public class DefaultPropertyBagScope(IPropertyBag propertyBag, PropertyBagKey key) : IPropertyBagScope"
+      ],
+      "summary": "The scope `DefaultPropertyBag.Scope` returns. One built with this constructor removes its key on `Dispose`, for an `IPropertyBag` of your own.",
+      "page": "/concepts/how-the-default-bag-works/",
+      "api": [
+        "NCode.PropertyBag.DefaultPropertyBagScope",
+        "NCode.PropertyBag.DefaultPropertyBagScope.DefaultPropertyBagScope(NCode.PropertyBag.IPropertyBag! propertyBag, NCode.PropertyBag.PropertyBagKey key) -> void"
+      ]
+    },
+    {
+      "id": "defaultpropertybagscope-dispose",
+      "group": "default",
+      "type": "DefaultPropertyBagScope",
+      "member": "Dispose",
+      "signatures": [
+        "public void Dispose()"
+      ],
+      "summary": "Acts once: restores or removes the key. Later calls do nothing.",
+      "page": "/guides/scope-a-value/",
+      "api": [
+        "NCode.PropertyBag.DefaultPropertyBagScope.Dispose() -> void"
+      ]
+    },
+    {
+      "id": "defaultpropertybagscope-key",
+      "group": "default",
+      "type": "DefaultPropertyBagScope",
+      "member": "Key",
+      "signatures": [
+        "public PropertyBagKey Key { get; }"
+      ],
+      "summary": "The key the scope restores.",
+      "page": "/guides/scope-a-value/",
+      "api": [
+        "NCode.PropertyBag.DefaultPropertyBagScope.Key.get -> NCode.PropertyBag.PropertyBagKey"
+      ]
+    },
+    {
+      "id": "defaultpropertybagscope-propertybag",
+      "group": "default",
+      "type": "DefaultPropertyBagScope",
+      "member": "PropertyBag",
+      "signatures": [
+        "public IPropertyBag PropertyBag { get; }"
+      ],
+      "summary": "The bag the scope belongs to.",
+      "page": "/guides/scope-a-value/",
+      "api": [
+        "NCode.PropertyBag.DefaultPropertyBagScope.PropertyBag.get -> NCode.PropertyBag.IPropertyBag!"
+      ]
     }
   ]
 }
