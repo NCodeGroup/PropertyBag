@@ -6,12 +6,35 @@ using NCode.PropertyBag;
 
 namespace SiteSamples.Guides;
 
-// The samples of docs/site/guides/dependency-injection.mdx. The site's build includes each begin-snippet region in the page by its key (ADR-1004).
-// The Static sample replaces PropertyBagFactory.DefaultFactory, which is process-wide, so the class runs alone, after the parallel test classes, and no other test creates a bag through the static factory while it runs.
+// The samples of docs/site/guides/dependency-injection.mdx. The site's build includes each begin-snippet region in the
+// page by its key (ADR-1004).
+// The Static sample replaces PropertyBagFactory.DefaultFactory, which is process-wide, so the class runs alone, after
+// the parallel test classes, and no other test creates a bag through the static factory while it runs.
 [CollectionDefinition(nameof(DependencyInjectionSamples), DisableParallelization = true)]
 [Collection(nameof(DependencyInjectionSamples))]
 public class DependencyInjectionSamples
 {
+    // begin-snippet: SiteDependencyInjectionInject
+    private static readonly PropertyBagKey<string> OrderIdKey = new("OrderId");
+
+    private sealed class OrderHandler(IPropertyBagFactory factory)
+    {
+        public IPropertyBag Handle(string id) => factory.Create().Set(OrderIdKey, id);
+    }
+
+    // end-snippet
+
+    private static readonly PropertyBagKey<string> TenantKey = new("Tenant");
+
+    private sealed class TenantBagFactory : IPropertyBagFactory
+    {
+        public IPropertyBag Create()
+        {
+            IPropertyBag bag = new DefaultPropertyBag();
+            return bag.Set(TenantKey, "contoso");
+        }
+    }
+
     [Fact]
     public void SiteDependencyInjectionRegisterSample_Runs()
     {
@@ -28,50 +51,30 @@ public class DependencyInjectionSamples
         Assert.Equal(typeof(DefaultPropertyBagFactory), descriptor.ImplementationType);
     }
 
-    // begin-snippet: SiteDependencyInjectionInject
-    private static readonly PropertyBagKey<string> OrderIdKey = new("OrderId");
-
-    private sealed class OrderHandler(IPropertyBagFactory factory)
-    {
-        public IPropertyBag Handle(string id) => factory.Create().Set(OrderIdKey, id);
-    }
-
-    // end-snippet
-
     [Fact]
-    public void SiteDependencyInjectionInjectSample_Runs()
+    public async Task SiteDependencyInjectionInjectSample_Runs()
     {
         var services = new ServiceCollection();
         services.AddPropertyBag();
-        using ServiceProvider provider = services.BuildServiceProvider();
+        await using ServiceProvider provider = services.BuildServiceProvider();
 
-        var handler = new OrderHandler(
-            provider.GetRequiredService<IPropertyBagFactory>()
-        );
+        var factory = provider.GetRequiredService<IPropertyBagFactory>();
+        var handler = new OrderHandler(factory);
 
         IPropertyBag first = handler.Handle("17");
         IPropertyBag second = handler.Handle("18");
 
-        Assert.True(first.TryGetValue(OrderIdKey, out string? firstId));
+        bool firstFound = first.TryGetValue(OrderIdKey, out string? firstId);
+        Assert.True(firstFound);
         Assert.Equal("17", firstId);
-        Assert.True(second.TryGetValue(OrderIdKey, out string? secondId));
+        bool secondFound = second.TryGetValue(OrderIdKey, out string? secondId);
+        Assert.True(secondFound);
         Assert.Equal("18", secondId);
         Assert.NotSame(first, second);
     }
 
-    private static readonly PropertyBagKey<string> TenantKey = new("Tenant");
-
-    private sealed class TenantBagFactory : IPropertyBagFactory
-    {
-        public IPropertyBag Create()
-        {
-            IPropertyBag bag = new DefaultPropertyBag();
-            return bag.Set(TenantKey, "contoso");
-        }
-    }
-
     [Fact]
-    public void SiteDependencyInjectionCustomFactorySample_Runs()
+    public async Task SiteDependencyInjectionCustomFactorySample_Runs()
     {
         var services = new ServiceCollection();
 
@@ -80,7 +83,7 @@ public class DependencyInjectionSamples
         services.AddPropertyBag(); // Keeps TenantBagFactory
         // end-snippet
 
-        using ServiceProvider provider = services.BuildServiceProvider();
+        await using ServiceProvider provider = services.BuildServiceProvider();
         var factory = provider.GetRequiredService<IPropertyBagFactory>();
 
         Assert.IsType<TenantBagFactory>(factory);
@@ -105,8 +108,10 @@ public class DependencyInjectionSamples
         }
         // end-snippet
 
-        Assert.False(plain.TryGetValue(TenantKey, out _));
-        Assert.True(seeded.TryGetValue(TenantKey, out string? tenant));
+        bool plainFound = plain.TryGetValue(TenantKey, out _);
+        Assert.False(plainFound);
+        bool seededFound = seeded.TryGetValue(TenantKey, out string? tenant);
+        Assert.True(seededFound);
         Assert.Equal("contoso", tenant);
         Assert.Same(
             DefaultPropertyBagFactory.Singleton,
