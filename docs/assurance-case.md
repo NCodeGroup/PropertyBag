@@ -169,12 +169,12 @@ privilege and open design."
   ([ADR-0005](decisions/project-template/0005-the-default-branch-accepts-changes-only-through-pull-requests.md),
   [ADR-0030](decisions/project-template/0030-the-code-scanning-rule-is-added-only-where-codeql-analyzes-a-language.md)).
 - **Dismissed alerts:** CodeQL alerts #4 and #5 (`actions/untrusted-checkout/high` and
-  `actions/untrusted-checkout-toctou/high`, `code-review.yml` line 58) flagged a step that checked the pull request's
-  head out into `pr/` in a `pull_request_target` and `issue_comment` workflow; that step was removed in commit dede4be
-  on 2026-10-30, and CodeQL's analysis of `main` no longer reports it. The workflow checks out only the default branch,
-  runs only for pull requests from this repository's branches, and the NCode Review action fetches the pull request to
-  read it, building and running nothing from it, as `code-review.yml`'s header says. The alerts stay dismissed as
-  won't fix.
+  `actions/untrusted-checkout-toctou/high`, `code-review.yml` lines 58 to 66 when raised) flagged a step that checked
+  the pull request's head out into `pr/` in a `pull_request_target` and `issue_comment` workflow; that step was removed
+  in commit dede4be on 2026-10-30, and CodeQL's analysis of `main` no longer reports it. The workflow checks out only
+  the default branch, runs only for pull requests from this repository's branches, and the NCode Review action fetches
+  the pull request to read it, building and running nothing from it, as `code-review.yml`'s header says. The alerts
+  stay dismissed as won't fix.
 - **Review:** every change reaches the default branch through a pull request with passing CI and every conversation
   resolved, and the ruleset refuses force pushes and deletion
   ([ADR-0005](decisions/project-template/0005-the-default-branch-accepts-changes-only-through-pull-requests.md),
