@@ -6,14 +6,21 @@ The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.
 
 ## [Unreleased]
 
+## [2.0.2] - 2026-11-20
+
 ### Added
 
 - FsCheck property tests for `PropertyBagKey`, `PropertyBagKey<T>`, `PropertyBagDictionary` and the name-inferring `SetValue` and `TryGetValue` extensions, with a fixed seed so every run is deterministic; OpenSSF Scorecard's Fuzzing check counts them.
+- `.github/workflows/reproducible-build.yml` packs every pull request and push to `main` twice, from checkouts in different folders, and every Monday rebuilds the newest release's tag and compares it with the packages attached to the release; `build/Compare-Packages.ps1` compares two folders of packages entry by entry, and the gate tests it offline ([#46](https://github.com/NCodeGroup/PropertyBag/issues/46), [ADR-1010](docs/decisions/1010-package-builds-are-reproducible-and-ci-compares-rebuilds-entry-by-entry.md)).
+- The README shows the OpenSSF Best Practices badge of project 16954 ([#46](https://github.com/NCodeGroup/PropertyBag/issues/46)).
+- `docs/assurance-case.md` lists the packages' inputs and the checks each makes, the assertions the tests run with, the regression tests of the scope fix and the reproducible-build evidence, and records a security review of the library and its release workflows; `docs/architecture.md` says the packages show people no text ([#46](https://github.com/NCodeGroup/PropertyBag/issues/46)).
 
 ### Changed
 
 - Package validation compares each package with the published 2.0.1 package.
 - Updated the project from project-template v0.104.0 to v0.108.0 (workflow commands, release rules and documentation); the update itself changes no behavior of the library.
+- The packages' copyright is `Copyright © NCode Group`, without the year of the build, so a rebuild of a release's tag in a later year gives the same packages ([#46](https://github.com/NCodeGroup/PropertyBag/issues/46), [ADR-1010](docs/decisions/1010-package-builds-are-reproducible-and-ci-compares-rebuilds-entry-by-entry.md)).
+- `GOVERNANCE.md` names the maintainer, @polewskm, and the owners of the organization and the packages ([#46](https://github.com/NCodeGroup/PropertyBag/issues/46)).
 
 ## [2.0.1] - 2026-11-20
 
@@ -108,7 +115,8 @@ The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.
 - `NCode.PropertyBag`: `DefaultPropertyBag`, with lazy storage, scoped values and cloning, `DefaultPropertyBagScope`, the factories `IPropertyBagFactory`, `DefaultPropertyBagFactory` and `PropertyBagFactory`, and `AddPropertyBag()` for `Microsoft.Extensions.DependencyInjection`.
 - Both packages target .NET 10.0.
 
-[unreleased]: https://github.com/NCodeGroup/PropertyBag/compare/v2.0.1...HEAD
+[unreleased]: https://github.com/NCodeGroup/PropertyBag/compare/v2.0.2...HEAD
+[2.0.2]: https://github.com/NCodeGroup/PropertyBag/compare/v2.0.1...v2.0.2
 [2.0.1]: https://github.com/NCodeGroup/PropertyBag/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/NCodeGroup/PropertyBag/compare/v1.2.0...v2.0.0
 [1.2.0]: https://github.com/NCodeGroup/PropertyBag/compare/v1.1.1...v1.2.0
