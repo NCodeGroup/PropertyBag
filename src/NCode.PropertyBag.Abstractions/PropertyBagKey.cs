@@ -1,21 +1,5 @@
-#region Copyright Preamble
-
-//
-//    Copyright @ 2023 NCode Group
-//
-//    Licensed under the Apache License, Version 2.0 (the "License");
-//    you may not use this file except in compliance with the License.
-//    You may obtain a copy of the License at
-//
-//        http://www.apache.org/licenses/LICENSE-2.0
-//
-//    Unless required by applicable law or agreed to in writing, software
-//    distributed under the License is distributed on an "AS IS" BASIS,
-//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//    See the License for the specific language governing permissions and
-//    limitations under the License.
-
-#endregion
+// Copyright © NCode Group
+// SPDX-License-Identifier: Apache-2.0
 
 using JetBrains.Annotations;
 
@@ -69,16 +53,13 @@ public readonly struct PropertyBagKey(Type type, string name) : IEquatable<Prope
     public string Name { get; } = name;
 
     /// <inheritdoc/>
-    public bool Equals(PropertyBagKey other) =>
-        Type == other.Type && Name == other.Name;
+    public bool Equals(PropertyBagKey other) => Type == other.Type && Name == other.Name;
 
     /// <inheritdoc/>
-    public override bool Equals(object? obj) =>
-        obj is PropertyBagKey other && Equals(other);
+    public override bool Equals(object? obj) => obj is PropertyBagKey other && Equals(other);
 
     /// <inheritdoc/>
-    public override int GetHashCode() =>
-        HashCode.Combine(Type, Name);
+    public override int GetHashCode() => HashCode.Combine(Type, Name);
 
     /// <summary>
     /// Determines whether two <see cref="PropertyBagKey"/> instances are equal.
@@ -87,8 +68,7 @@ public readonly struct PropertyBagKey(Type type, string name) : IEquatable<Prope
     /// <param name="right">The second key to compare.</param>
     /// <returns><c>true</c> if <paramref name="left"/> and <paramref name="right"/> have the same
     /// <see cref="Type"/> and <see cref="Name"/>; otherwise, <c>false</c>.</returns>
-    public static bool operator ==(PropertyBagKey left, PropertyBagKey right) =>
-        left.Equals(right);
+    public static bool operator ==(PropertyBagKey left, PropertyBagKey right) => left.Equals(right);
 
     /// <summary>
     /// Determines whether two <see cref="PropertyBagKey"/> instances are not equal.
@@ -97,8 +77,7 @@ public readonly struct PropertyBagKey(Type type, string name) : IEquatable<Prope
     /// <param name="right">The second key to compare.</param>
     /// <returns><c>true</c> if <paramref name="left"/> and <paramref name="right"/> have different
     /// <see cref="Type"/> or <see cref="Name"/> values; otherwise, <c>false</c>.</returns>
-    public static bool operator !=(PropertyBagKey left, PropertyBagKey right) =>
-        !(left == right);
+    public static bool operator !=(PropertyBagKey left, PropertyBagKey right) => !(left == right);
 }
 
 /// <summary>
@@ -170,16 +149,13 @@ public readonly struct PropertyBagKey<T>(string name) : IEquatable<PropertyBagKe
     public string Name { get; } = name;
 
     /// <inheritdoc/>
-    public bool Equals(PropertyBagKey<T> other) =>
-        Type == other.Type && Name == other.Name;
+    public bool Equals(PropertyBagKey<T> other) => Name == other.Name;
 
     /// <inheritdoc/>
-    public override bool Equals(object? obj) =>
-        obj is PropertyBagKey<T> other && Equals(other);
+    public override bool Equals(object? obj) => obj is PropertyBagKey<T> other && Equals(other);
 
     /// <inheritdoc/>
-    public override int GetHashCode() =>
-        HashCode.Combine(Type, Name);
+    public override int GetHashCode() => HashCode.Combine(Type, Name);
 
     /// <summary>
     /// Determines whether two <see cref="PropertyBagKey{T}"/> instances are equal.

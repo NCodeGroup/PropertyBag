@@ -1,3 +1,6 @@
+// Copyright © NCode Group
+// SPDX-License-Identifier: Apache-2.0
+
 namespace NCode.PropertyBag.Tests;
 
 using System.Collections;
@@ -74,10 +77,7 @@ public class DefaultPropertyBagTests
         var key2 = new PropertyBagKey<int>("Key2");
         var key3 = new PropertyBagKey<bool>("Key3");
 
-        propertyBag
-            .Set(key1, "Value1")
-            .Set(key2, 42)
-            .Set(key3, true);
+        propertyBag.Set(key1, "Value1").Set(key2, 42).Set(key3, true);
 
         Assert.True(propertyBag.TryGetValue(key1, out var value1));
         Assert.Equal("Value1", value1);
@@ -572,7 +572,95 @@ public class DefaultPropertyBagTests
 
     #endregion
 
+    #region Coverage of Edge Paths
+
+    [Fact]
+    public void Scope_WhenKeyHadValue_RestoresPreviousValueOnDispose()
+    {
+        var propertyBag = new DefaultPropertyBag();
+        var key = new PropertyBagKey<string>("TestKey");
+        propertyBag.Set(key, "Outer");
+
+        using (propertyBag.Scope(key, "Inner"))
+        {
+            Assert.True(propertyBag.TryGetValue(key, out var inner));
+            Assert.Equal("Inner", inner);
+        }
+
+        Assert.True(propertyBag.TryGetValue(key, out var restored));
+        Assert.Equal("Outer", restored);
+    }
+
+    [Fact]
+    public void TryGetValue_WhenStoredValueIsNotOfRequestedType_ReturnsFalse()
+    {
+        var propertyBag = new DefaultPropertyBag();
+        var key = new PropertyBagKey<WrongTypeClone>("TestKey");
+        propertyBag.Set(key, new WrongTypeClone());
+
+        // Clone deep-copies an ICloneable value, and this one's Clone returns another type.
+        var clone = propertyBag.Clone();
+
+        Assert.False(clone.TryGetValue(key, out var value));
+        Assert.Null(value);
+    }
+
+    [Fact]
+    public void Count_AfterAddingItems_CountsThroughIReadOnlyCollection()
+    {
+        var propertyBag = new DefaultPropertyBag();
+        propertyBag.Set(new PropertyBagKey<string>("Key1"), "Value1");
+        propertyBag.Set(new PropertyBagKey<int>("Key2"), 42);
+
+        IReadOnlyCollection<KeyValuePair<PropertyBagKey, object?>> collection = propertyBag;
+
+        Assert.Equal(2, collection.Count);
+    }
+
+    [Fact]
+    public void GetEnumerator_WhenNotEmpty_EnumeratesEveryEntry()
+    {
+        var propertyBag = new DefaultPropertyBag();
+        var key1 = new PropertyBagKey<string>("Key1");
+        var key2 = new PropertyBagKey<int>("Key2");
+        propertyBag.Set(key1, "Value1").Set(key2, 42);
+
+        IEnumerable<KeyValuePair<PropertyBagKey, object?>> typed = propertyBag;
+
+        Assert.Equal(2, typed.Count());
+        Assert.Contains(typed, pair => pair.Key == key1 && (string?)pair.Value == "Value1");
+        Assert.Contains(typed, pair => pair.Key == key2 && (int?)pair.Value == 42);
+    }
+
+    [Fact]
+    public void Count_WhenEmpty_IsZeroThroughIReadOnlyCollection()
+    {
+        IReadOnlyCollection<KeyValuePair<PropertyBagKey, object?>> collection =
+            new DefaultPropertyBag();
+
+        var count = collection.Count;
+
+        Assert.Equal(0, count);
+    }
+
+    [Fact]
+    public void GetEnumerator_WhenEmpty_EnumeratesNothing()
+    {
+        IEnumerable<KeyValuePair<PropertyBagKey, object?>> typed = new DefaultPropertyBag();
+        IEnumerable untyped = new DefaultPropertyBag();
+
+        Assert.False(typed.GetEnumerator().MoveNext());
+        Assert.False(untyped.GetEnumerator().MoveNext());
+    }
+
+    #endregion
+
     #region Helper Classes
+
+    private sealed class WrongTypeClone : ICloneable
+    {
+        public object Clone() => "not a WrongTypeClone";
+    }
 
     private sealed class CloneableValue : ICloneable
     {

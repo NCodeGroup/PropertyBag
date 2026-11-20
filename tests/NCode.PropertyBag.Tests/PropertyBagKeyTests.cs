@@ -1,3 +1,6 @@
+// Copyright © NCode Group
+// SPDX-License-Identifier: Apache-2.0
+
 namespace NCode.PropertyBag.Tests;
 
 public class PropertyBagKeyTests
@@ -200,11 +203,7 @@ public class PropertyBagKeyTests
     {
         var key1 = new PropertyBagKey(typeof(string), "Key1");
         var key2 = new PropertyBagKey(typeof(int), "Key2");
-        var dict = new Dictionary<PropertyBagKey, object?>
-        {
-            [key1] = "Value1",
-            [key2] = 42
-        };
+        var dict = new Dictionary<PropertyBagKey, object?> { [key1] = "Value1", [key2] = 42 };
 
         Assert.Equal("Value1", dict[key1]);
         Assert.Equal(42, dict[key2]);

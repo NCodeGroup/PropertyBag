@@ -1,3 +1,6 @@
+// Copyright © NCode Group
+// SPDX-License-Identifier: Apache-2.0
+
 namespace NCode.PropertyBag.Tests;
 
 public class PropertyBagExtensionsTests
@@ -99,7 +102,11 @@ public class PropertyBagExtensionsTests
     public void Set_WithComplexType_InfersKeyName()
     {
         var propertyBag = new DefaultPropertyBag();
-        var configuration = new TestConfiguration { Timeout = 30, Endpoint = "https://api.example.com" };
+        var configuration = new TestConfiguration
+        {
+            Timeout = 30,
+            Endpoint = "https://api.example.com",
+        };
 
         propertyBag.Set(configuration);
 
@@ -131,14 +138,15 @@ public class PropertyBagExtensionsTests
         const int age = 30;
         const bool isActive = true;
 
-        propertyBag
-            .Set(name)
-            .Set(age)
-            .Set(isActive);
+        propertyBag.Set(name).Set(age).Set(isActive);
 
-        Assert.True(propertyBag.TryGetValue(new PropertyBagKey<string>("name"), out var retrievedName));
+        Assert.True(
+            propertyBag.TryGetValue(new PropertyBagKey<string>("name"), out var retrievedName)
+        );
         Assert.True(propertyBag.TryGetValue(new PropertyBagKey<int>("age"), out var retrievedAge));
-        Assert.True(propertyBag.TryGetValue(new PropertyBagKey<bool>("isActive"), out var retrievedIsActive));
+        Assert.True(
+            propertyBag.TryGetValue(new PropertyBagKey<bool>("isActive"), out var retrievedIsActive)
+        );
         Assert.Equal("Alice", retrievedName);
         Assert.Equal(30, retrievedAge);
         Assert.True(retrievedIsActive);
@@ -446,10 +454,7 @@ public class PropertyBagExtensionsTests
         bool isActive = true;
 
         // Set all using CallerArgumentExpression
-        propertyBag
-            .Set(name)
-            .Set(age)
-            .Set(isActive);
+        propertyBag.Set(name).Set(age).Set(isActive);
 
         // Reset all to prove retrieval
         name = string.Empty;
