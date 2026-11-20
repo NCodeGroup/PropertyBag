@@ -223,6 +223,23 @@ public class ConcurrentPropertyBagDictionaryTests
         Assert.Null(value);
     }
 
+    [Fact]
+    public void TryRemove_WhenStoredValueIsNotOfRequestedType_LeavesValueAndReturnsFalse()
+    {
+        var propertyBag = new ConcurrentPropertyBagDictionary();
+        var key = new PropertyBagKey<WrongTypeClone>("TestKey");
+        propertyBag.SetValue(key, new WrongTypeClone());
+        var clone = (ConcurrentPropertyBagDictionary)propertyBag.Clone();
+        IReadOnlyDictionary<PropertyBagKey, object?> dictionary = clone;
+
+        var removed = clone.TryRemove(key, out var value);
+
+        Assert.False(removed);
+        Assert.Null(value);
+        var stillHeld = dictionary.ContainsKey(key);
+        Assert.True(stillHeld);
+    }
+
     #endregion
 
     #region GetOrAdd Tests
