@@ -70,7 +70,22 @@ repository's reviewed code through CI to the packages on nuget.org.
 [//]: # "Maintainers: say how the design applies economy of mechanism, fail-safe defaults, complete mediation, least
 privilege and open design."
 
-Not written yet.
+- **Economy of mechanism:** two small packages: five abstractions (three interfaces, two key structs) plus extensions,
+  and an implementation of one dictionary-backed bag, a scope, a factory and one registration method; one runtime
+  dependency; no configuration.
+- **Fail-safe defaults:** lookups of a missing or mistyped key return `false` and `default` (R1, R3); registration never
+  overrides the application's (R5); an empty bag allocates nothing.
+- **Complete mediation:** every read goes through one lookup that compares the whole key, type and name, and checks the
+  stored value's type on each read; nothing caches an earlier answer.
+- **Least privilege:** the library needs no permission or capability (R2). In CI, `main.yml` defaults to
+  `contents: read`; the `publish` job holds no repository permission and gets only the NuGet API key; write permissions
+  are granted only to the `provenance` and `baseline` jobs, each exactly what its called workflow declares.
+- **Open design:** the source is public under Apache-2.0 and Source Link maps each package to it; nothing depends on a
+  secret except the NuGet API key, which only the `publish` job reads.
+- **Least common mechanism:** each bag owns its dictionary; the only shared state is the two settable factory
+  properties.
+- **Psychological acceptability:** typed keys make the safe call the natural one, and nullable annotations say where
+  `null` is allowed.
 
 ## Common Weaknesses Countered
 
