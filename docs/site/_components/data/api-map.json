@@ -368,7 +368,7 @@
       "signatures": [
         "public IPropertyBag SetValue<T>(PropertyBagKey<T> key, T? value)"
       ],
-      "summary": "As `IPropertyBag.Set`. A value is stored as `object`, so a value type is boxed.",
+      "summary": "As `IPropertyBag.SetValue`. A value is stored as `object`, so a value type is boxed.",
       "page": "/guides/store-and-read-values/",
       "api": [
         "NCode.PropertyBag.PropertyBagDictionary.SetValue<T>(NCode.PropertyBag.PropertyBagKey<T> key, T? value) -> NCode.PropertyBag.IPropertyBag!"
