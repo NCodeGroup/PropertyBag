@@ -55,9 +55,12 @@ flowchart LR
 | `PropertyBagFactory` | Static `Create()` through `DefaultFactory`, settable, which falls back to `DefaultPropertyBagFactory.Singleton` |
 | `DefaultRegistration` | `services.AddPropertyBag()` registers `DefaultPropertyBagFactory` as the singleton `IPropertyBagFactory` with `TryAddSingleton`, so an earlier registration wins |
 | `NCode.PropertyBag.Tests` | xUnit tests of every type above, on net10.0 |
+| `NCode.PropertyBag.Site.Tests` | The documentation site's samples, compiled against the public API only, on net10.0 ([ADR-1004](decisions/1004-site-samples-are-compiled-tests-in-a-project-of-their-own-included-by-key-when-the-site-is-built.md)) |
+| `docs/site/` | The documentation site's pages, settings and API map, built by NCodeGroup/docs ([ADR-1003](decisions/1003-the-documentation-site-is-narrative-guides-built-by-a-shared-toolchain-outside-this-repository.md)) |
 
 Each package's project is in its own folder under `src/`, `src/NCode.PropertyBag.Abstractions/` and
-`src/NCode.PropertyBag/`, and the tests are in `tests/NCode.PropertyBag.Tests/`.
+`src/NCode.PropertyBag/`, the tests are in `tests/NCode.PropertyBag.Tests/` and the site samples are in
+`tests/NCode.PropertyBag.Site.Tests/`.
 
 The packages do no I/O, start no threads, and share no state except the two settable factory properties.
 
@@ -89,3 +92,8 @@ the release
 `raise-baseline.yml`, which opens the pull request that raises the package validation baseline
 ([ADR-0150](decisions/project-template/0150-a-workflow-raises-the-package-validation-baseline-after-each-release.md),
 [ADR-0151](decisions/project-template/0151-release-follow-ups-are-jobs-publish-calls.md)).
+
+`docs.yml` builds the documentation site with NCodeGroup/docs, pinned by commit, on every pull request and publishes it
+to GitHub Pages at https://propertybag.ncode.io/ from every push to `main`
+([ADR-1006](decisions/1006-the-documentation-site-is-published-to-github-pages-from-the-default-branch.md),
+[ADR-1007](decisions/1007-the-documentation-site-is-served-at-propertybag-ncode-io.md)).

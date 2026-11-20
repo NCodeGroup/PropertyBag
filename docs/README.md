@@ -18,6 +18,18 @@ offers. Every document in `docs/` has a line here.
   `decisions/` as its phases land.
 - [metrics.md](metrics.md): the metrics and traces catalog, every meter, instrument, attribute, activity source and
   span the project defines, which dashboards and alerts are built against.
+- [site/](site/index.mdx): the content of the documentation site, its pages as `.mdx` files and its settings in
+  `site.config.json`. The shared toolchain in [NCodeGroup/docs](https://github.com/NCodeGroup/docs) builds it
+  ([ADR-1003](decisions/1003-the-documentation-site-is-narrative-guides-built-by-a-shared-toolchain-outside-this-repository.md)),
+  and the samples its pages show are tests in `tests/NCode.PropertyBag.Site.Tests`
+  ([ADR-1004](decisions/1004-site-samples-are-compiled-tests-in-a-project-of-their-own-included-by-key-when-the-site-is-built.md)).
+  `.github/workflows/docs.yml` builds the site on every pull request and publishes it from every push to the default
+  branch to <https://propertybag.ncode.io/>
+  ([ADR-1006](decisions/1006-the-documentation-site-is-published-to-github-pages-from-the-default-branch.md),
+  [ADR-1007](decisions/1007-the-documentation-site-is-served-at-propertybag-ncode-io.md)).
+  `build/Assert-ApiMap.ps1` checks the API map against both `PublicAPI.Shipped.txt` files.
+  `build/site.ps1` builds, layout-checks and serves the site locally, with the toolchain cloned beside the main
+  checkout; `build/Test-Site.ps1` tests it offline, and the gate runs that test.
 - [api-compatibility.md](api-compatibility.md): how the public API of the published packages evolves and is checked, and how the package validation baseline is kept.
 
 ## Rules
