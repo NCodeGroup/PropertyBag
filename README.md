@@ -173,6 +173,59 @@ foreach (var (key, value) in entries)
 ```
 <!-- endSnippet -->
 
+### Reading and adding values
+
+`GetValue` throws when a key has no value, `GetValueOrDefault` and `ContainsKey` read without throwing, and `TryAdd` and `GetOrAdd` store a value only when the key has none:
+
+<!-- snippet: ReadHelpers -->
+```cs
+var age = propertyBag.GetValueOrDefault(UserKeys.UserAge, 18); // 18: no value yet
+var name = propertyBag.GetOrAdd(UserKeys.UserName, _ => "Guest"); // stores "Guest"
+var added = propertyBag.TryAdd(UserKeys.UserAge, 30); // true: the key was free
+var storedAge = propertyBag.GetValue(UserKeys.UserAge); // 30
+```
+<!-- endSnippet -->
+
+### Child bags
+
+`CreateChild()` returns a bag that reads through to its parent. Writes stay in the child, and the parent is never changed:
+
+<!-- snippet: ChildBag -->
+```cs
+var request = propertyBag.CreateChild();
+request.SetValue(UserKeys.UserAge, 30);
+
+request.TryGetValue(UserKeys.UserName, out var inherited); // "Alice", read from the parent
+var parentHasAge = propertyBag.ContainsKey(UserKeys.UserAge); // false: the parent is untouched
+```
+<!-- endSnippet -->
+
+### Read-only views
+
+`AsReadOnly()` returns an `IReadOnlyPropertyBag` that cannot be cast back to a writable bag:
+
+<!-- snippet: ReadOnlyView -->
+```cs
+IReadOnlyPropertyBag view = propertyBag.AsReadOnly();
+
+view.TryGetValue(UserKeys.UserName, out var userName); // "Alice"
+```
+<!-- endSnippet -->
+
+### Sharing across threads
+
+`ConcurrentPropertyBagDictionary` is safe to use from several threads, and its `TryAdd`, `GetOrAdd` and `TryRemove` are atomic:
+
+<!-- snippet: ConcurrentBag -->
+```cs
+var shared = new ConcurrentPropertyBagDictionary();
+
+Parallel.For(0, 100, i => shared.GetOrAdd(UserKeys.UserAge, _ => i));
+
+var winner = shared.GetValue(UserKeys.UserAge); // one of the values; every thread saw it
+```
+<!-- endSnippet -->
+
 ### Dependency injection
 
 `AddPropertyBag()` registers `IPropertyBagFactory` as a singleton, keeping one the application registered first:
@@ -212,14 +265,18 @@ Without a container, `PropertyBagFactory.Create()` creates a bag through the set
 | `IReadOnlyPropertyBag` | `TryGetValue` and `Clone` |
 | `IPropertyBag` | Adds `SetValue`, `Remove` and `Scope`, each chainable |
 | `IPropertyBagScope` | Restores its key when disposed |
-| `PropertyBagExtensions` | `SetValue(value)`, the key named after the argument |
-| `ReadOnlyPropertyBagExtensions` | `TryGetValue(out value)`, the key named after the argument |
+| `PropertyBagExtensions` | `SetValue(value)`, `TryAdd`, `GetOrAdd` and `TryRemove` |
+| `ReadOnlyPropertyBagExtensions` | `TryGetValue(out value)`, `GetValue`, `GetValueOrDefault`, `ContainsKey` |
 
 ### NCode.PropertyBag
 
 | Type | Role |
 | --- | --- |
 | `PropertyBagDictionary` | The default bag; allocates nothing until its first value |
+| `ConcurrentPropertyBagDictionary` | A thread-safe bag with atomic `TryAdd`, `GetOrAdd`, `TryRemove` |
+| `LayeredPropertyBag` | A bag that reads through to a parent and writes locally |
+| `ReadOnlyPropertyBag` | A read-only view of a bag |
+| `PropertyBagViewExtensions` | `CreateChild()` and `AsReadOnly()` |
 | `DefaultPropertyBagScope` | The scope `PropertyBagDictionary.Scope` returns |
 | `IPropertyBagFactory` | Creates bags |
 | `DefaultPropertyBagFactory` | Creates a `PropertyBagDictionary`; `Singleton` is settable |
@@ -228,7 +285,7 @@ Without a container, `PropertyBagFactory.Create()` creates a bag through the set
 
 ## Thread safety
 
-A bag and its scopes hold no lock: synchronize concurrent use of one bag. [docs/assurance-case.md](docs/assurance-case.md) lists what the library guarantees and what it doesn't.
+`PropertyBagDictionary`, `LayeredPropertyBag` and their scopes hold no lock: synchronize concurrent use, or use `ConcurrentPropertyBagDictionary`, whose members, `TryAdd`, `GetOrAdd` and `TryRemove` included, are safe from several threads. [docs/assurance-case.md](docs/assurance-case.md) lists what the library guarantees and what it doesn't.
 
 ## Project
 

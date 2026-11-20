@@ -1,15 +1,22 @@
 ---
 title: Share, clone and enumerate a bag
-description: Hand out a read-only view, take an independent copy, and list what a PropertyBagDictionary holds.
+description: Hand out a read-only or protected view, take an independent copy, and list what a PropertyBagDictionary holds.
 ---
 
-A bag often leaves the code that fills it. This page shows how to hand out a read-only view, how to take a copy that changes on its own, how to list what a `PropertyBagDictionary` holds, and what to watch for.
+A bag often leaves the code that fills it. This page shows how to hand out a read-only view, how to hand out a protected view that cannot be cast back to a writable bag, how to take a copy that changes on its own, how to list what a `PropertyBagDictionary` holds, and what to watch for.
 
 ## Hand out a read-only view
 
 `IReadOnlyPropertyBag` is the part of a bag that only reads: `TryGetValue` and `Clone`. The `TryGetValue` extension reads through it too. An `IPropertyBag` is an `IReadOnlyPropertyBag`, so pass the bag where a method asks for the read-only type.
 
 ```cs snippet=SiteShareABagReadOnly
+```
+
+## Hand out a protected view
+
+`AsReadOnly()` wraps a bag in a view that implements only `IReadOnlyPropertyBag`. The receiver cannot cast it back to `IPropertyBag`, and the view reads through to the bag, so a later change to the bag shows in the view. The view's `Clone()` returns a writable, independent copy.
+
+```cs snippet=SiteShareABagProtectedView
 ```
 
 ## Take a copy
@@ -33,7 +40,7 @@ A bag often leaves the code that fills it. This page shows how to hand out a rea
 
 ## Pitfalls
 
-- A read-only view is not a protection. Code that holds an `IReadOnlyPropertyBag` can cast it back to `IPropertyBag` and change the bag. Hand out `Clone()` when the receiver must not change the original.
+- A plain `IReadOnlyPropertyBag` is not a protection: code that holds one can cast it back to `IPropertyBag`. Hand out `AsReadOnly()` when the receiver must not write, or `Clone()` when it must not see later changes either.
 - A shared mutable value changes in both bags. `Clone` shares every value that is not `ICloneable`, so a `List<int>` is one list in the original and the copy.
 - An `ICloneable` value's own `Clone()` may be shallow, as an array's is: the copy of an array of lists holds the same lists.
 - The indexer gives `null` both for a missing key and for a stored `null`. Use `ContainsKey` or `TryGetValue` to tell them apart.

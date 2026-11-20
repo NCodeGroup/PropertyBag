@@ -27,6 +27,10 @@ flowchart LR
     DFAC[DefaultPropertyBagFactory]
     BAG[PropertyBagDictionary]
     SCOPE[DefaultPropertyBagScope]
+    CON[ConcurrentPropertyBagDictionary]
+    LAY[LayeredPropertyBag]
+    RO[ReadOnlyPropertyBag]
+    VEXT[PropertyBagViewExtensions]
   end
   APP[Application]
   APP --> REG
@@ -41,6 +45,12 @@ flowchart LR
   BAG -->|stores values by| KEY
   EXT -->|calls| IPB
   REXT -->|calls| IRO
+  CON -->|implements| IPB
+  LAY -->|implements| IPB
+  LAY -->|reads through| IRO
+  RO -->|implements| IRO
+  VEXT -->|creates| LAY
+  VEXT -->|creates| RO
 ```
 
 | Component | Role |
@@ -49,10 +59,14 @@ flowchart LR
 | `PropertyBagKey<T>` | Readonly struct naming a value by `Name` and the type `T`; converts implicitly to `PropertyBagKey` |
 | `PropertyBagKey` | Readonly struct of `Type` and `Name`, the dictionary key; equal only when both the type and the name (ordinal) match |
 | `IReadOnlyPropertyBag`, `IPropertyBag`, `IPropertyBagScope` | `IReadOnlyPropertyBag` has `TryGetValue<T>` and `Clone`. `IPropertyBag` adds `SetValue<T>`, `Remove` and `Scope<T>`, each returning for chaining. `IPropertyBagScope` is the `IDisposable` that `Scope<T>` returns, naming its bag and key |
-| `PropertyBagExtensions`, `ReadOnlyPropertyBagExtensions` | `SetValue<T>(value)` and `TryGetValue<T>(out value)`, which name the key after the caller's argument expression (`[CallerArgumentExpression]`); one receiver type per class (ADR-1004) |
+| `PropertyBagExtensions`, `ReadOnlyPropertyBagExtensions` | `SetValue<T>(value)` and `TryGetValue<T>(out value)`, which name the key after the caller's argument expression (`[CallerArgumentExpression]`), and the helpers `TryAdd`, `GetOrAdd` and `TryRemove` on `IPropertyBag` and `GetValue`, `GetValueOrDefault` and `ContainsKey` on `IReadOnlyPropertyBag`, each of which composes two calls and so is not atomic; one receiver type per class (ADR-1004) |
 | `NCode.PropertyBag` | The implementation; depends on the abstractions and `Microsoft.Extensions.DependencyInjection.Abstractions` |
 | `PropertyBagDictionary` | `IPropertyBag`, `IReadOnlyDictionary<PropertyBagKey, object?>` and `ICloneable` over a `Dictionary<PropertyBagKey, object?>` allocated on the first `SetValue`; `TryGetValue<T>` returns a value only when the stored object is `null` or a `T`; `Clone` copies the entries, cloning values that implement `ICloneable`; holds no lock |
-| `DefaultPropertyBagScope` | `Dispose` acts once; a scope from `PropertyBagDictionary.Scope` restores the value its key held when the scope was created, or removes the key when it held none, and one constructed directly removes its key |
+| `DefaultPropertyBagScope` | `Dispose` acts once; a scope from `PropertyBagDictionary`, `ConcurrentPropertyBagDictionary` or `LayeredPropertyBag` restores the value its key held when the scope was created, or removes the key when it held none, and one constructed directly removes its key |
+| `ConcurrentPropertyBagDictionary` | The thread-safe `IPropertyBag` and `IReadOnlyDictionary<PropertyBagKey, object?>` over one dictionary behind a `Lock`, which makes `Scope` atomic; its instance `TryAdd`, `GetOrAdd` and `TryRemove` are atomic, and `GetOrAdd` runs its factory outside the lock; enumeration works over a snapshot |
+| `LayeredPropertyBag` | An `IPropertyBag` whose own entries sit over a read-only parent: reads check the local entries, then the parent; `Remove` hides a parent value with a tombstone; the parent is never written, and later changes to it are seen; holds no lock |
+| `ReadOnlyPropertyBag` | An `IReadOnlyPropertyBag` that delegates to a wrapped bag and implements no writable interface, so it can't be cast back; its `Clone` returns the wrapped bag's writable copy |
+| `PropertyBagViewExtensions` | `CreateChild()` returns a `LayeredPropertyBag` over the receiver, and `AsReadOnly()` returns a `ReadOnlyPropertyBag`, or the receiver when it already is one; in the implementation package because they construct its types |
 | `IPropertyBagFactory`, `DefaultPropertyBagFactory` | `Create()` returns a new `PropertyBagDictionary`; `DefaultPropertyBagFactory.Singleton` is a settable static instance |
 | `PropertyBagFactory` | Static `Create()` through `DefaultFactory`, settable, which falls back to `DefaultPropertyBagFactory.Singleton` |
 | `DefaultRegistration` | `services.AddPropertyBag()` registers `DefaultPropertyBagFactory` as the singleton `IPropertyBagFactory` with `TryAddSingleton`, so an earlier registration wins |

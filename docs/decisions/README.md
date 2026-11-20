@@ -73,3 +73,4 @@ override in `AGENTS.md`.
 | [1008](1008-the-documentation-site-is-published-to-github-pages-from-the-default-branch.md) | The documentation site is published to GitHub Pages from the default branch | Accepted |
 | [1009](1009-the-documentation-site-is-served-at-propertybag-ncode-io.md) | The documentation site is served at propertybag.ncode.io | Accepted |
 | [1010](1010-package-builds-are-reproducible-and-ci-compares-rebuilds-entry-by-entry.md) | Package builds are reproducible, and CI compares rebuilds entry by entry | Accepted |
+| [1011](1011-new-capabilities-are-extension-members-and-new-types-and-the-interfaces-stay-unchanged-within-a-major-version.md) | New capabilities are extension members and new types, and the interfaces stay unchanged within a major version | Accepted |

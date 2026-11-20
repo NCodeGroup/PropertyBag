@@ -25,14 +25,19 @@ every member that ships has an entry.
 
 <ApiMap group="default" />
 
+## Other bags
+
+<ApiMap group="variants" />
+
 ## Factories and dependency injection
 
 <ApiMap group="factories" />
 
 ## Extension members
 
-`PropertyBagExtensions.SetValue`, `ReadOnlyPropertyBagExtensions.TryGetValue` and `DefaultRegistration.AddPropertyBag` are declared in
-C# 14 `extension` blocks and compiled to ordinary static extension methods, so a project on an earlier C# version calls
+`PropertyBagExtensions.SetValue`, `TryAdd`, `GetOrAdd` and `TryRemove`, `ReadOnlyPropertyBagExtensions.TryGetValue`, `GetValue`,
+`GetValueOrDefault` and `ContainsKey`, `PropertyBagViewExtensions.CreateChild` and `AsReadOnly`, and `DefaultRegistration.AddPropertyBag`
+are declared in C# 14 `extension` blocks and compiled to ordinary static extension methods, so a project on an earlier C# version calls
 them the same way, or in their static form, `PropertyBagExtensions.SetValue(bag, timeout)`.
 [Name keys after variables](/guides/infer-key-names/) explains how each call names its key.
 

@@ -18,6 +18,10 @@
       "title": "Default implementation"
     },
     {
+      "id": "variants",
+      "title": "Other bags"
+    },
+    {
       "id": "factories",
       "title": "Factories and dependency injection"
     }
@@ -87,6 +91,20 @@
         "override NCode.PropertyBag.PropertyBagKey<T>.GetHashCode() -> int",
         "static NCode.PropertyBag.PropertyBagKey<T>.operator !=(NCode.PropertyBag.PropertyBagKey<T> left, NCode.PropertyBag.PropertyBagKey<T> right) -> bool",
         "static NCode.PropertyBag.PropertyBagKey<T>.operator ==(NCode.PropertyBag.PropertyBagKey<T> left, NCode.PropertyBag.PropertyBagKey<T> right) -> bool"
+      ]
+    },
+    {
+      "id": "propertybagkey-t-tostring",
+      "group": "keys",
+      "type": "PropertyBagKey<T>",
+      "member": "ToString",
+      "signatures": [
+        "public override string ToString()"
+      ],
+      "summary": "`Name (Type)`, such as `UserName (System.String)`.",
+      "page": "/guides/define-keys/",
+      "api": [
+        "override NCode.PropertyBag.PropertyBagKey<T>.ToString() -> string!"
       ]
     },
     {
@@ -170,6 +188,20 @@
       ]
     },
     {
+      "id": "propertybagkey-tostring",
+      "group": "keys",
+      "type": "PropertyBagKey",
+      "member": "ToString",
+      "signatures": [
+        "public override string ToString()"
+      ],
+      "summary": "`Name (Type)`, such as `UserName (System.String)`.",
+      "page": "/guides/define-keys/",
+      "api": [
+        "override NCode.PropertyBag.PropertyBagKey.ToString() -> string!"
+      ]
+    },
+    {
       "id": "ireadonlypropertybag",
       "group": "bags",
       "type": "IReadOnlyPropertyBag",
@@ -209,6 +241,96 @@
       "page": "/guides/share-a-bag/",
       "api": [
         "NCode.PropertyBag.IReadOnlyPropertyBag.Clone() -> NCode.PropertyBag.IPropertyBag!"
+      ]
+    },
+    {
+      "id": "readonlypropertybagextensions-getvalue",
+      "group": "bags",
+      "type": "ReadOnlyPropertyBagExtensions",
+      "member": "GetValue",
+      "signatures": [
+        "public T? GetValue<T>(PropertyBagKey<T> key)"
+      ],
+      "summary": "The value, or `KeyNotFoundException` naming the key.",
+      "page": "/guides/store-and-read-values/",
+      "api": [
+        "NCode.PropertyBag.ReadOnlyPropertyBagExtensions.extension(NCode.PropertyBag.IReadOnlyPropertyBag!).GetValue<T>(NCode.PropertyBag.PropertyBagKey<T> key) -> T?",
+        "static NCode.PropertyBag.ReadOnlyPropertyBagExtensions.GetValue<T>(this NCode.PropertyBag.IReadOnlyPropertyBag! bag, NCode.PropertyBag.PropertyBagKey<T> key) -> T?"
+      ]
+    },
+    {
+      "id": "readonlypropertybagextensions-getvalueordefault",
+      "group": "bags",
+      "type": "ReadOnlyPropertyBagExtensions",
+      "member": "GetValueOrDefault",
+      "signatures": [
+        "public T? GetValueOrDefault<T>(PropertyBagKey<T> key, T? defaultValue = default)"
+      ],
+      "summary": "The value, or `defaultValue`.",
+      "page": "/guides/store-and-read-values/",
+      "api": [
+        "NCode.PropertyBag.ReadOnlyPropertyBagExtensions.extension(NCode.PropertyBag.IReadOnlyPropertyBag!).GetValueOrDefault<T>(NCode.PropertyBag.PropertyBagKey<T> key, T? defaultValue = default(T?)) -> T?",
+        "static NCode.PropertyBag.ReadOnlyPropertyBagExtensions.GetValueOrDefault<T>(this NCode.PropertyBag.IReadOnlyPropertyBag! bag, NCode.PropertyBag.PropertyBagKey<T> key, T? defaultValue = default(T?)) -> T?"
+      ]
+    },
+    {
+      "id": "readonlypropertybagextensions-containskey",
+      "group": "bags",
+      "type": "ReadOnlyPropertyBagExtensions",
+      "member": "ContainsKey",
+      "signatures": [
+        "public bool ContainsKey<T>(PropertyBagKey<T> key)"
+      ],
+      "summary": "Whether `TryGetValue` finds a value, a stored `null` included.",
+      "page": "/guides/store-and-read-values/",
+      "api": [
+        "NCode.PropertyBag.ReadOnlyPropertyBagExtensions.extension(NCode.PropertyBag.IReadOnlyPropertyBag!).ContainsKey<T>(NCode.PropertyBag.PropertyBagKey<T> key) -> bool",
+        "static NCode.PropertyBag.ReadOnlyPropertyBagExtensions.ContainsKey<T>(this NCode.PropertyBag.IReadOnlyPropertyBag! bag, NCode.PropertyBag.PropertyBagKey<T> key) -> bool"
+      ]
+    },
+    {
+      "id": "propertybagextensions-tryadd",
+      "group": "bags",
+      "type": "PropertyBagExtensions",
+      "member": "TryAdd",
+      "signatures": [
+        "public bool TryAdd<T>(PropertyBagKey<T> key, T? value)"
+      ],
+      "summary": "Sets the value only when the key holds none; not atomic.",
+      "page": "/guides/store-and-read-values/",
+      "api": [
+        "NCode.PropertyBag.PropertyBagExtensions.extension(NCode.PropertyBag.IPropertyBag!).TryAdd<T>(NCode.PropertyBag.PropertyBagKey<T> key, T? value) -> bool",
+        "static NCode.PropertyBag.PropertyBagExtensions.TryAdd<T>(this NCode.PropertyBag.IPropertyBag! bag, NCode.PropertyBag.PropertyBagKey<T> key, T? value) -> bool"
+      ]
+    },
+    {
+      "id": "propertybagextensions-getoradd",
+      "group": "bags",
+      "type": "PropertyBagExtensions",
+      "member": "GetOrAdd",
+      "signatures": [
+        "public T? GetOrAdd<T>(PropertyBagKey<T> key, Func<PropertyBagKey<T>, T?> valueFactory)"
+      ],
+      "summary": "The stored value, or the factory's result, stored; not atomic.",
+      "page": "/guides/store-and-read-values/",
+      "api": [
+        "NCode.PropertyBag.PropertyBagExtensions.extension(NCode.PropertyBag.IPropertyBag!).GetOrAdd<T>(NCode.PropertyBag.PropertyBagKey<T> key, System.Func<NCode.PropertyBag.PropertyBagKey<T>, T?>! valueFactory) -> T?",
+        "static NCode.PropertyBag.PropertyBagExtensions.GetOrAdd<T>(this NCode.PropertyBag.IPropertyBag! bag, NCode.PropertyBag.PropertyBagKey<T> key, System.Func<NCode.PropertyBag.PropertyBagKey<T>, T?>! valueFactory) -> T?"
+      ]
+    },
+    {
+      "id": "propertybagextensions-tryremove",
+      "group": "bags",
+      "type": "PropertyBagExtensions",
+      "member": "TryRemove",
+      "signatures": [
+        "public bool TryRemove<T>(PropertyBagKey<T> key, out T? value)"
+      ],
+      "summary": "Removes and returns the value when the key holds one; not atomic.",
+      "page": "/guides/store-and-read-values/",
+      "api": [
+        "NCode.PropertyBag.PropertyBagExtensions.extension(NCode.PropertyBag.IPropertyBag!).TryRemove<T>(NCode.PropertyBag.PropertyBagKey<T> key, out T? value) -> bool",
+        "static NCode.PropertyBag.PropertyBagExtensions.TryRemove<T>(this NCode.PropertyBag.IPropertyBag! bag, NCode.PropertyBag.PropertyBagKey<T> key, out T? value) -> bool"
       ]
     },
     {
@@ -485,6 +607,189 @@
       "page": "/guides/scope-a-value/",
       "api": [
         "NCode.PropertyBag.DefaultPropertyBagScope.PropertyBag.get -> NCode.PropertyBag.IPropertyBag!"
+      ]
+    },
+    {
+      "id": "concurrentpropertybagdictionary",
+      "group": "variants",
+      "type": "ConcurrentPropertyBagDictionary",
+      "member": null,
+      "signatures": [
+        "public sealed class ConcurrentPropertyBagDictionary : IPropertyBag, ICloneable, IScopeRestorer, IReadOnlyDictionary<PropertyBagKey, object?>"
+      ],
+      "summary": "A thread-safe bag: one dictionary behind a lock, so `SetValue`, `Remove` and `Scope` are atomic. Enumeration works over a snapshot, and it is an `IReadOnlyDictionary<PropertyBagKey, object?>` like `PropertyBagDictionary`.",
+      "page": "/guides/share-across-threads/",
+      "api": [
+        "NCode.PropertyBag.ConcurrentPropertyBagDictionary",
+        "NCode.PropertyBag.ConcurrentPropertyBagDictionary.ConcurrentPropertyBagDictionary() -> void"
+      ]
+    },
+    {
+      "id": "concurrentpropertybagdictionary-members",
+      "group": "variants",
+      "type": "ConcurrentPropertyBagDictionary",
+      "member": "SetValue, Remove, Scope, TryGetValue, Clone",
+      "signatures": [
+        "public IPropertyBag SetValue<T>(PropertyBagKey<T> key, T? value)",
+        "public IPropertyBag Remove(PropertyBagKey key)",
+        "public IPropertyBagScope Scope<T>(PropertyBagKey<T> key, T? value)",
+        "public bool TryGetValue<T>(PropertyBagKey<T> key, out T? value)",
+        "public IPropertyBag Clone()"
+      ],
+      "summary": "Each call takes the lock, so `Scope` captures and restores a key atomically. `Clone` returns a `ConcurrentPropertyBagDictionary` and copies a value that implements `ICloneable` with its own `Clone()`, outside the lock.",
+      "page": "/guides/share-across-threads/",
+      "api": [
+        "NCode.PropertyBag.ConcurrentPropertyBagDictionary.SetValue<T>(NCode.PropertyBag.PropertyBagKey<T> key, T? value) -> NCode.PropertyBag.IPropertyBag!",
+        "NCode.PropertyBag.ConcurrentPropertyBagDictionary.Remove(NCode.PropertyBag.PropertyBagKey key) -> NCode.PropertyBag.IPropertyBag!",
+        "NCode.PropertyBag.ConcurrentPropertyBagDictionary.Scope<T>(NCode.PropertyBag.PropertyBagKey<T> key, T? value) -> NCode.PropertyBag.IPropertyBagScope!",
+        "NCode.PropertyBag.ConcurrentPropertyBagDictionary.TryGetValue<T>(NCode.PropertyBag.PropertyBagKey<T> key, out T? value) -> bool",
+        "NCode.PropertyBag.ConcurrentPropertyBagDictionary.Clone() -> NCode.PropertyBag.IPropertyBag!"
+      ]
+    },
+    {
+      "id": "concurrentpropertybagdictionary-tryadd",
+      "group": "variants",
+      "type": "ConcurrentPropertyBagDictionary",
+      "member": "TryAdd",
+      "signatures": [
+        "public bool TryAdd<T>(PropertyBagKey<T> key, T? value)"
+      ],
+      "summary": "Sets the value only when the key holds none, as one atomic step. It is an instance method, so it wins over the extension of the same name.",
+      "page": "/guides/share-across-threads/",
+      "api": [
+        "NCode.PropertyBag.ConcurrentPropertyBagDictionary.TryAdd<T>(NCode.PropertyBag.PropertyBagKey<T> key, T? value) -> bool"
+      ]
+    },
+    {
+      "id": "concurrentpropertybagdictionary-getoradd",
+      "group": "variants",
+      "type": "ConcurrentPropertyBagDictionary",
+      "member": "GetOrAdd",
+      "signatures": [
+        "public T? GetOrAdd<T>(PropertyBagKey<T> key, Func<PropertyBagKey<T>, T?> valueFactory)"
+      ],
+      "summary": "Returns the stored value, or else calls the factory outside the lock and stores its result atomically. Under contention the factory may run more than once, but only the first stored value is kept, and every caller gets it.",
+      "page": "/guides/share-across-threads/",
+      "api": [
+        "NCode.PropertyBag.ConcurrentPropertyBagDictionary.GetOrAdd<T>(NCode.PropertyBag.PropertyBagKey<T> key, System.Func<NCode.PropertyBag.PropertyBagKey<T>, T?>! valueFactory) -> T?"
+      ]
+    },
+    {
+      "id": "concurrentpropertybagdictionary-tryremove",
+      "group": "variants",
+      "type": "ConcurrentPropertyBagDictionary",
+      "member": "TryRemove",
+      "signatures": [
+        "public bool TryRemove<T>(PropertyBagKey<T> key, out T? value)"
+      ],
+      "summary": "Removes the key and returns its value only when it held one, as one atomic step.",
+      "page": "/guides/share-across-threads/",
+      "api": [
+        "NCode.PropertyBag.ConcurrentPropertyBagDictionary.TryRemove<T>(NCode.PropertyBag.PropertyBagKey<T> key, out T? value) -> bool"
+      ]
+    },
+    {
+      "id": "layeredpropertybag",
+      "group": "variants",
+      "type": "LayeredPropertyBag",
+      "member": null,
+      "signatures": [
+        "public sealed class LayeredPropertyBag(IReadOnlyPropertyBag parent) : IPropertyBag, ICloneable, IScopeRestorer",
+        "public IReadOnlyPropertyBag Parent { get; }"
+      ],
+      "summary": "A writable child over a parent bag: reads check its own entries and then `Parent`, and writes stay local, so the parent is never written. It sees later changes to its parent, does not enumerate and holds no lock. A `null` parent throws `ArgumentNullException`.",
+      "page": "/guides/layer-bags/",
+      "api": [
+        "NCode.PropertyBag.LayeredPropertyBag",
+        "NCode.PropertyBag.LayeredPropertyBag.LayeredPropertyBag(NCode.PropertyBag.IReadOnlyPropertyBag! parent) -> void",
+        "NCode.PropertyBag.LayeredPropertyBag.Parent.get -> NCode.PropertyBag.IReadOnlyPropertyBag!"
+      ]
+    },
+    {
+      "id": "layeredpropertybag-members",
+      "group": "variants",
+      "type": "LayeredPropertyBag",
+      "member": "SetValue, Remove, Scope, TryGetValue, Clone",
+      "signatures": [
+        "public IPropertyBag SetValue<T>(PropertyBagKey<T> key, T? value)",
+        "public IPropertyBag Remove(PropertyBagKey key)",
+        "public IPropertyBagScope Scope<T>(PropertyBagKey<T> key, T? value)",
+        "public bool TryGetValue<T>(PropertyBagKey<T> key, out T? value)",
+        "public IPropertyBag Clone()"
+      ],
+      "summary": "`Remove` hides a parent value from this bag without touching the parent, and `Scope` captures and restores the local entry, a hidden key included. `Clone` returns a new `LayeredPropertyBag` over the same `Parent` with a copy of the local entries, cloning `ICloneable` values.",
+      "page": "/guides/layer-bags/",
+      "api": [
+        "NCode.PropertyBag.LayeredPropertyBag.SetValue<T>(NCode.PropertyBag.PropertyBagKey<T> key, T? value) -> NCode.PropertyBag.IPropertyBag!",
+        "NCode.PropertyBag.LayeredPropertyBag.Remove(NCode.PropertyBag.PropertyBagKey key) -> NCode.PropertyBag.IPropertyBag!",
+        "NCode.PropertyBag.LayeredPropertyBag.Scope<T>(NCode.PropertyBag.PropertyBagKey<T> key, T? value) -> NCode.PropertyBag.IPropertyBagScope!",
+        "NCode.PropertyBag.LayeredPropertyBag.TryGetValue<T>(NCode.PropertyBag.PropertyBagKey<T> key, out T? value) -> bool",
+        "NCode.PropertyBag.LayeredPropertyBag.Clone() -> NCode.PropertyBag.IPropertyBag!"
+      ]
+    },
+    {
+      "id": "readonlypropertybag",
+      "group": "variants",
+      "type": "ReadOnlyPropertyBag",
+      "member": null,
+      "signatures": [
+        "public sealed class ReadOnlyPropertyBag(IReadOnlyPropertyBag propertyBag) : IReadOnlyPropertyBag",
+        "public bool TryGetValue<T>(PropertyBagKey<T> key, out T? value)",
+        "public IPropertyBag Clone()"
+      ],
+      "summary": "A read-only view that implements only `IReadOnlyPropertyBag` and delegates to the wrapped bag, so a caller cannot cast it to a writable bag. `Clone` returns the wrapped bag's `Clone()`, a writable independent copy. A `null` bag throws `ArgumentNullException`.",
+      "page": "/guides/share-a-bag/",
+      "api": [
+        "NCode.PropertyBag.ReadOnlyPropertyBag",
+        "NCode.PropertyBag.ReadOnlyPropertyBag.ReadOnlyPropertyBag(NCode.PropertyBag.IReadOnlyPropertyBag! propertyBag) -> void",
+        "NCode.PropertyBag.ReadOnlyPropertyBag.TryGetValue<T>(NCode.PropertyBag.PropertyBagKey<T> key, out T? value) -> bool",
+        "NCode.PropertyBag.ReadOnlyPropertyBag.Clone() -> NCode.PropertyBag.IPropertyBag!"
+      ]
+    },
+    {
+      "id": "propertybagviewextensions",
+      "group": "variants",
+      "type": "PropertyBagViewExtensions",
+      "member": null,
+      "signatures": [
+        "public static class PropertyBagViewExtensions",
+        "extension(IReadOnlyPropertyBag propertyBag)"
+      ],
+      "summary": "The extension members on `IReadOnlyPropertyBag` that create a layered or a read-only view, in a C# 14 extension block. Earlier C# versions call them as ordinary extension methods.",
+      "page": "/guides/layer-bags/",
+      "api": [
+        "NCode.PropertyBag.PropertyBagViewExtensions",
+        "NCode.PropertyBag.PropertyBagViewExtensions.extension(NCode.PropertyBag.IReadOnlyPropertyBag!)"
+      ]
+    },
+    {
+      "id": "propertybagviewextensions-createchild",
+      "group": "variants",
+      "type": "PropertyBagViewExtensions",
+      "member": "CreateChild",
+      "signatures": [
+        "public IPropertyBag CreateChild()"
+      ],
+      "summary": "Returns a new `LayeredPropertyBag` over the bag.",
+      "page": "/guides/layer-bags/",
+      "api": [
+        "NCode.PropertyBag.PropertyBagViewExtensions.extension(NCode.PropertyBag.IReadOnlyPropertyBag!).CreateChild() -> NCode.PropertyBag.IPropertyBag!",
+        "static NCode.PropertyBag.PropertyBagViewExtensions.CreateChild(this NCode.PropertyBag.IReadOnlyPropertyBag! propertyBag) -> NCode.PropertyBag.IPropertyBag!"
+      ]
+    },
+    {
+      "id": "propertybagviewextensions-asreadonly",
+      "group": "variants",
+      "type": "PropertyBagViewExtensions",
+      "member": "AsReadOnly",
+      "signatures": [
+        "public IReadOnlyPropertyBag AsReadOnly()"
+      ],
+      "summary": "Returns the bag itself when it is already a `ReadOnlyPropertyBag`, and a new read-only wrapper otherwise.",
+      "page": "/guides/share-a-bag/",
+      "api": [
+        "NCode.PropertyBag.PropertyBagViewExtensions.extension(NCode.PropertyBag.IReadOnlyPropertyBag!).AsReadOnly() -> NCode.PropertyBag.IReadOnlyPropertyBag!",
+        "static NCode.PropertyBag.PropertyBagViewExtensions.AsReadOnly(this NCode.PropertyBag.IReadOnlyPropertyBag! propertyBag) -> NCode.PropertyBag.IReadOnlyPropertyBag!"
       ]
     },
     {

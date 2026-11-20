@@ -19,11 +19,25 @@ A bag holds one value for each key. This page shows how to store a value, read i
 ```cs snippet=SiteStoreAndReadValuesMissing
 ```
 
+## Read with a fallback
+
+`GetValueOrDefault` returns the stored value, or the fallback you pass when the key is missing. `ContainsKey` tests for a key without reading its value, and `GetValue` returns the stored value and throws a `KeyNotFoundException` when the key is missing.
+
+```cs snippet=SiteStoreAndReadValuesFallback
+```
+
 ## Remove a value
 
 `Remove` takes the non-generic `PropertyBagKey`, to which a `PropertyBagKey<T>` converts implicitly. A key the bag does not hold is ignored.
 
 ```cs snippet=SiteStoreAndReadValuesRemove
+```
+
+## Add only when missing
+
+`TryAdd` stores a value only when the key is missing and returns whether it did. `GetOrAdd` returns the stored value, or stores and returns the value its factory makes. `TryRemove` removes a key and returns the value it held.
+
+```cs snippet=SiteStoreAndReadValuesAddOnce
 ```
 
 ## Store null
@@ -39,5 +53,6 @@ A bag holds one value for each key. This page shows how to store a value, read i
 - With a `PropertyBagKey<string?>`, `TryGetValue(key, out _)` infers `string` from the discard and fails the build under nullable warnings as errors (CS8620). A typed `out string? name` declaration fails the same way (CS8620), because the type argument is inferred as `string` from the out argument too. Name the type argument, `TryGetValue<string?>(key, out var name)` or `TryGetValue<string?>(key, out _)`, or read into `out var`.
 - A key of another type finds nothing and returns `false`, with no cast and no exception.
 - `Remove` with a key of another type removes nothing.
+- `TryAdd`, `GetOrAdd` and `TryRemove` read and then write, so on a bag shared between threads they race; `ConcurrentPropertyBagDictionary` has atomic versions, see [share a bag across threads](/guides/share-across-threads/).
 
 To have the key named after a variable instead, see [name keys after variables](/guides/infer-key-names/) for `SetValue(value)` and `TryGetValue(out value)`.

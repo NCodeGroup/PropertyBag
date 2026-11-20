@@ -6,8 +6,20 @@ The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.
 
 ## [Unreleased]
 
+## [2.1.0] - 2026-11-20
+
+### Added
+
+- `GetValue`, `GetValueOrDefault` and `ContainsKey` on `IReadOnlyPropertyBag`; `GetValue` throws `KeyNotFoundException` naming the key when the bag holds no value for it ([ADR-1011](docs/decisions/1011-new-capabilities-are-extension-members-and-new-types-and-the-interfaces-stay-unchanged-within-a-major-version.md)).
+- `TryAdd`, `GetOrAdd` and `TryRemove` on `IPropertyBag`, each composed from `TryGetValue` and a write ([ADR-1011](docs/decisions/1011-new-capabilities-are-extension-members-and-new-types-and-the-interfaces-stay-unchanged-within-a-major-version.md)).
+- `ConcurrentPropertyBagDictionary`, a bag that is safe from several threads, with atomic `TryAdd`, `GetOrAdd` and `TryRemove`, and enumeration over a snapshot ([ADR-1011](docs/decisions/1011-new-capabilities-are-extension-members-and-new-types-and-the-interfaces-stay-unchanged-within-a-major-version.md)).
+- `LayeredPropertyBag` and `CreateChild()`: a child bag that reads through to its parent, keeps its own writes and removals, and never writes the parent ([ADR-1011](docs/decisions/1011-new-capabilities-are-extension-members-and-new-types-and-the-interfaces-stay-unchanged-within-a-major-version.md)).
+- `ReadOnlyPropertyBag` and `AsReadOnly()`: a read-only view that cannot be cast back to `IPropertyBag` ([ADR-1011](docs/decisions/1011-new-capabilities-are-extension-members-and-new-types-and-the-interfaces-stay-unchanged-within-a-major-version.md)).
+- The guides "Layer a child bag over a parent" and "Share a bag across threads" on the documentation site, and sections on the read and write helpers and protected views ([ADR-1011](docs/decisions/1011-new-capabilities-are-extension-members-and-new-types-and-the-interfaces-stay-unchanged-within-a-major-version.md)).
+
 ### Changed
 
+- `PropertyBagKey.ToString()` and `PropertyBagKey<T>.ToString()` return the name and the value type, such as `UserName (System.String)`, where they returned the struct's type name, such as `NCode.PropertyBag.PropertyBagKey` ([ADR-1011](docs/decisions/1011-new-capabilities-are-extension-members-and-new-types-and-the-interfaces-stay-unchanged-within-a-major-version.md)).
 - Package validation compares each package with the published 2.0.2 package.
 
 ## [2.0.2] - 2026-11-20
@@ -119,7 +131,8 @@ The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.
 - `NCode.PropertyBag`: `DefaultPropertyBag`, with lazy storage, scoped values and cloning, `DefaultPropertyBagScope`, the factories `IPropertyBagFactory`, `DefaultPropertyBagFactory` and `PropertyBagFactory`, and `AddPropertyBag()` for `Microsoft.Extensions.DependencyInjection`.
 - Both packages target .NET 10.0.
 
-[unreleased]: https://github.com/NCodeGroup/PropertyBag/compare/v2.0.2...HEAD
+[unreleased]: https://github.com/NCodeGroup/PropertyBag/compare/v2.1.0...HEAD
+[2.1.0]: https://github.com/NCodeGroup/PropertyBag/compare/v2.0.2...v2.1.0
 [2.0.2]: https://github.com/NCodeGroup/PropertyBag/compare/v2.0.1...v2.0.2
 [2.0.1]: https://github.com/NCodeGroup/PropertyBag/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/NCodeGroup/PropertyBag/compare/v1.2.0...v2.0.0

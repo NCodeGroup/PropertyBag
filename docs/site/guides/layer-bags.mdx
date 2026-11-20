@@ -1,0 +1,41 @@
+---
+title: Layer a child bag over a parent
+description: Create a child bag that reads through to a parent, overrides or hides its values, scopes a value and clones without touching the parent.
+---
+
+A child bag holds its own entries on top of a parent bag. This page shows how to create a child, hide a parent value, scope a value in a child, copy a child, and what to watch for.
+
+## Create a child
+
+`CreateChild()` is an extension on `IReadOnlyPropertyBag`. It returns an `IPropertyBag` that is a `LayeredPropertyBag` over the bag you call it on, and that bag is its `Parent`. A read checks the child's own entries first, then the parent. A write goes to the child, and the parent is never written.
+
+```cs snippet=SiteLayerBagsCreate
+```
+
+## Hide a parent value
+
+`Remove` on the child hides the parent's value in the child without touching the parent. Setting the key again shows a value in the child.
+
+```cs snippet=SiteLayerBagsRemove
+```
+
+## Scope a value in a child
+
+A scope in a child restores the child's own previous state: the previous own value, a hidden key, or a fall-through to the parent.
+
+```cs snippet=SiteLayerBagsScope
+```
+
+## Copy a child
+
+`Clone()` of a child returns a new layered bag over the same parent, with a copy of the child's own entries. The clone shares the parent, so a later parent change shows in the child and in the clone.
+
+```cs snippet=SiteLayerBagsClone
+```
+
+## Pitfalls
+
+- A child sees later parent changes. Call `Clone()` on the parent when you need a snapshot to layer over.
+- A child does not enumerate: it does not implement `IReadOnlyDictionary<PropertyBagKey, object?>`.
+- A child holds no lock. Do not share one child, or its parent, between threads that write.
+- A deep chain of children costs one lookup per level on a miss, so keep chains short.
