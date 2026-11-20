@@ -1,1 +1,0 @@
-Throwaway file used to test whether NCode Review approval satisfies the ruleset. Delete with the branch.
