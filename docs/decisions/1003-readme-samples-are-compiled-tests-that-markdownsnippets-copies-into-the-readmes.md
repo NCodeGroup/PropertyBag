@@ -6,10 +6,9 @@
 
 ## Context
 
-A sample copied by hand into a README drifts from the API it shows, and nothing notices. Two README samples do not
-compile when copied as written: one redeclares `connectionString`, and one passes `out _` for a
-`PropertyBagKey<string?>`. Three READMEs show samples: the repository's, and the two package READMEs, which nuget.org
-renders.
+A sample copied by hand into a README drifts from the API it shows, and nothing notices: a renamed member or a sample
+that never compiled reaches readers unchecked. Three READMEs show samples: the repository's, and the two package
+READMEs, which nuget.org renders.
 
 ## Decision
 

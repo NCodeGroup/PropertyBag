@@ -38,7 +38,8 @@ supports: `net10.0` alone.**
 
 ## References
 
-- `src/NCode.PropertyBag.Abstractions/NCode.PropertyBag.Abstractions.csproj`, `src/NCode.PropertyBag/NCode.PropertyBag.csproj`
+- `src/NCode.PropertyBag.Abstractions/NCode.PropertyBag.Abstractions.csproj`
+- `src/NCode.PropertyBag/NCode.PropertyBag.csproj`
 - [ADR-0136](project-template/0136-packages-follow-semantic-versioning-and-the-assembly-version-moves-only-with-the-major.md):
   packages follow Semantic Versioning and the assembly version moves only with the major.
 - [ADR-0147](project-template/0147-packages-are-validated-against-the-last-published-package.md): packages are
