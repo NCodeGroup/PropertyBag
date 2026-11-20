@@ -213,7 +213,8 @@ public class ConcurrentPropertyBagDictionaryTests
         var bag = new ConcurrentPropertyBagDictionary();
         var key = new PropertyBagKey<string>("TestKey");
 
-        Assert.True(bag.TryAdd(key, "First"));
+        var added = bag.TryAdd(key, "First");
+        Assert.True(added);
 
         Assert.True(bag.TryGetValue(key, out var value));
         Assert.Equal("First", value);
@@ -226,7 +227,8 @@ public class ConcurrentPropertyBagDictionaryTests
         var key = new PropertyBagKey<string?>("TestKey");
         bag.SetValue(key, null);
 
-        Assert.False(bag.TryAdd(key, "Second"));
+        var added = bag.TryAdd(key, "Second");
+        Assert.False(added);
 
         Assert.True(bag.TryGetValue(key, out var value));
         Assert.Null(value);
@@ -243,7 +245,8 @@ public class ConcurrentPropertyBagDictionaryTests
         var key = new PropertyBagKey<string>("TestKey");
         bag.SetValue(key, "Value");
 
-        Assert.True(bag.TryRemove(key, out var value));
+        var removed = bag.TryRemove(key, out var value);
+        Assert.True(removed);
 
         Assert.Equal("Value", value);
         Assert.False(bag.TryGetValue(key, out _));
@@ -255,7 +258,8 @@ public class ConcurrentPropertyBagDictionaryTests
         var bag = new ConcurrentPropertyBagDictionary();
         var key = new PropertyBagKey<string>("TestKey");
 
-        Assert.False(bag.TryRemove(key, out var value));
+        var removed = bag.TryRemove(key, out var value);
+        Assert.False(removed);
 
         Assert.Null(value);
     }
@@ -287,7 +291,9 @@ public class ConcurrentPropertyBagDictionaryTests
         var bag = new ConcurrentPropertyBagDictionary();
         var key = new PropertyBagKey<string>("TestKey");
 
-        Assert.Throws<ArgumentNullException>(() => bag.GetOrAdd(key, null!));
+        var exception = Assert.Throws<ArgumentNullException>(() => bag.GetOrAdd(key, null!));
+
+        Assert.Equal("valueFactory", exception.ParamName);
     }
 
     [Fact]
@@ -579,7 +585,8 @@ public class ConcurrentPropertyBagDictionaryTests
         var bag = CreateBag(out var key1, out var key2);
         IReadOnlyDictionary<PropertyBagKey, object?> dict = bag;
 
-        Assert.Equivalent(new PropertyBagKey[] { key1, key2 }, dict.Keys.ToArray());
+        var keys = dict.Keys.ToArray();
+        Assert.Equivalent(new PropertyBagKey[] { key1, key2 }, keys);
     }
 
     [Fact]
@@ -588,7 +595,8 @@ public class ConcurrentPropertyBagDictionaryTests
         var bag = CreateBag(out _, out _);
         IReadOnlyDictionary<PropertyBagKey, object?> dict = bag;
 
-        Assert.Equivalent(new object?[] { "Value1", 42 }, dict.Values.ToArray());
+        var values = dict.Values.ToArray();
+        Assert.Equivalent(new object?[] { "Value1", 42 }, values);
     }
 
     [Fact]
@@ -615,8 +623,11 @@ public class ConcurrentPropertyBagDictionaryTests
         var bag = CreateBag(out var key1, out _);
         IReadOnlyDictionary<PropertyBagKey, object?> dict = bag;
 
-        Assert.True(dict.ContainsKey(key1));
-        Assert.False(dict.ContainsKey(new PropertyBagKey<string>("Missing")));
+        var missingKey = new PropertyBagKey<string>("Missing");
+        var hasKey1 = dict.ContainsKey(key1);
+        var hasMissing = dict.ContainsKey(missingKey);
+        Assert.True(hasKey1);
+        Assert.False(hasMissing);
     }
 
     [Fact]
