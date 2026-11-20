@@ -472,6 +472,115 @@
       "api": [
         "NCode.PropertyBag.DefaultPropertyBagScope.PropertyBag.get -> NCode.PropertyBag.IPropertyBag!"
       ]
+    },
+    {
+      "id": "ipropertybagfactory",
+      "group": "factories",
+      "type": "IPropertyBagFactory",
+      "member": null,
+      "signatures": [
+        "public interface IPropertyBagFactory",
+        "IPropertyBag Create()"
+      ],
+      "summary": "Creates bags. `AddPropertyBag` registers one for injection.",
+      "page": "/guides/dependency-injection/",
+      "api": [
+        "NCode.PropertyBag.IPropertyBagFactory",
+        "NCode.PropertyBag.IPropertyBagFactory.Create() -> NCode.PropertyBag.IPropertyBag!"
+      ]
+    },
+    {
+      "id": "defaultpropertybagfactory",
+      "group": "factories",
+      "type": "DefaultPropertyBagFactory",
+      "member": null,
+      "signatures": [
+        "public class DefaultPropertyBagFactory : IPropertyBagFactory",
+        "public IPropertyBag Create()"
+      ],
+      "summary": "`Create()` returns a new, empty `DefaultPropertyBag`.",
+      "page": "/guides/dependency-injection/",
+      "api": [
+        "NCode.PropertyBag.DefaultPropertyBagFactory",
+        "NCode.PropertyBag.DefaultPropertyBagFactory.DefaultPropertyBagFactory() -> void",
+        "NCode.PropertyBag.DefaultPropertyBagFactory.Create() -> NCode.PropertyBag.IPropertyBag!"
+      ]
+    },
+    {
+      "id": "defaultpropertybagfactory-singleton",
+      "group": "factories",
+      "type": "DefaultPropertyBagFactory",
+      "member": "Singleton",
+      "signatures": [
+        "public static IPropertyBagFactory Singleton { get; set; }"
+      ],
+      "summary": "A settable, process-wide instance, the one `PropertyBagFactory.DefaultFactory` falls back to.",
+      "page": "/guides/dependency-injection/",
+      "api": [
+        "static NCode.PropertyBag.DefaultPropertyBagFactory.Singleton.get -> NCode.PropertyBag.IPropertyBagFactory!",
+        "static NCode.PropertyBag.DefaultPropertyBagFactory.Singleton.set -> void"
+      ]
+    },
+    {
+      "id": "propertybagfactory",
+      "group": "factories",
+      "type": "PropertyBagFactory",
+      "member": null,
+      "signatures": [
+        "public static class PropertyBagFactory",
+        "public static IPropertyBag Create()"
+      ],
+      "summary": "`Create()` returns `DefaultFactory.Create()`.",
+      "page": "/guides/dependency-injection/",
+      "api": [
+        "NCode.PropertyBag.PropertyBagFactory",
+        "static NCode.PropertyBag.PropertyBagFactory.Create() -> NCode.PropertyBag.IPropertyBag!"
+      ]
+    },
+    {
+      "id": "propertybagfactory-defaultfactory",
+      "group": "factories",
+      "type": "PropertyBagFactory",
+      "member": "DefaultFactory",
+      "signatures": [
+        "public static IPropertyBagFactory DefaultFactory { get; set; }"
+      ],
+      "summary": "The factory `Create()` uses: settable and process-wide, and `DefaultPropertyBagFactory.Singleton` until it is set, or once it is set to `null`.",
+      "page": "/guides/dependency-injection/",
+      "api": [
+        "static NCode.PropertyBag.PropertyBagFactory.DefaultFactory.get -> NCode.PropertyBag.IPropertyBagFactory!",
+        "static NCode.PropertyBag.PropertyBagFactory.DefaultFactory.set -> void"
+      ]
+    },
+    {
+      "id": "defaultregistration",
+      "group": "factories",
+      "type": "DefaultRegistration",
+      "member": null,
+      "signatures": [
+        "public static class DefaultRegistration"
+      ],
+      "summary": "Registers the factory with `Microsoft.Extensions.DependencyInjection`, in a C# 14 extension block that earlier C# versions call as an ordinary extension method.",
+      "page": "/guides/dependency-injection/",
+      "api": [
+        "NCode.PropertyBag.DefaultRegistration",
+        "NCode.PropertyBag.DefaultRegistration.extension(Microsoft.Extensions.DependencyInjection.IServiceCollection!)"
+      ]
+    },
+    {
+      "id": "defaultregistration-addpropertybag",
+      "group": "factories",
+      "type": "DefaultRegistration",
+      "member": "AddPropertyBag",
+      "signatures": [
+        "public IServiceCollection AddPropertyBag()"
+      ],
+      "summary": "Registers `DefaultPropertyBagFactory` as the singleton `IPropertyBagFactory` with `TryAddSingleton`, so a factory registered first is kept. It registers no `IPropertyBag`.",
+      "page": "/guides/dependency-injection/",
+      "api": [
+        "NCode.PropertyBag.DefaultRegistration.extension(Microsoft.Extensions.DependencyInjection.IServiceCollection!).AddPropertyBag() -> Microsoft.Extensions.DependencyInjection.IServiceCollection!",
+        "static NCode.PropertyBag.DefaultRegistration.AddPropertyBag(this Microsoft.Extensions.DependencyInjection.IServiceCollection! serviceCollection) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!"
+      ]
     }
   ]
 }
