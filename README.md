@@ -197,3 +197,42 @@ public sealed class RequestContextFactory(IPropertyBagFactory propertyBagFactory
 <!-- endSnippet -->
 
 Without a container, `PropertyBagFactory.Create()` creates a bag through the settable `PropertyBagFactory.DefaultFactory`.
+
+## API overview
+
+### NCode.PropertyBag.Abstractions
+
+| Type | Role |
+| --- | --- |
+| `PropertyBagKey<T>` | A value's name and type; converts to `PropertyBagKey` |
+| `PropertyBagKey` | The untyped key: a `Type` and a `Name` |
+| `IReadOnlyPropertyBag` | `TryGetValue` and `Clone` |
+| `IPropertyBag` | Adds `SetValue`, `Remove` and `Scope`, each chainable |
+| `IPropertyBagScope` | Restores its key when disposed |
+| `PropertyBagExtensions` | `SetValue(value)`, the key named after the argument |
+| `ReadOnlyPropertyBagExtensions` | `TryGetValue(out value)`, the key named after the argument |
+
+### NCode.PropertyBag
+
+| Type | Role |
+| --- | --- |
+| `PropertyBagDictionary` | The default bag; allocates nothing until its first value |
+| `DefaultPropertyBagScope` | The scope `PropertyBagDictionary.Scope` returns |
+| `IPropertyBagFactory` | Creates bags |
+| `DefaultPropertyBagFactory` | Creates a `PropertyBagDictionary`; `Singleton` is settable |
+| `PropertyBagFactory` | Static `Create()` through the settable `DefaultFactory` |
+| `DefaultRegistration` | `AddPropertyBag()` for `IServiceCollection` |
+
+## Thread safety
+
+A bag and its scopes hold no lock: synchronize concurrent use of one bag. [docs/assurance-case.md](docs/assurance-case.md) lists what the library guarantees and what it doesn't.
+
+## Project
+
+- [CONTRIBUTING.md](CONTRIBUTING.md): how to set up, build, test and propose a change.
+- [SECURITY.md](SECURITY.md): report a vulnerability privately through the repository's Security tab, never in a public issue.
+- [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md), [GOVERNANCE.md](GOVERNANCE.md) and [ROADMAP.md](ROADMAP.md): how we work together, who decides, and where the project is going.
+- [docs/architecture.md](docs/architecture.md) and [docs/assurance-case.md](docs/assurance-case.md): how the project is built, and why it meets its security requirements.
+- [docs/decisions/](docs/decisions/README.md): the decisions behind the design, the project's and the template's.
+- [CHANGELOG.md](CHANGELOG.md): what changed in each release.
+- [LICENSE.txt](LICENSE.txt): Apache License 2.0, copyright NCode Group.
