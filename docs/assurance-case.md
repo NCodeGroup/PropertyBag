@@ -15,7 +15,7 @@ user-facing summary.
 2. **R2 No external input or output.** The packages read no file, network, environment variable or configuration, start
    no process or thread, and serialize, deserialize or load no code; a bag holds only the objects its caller stores, in
    memory, for the bag's lifetime.
-3. **R3 Fail-safe lookups.** A missing key is reported, never thrown: `TryGetValue<T>`, `TryGet<T>` and
+3. **R3 Fail-safe lookups.** A missing key is reported, never thrown: both `TryGetValue<T>` overloads and
    `IReadOnlyDictionary.TryGetValue` return `false`, and the `IReadOnlyDictionary` indexer returns `null`.
 4. **R4 Independent clones.** `Clone()` returns a new bag whose entries change without changing the original's; a value
    that implements `ICloneable` is copied through its own `Clone()`, any other value is shared by reference.
@@ -27,9 +27,9 @@ user-facing summary.
 
 Users must not rely on:
 
-- **Thread safety:** `DefaultPropertyBag` and its scopes hold no lock; concurrent use of one bag needs the caller's
+- **Thread safety:** `PropertyBagDictionary` and its scopes hold no lock; concurrent use of one bag needs the caller's
   synchronization.
-- **Isolation:** `IReadOnlyPropertyBag` is a narrower view, not a protection: code holding a `DefaultPropertyBag`
+- **Isolation:** `IReadOnlyPropertyBag` is a narrower view, not a protection: code holding a `PropertyBagDictionary`
   through it can cast it back to `IPropertyBag`, and every caller in the process is trusted.
 - **Confidentiality:** values are ordinary managed objects, neither encrypted nor cleared; `Remove` only drops the bag's
   reference.
