@@ -82,7 +82,7 @@ public class DefaultPropertyBagScopeTests
     {
         var propertyBag = new DefaultPropertyBag();
         var key = new PropertyBagKey<string>("TestKey");
-        propertyBag.Set(key, "TestValue");
+        propertyBag.SetValue(key, "TestValue");
 
         var scope = new DefaultPropertyBagScope(propertyBag, key);
 
@@ -111,7 +111,7 @@ public class DefaultPropertyBagScopeTests
     {
         var propertyBag = new DefaultPropertyBag();
         var key = new PropertyBagKey<string>("TestKey");
-        propertyBag.Set(key, "TestValue");
+        propertyBag.SetValue(key, "TestValue");
 
         var scope = new DefaultPropertyBagScope(propertyBag, key);
 
@@ -130,11 +130,11 @@ public class DefaultPropertyBagScopeTests
     {
         var propertyBag = new DefaultPropertyBag();
         var key = new PropertyBagKey<int>("Counter");
-        propertyBag.Set(key, 1);
+        propertyBag.SetValue(key, 1);
 
         var scope = propertyBag.Scope(key, 2);
         scope.Dispose();
-        propertyBag.Set(key, 3);
+        propertyBag.SetValue(key, 3);
         scope.Dispose();
 
         var found = propertyBag.TryGetValue(key, out var value);
@@ -147,11 +147,11 @@ public class DefaultPropertyBagScopeTests
     {
         var propertyBag = new DefaultPropertyBag();
         var key = new PropertyBagKey<string>("TestKey");
-        propertyBag.Set(key, "First");
+        propertyBag.SetValue(key, "First");
 
         var scope = new DefaultPropertyBagScope(propertyBag, key);
         scope.Dispose();
-        propertyBag.Set(key, "Second");
+        propertyBag.SetValue(key, "Second");
         scope.Dispose();
 
         var found = propertyBag.TryGetValue(key, out var value);
@@ -165,8 +165,8 @@ public class DefaultPropertyBagScopeTests
         var propertyBag = new DefaultPropertyBag();
         var key1 = new PropertyBagKey<string>("Key1");
         var key2 = new PropertyBagKey<string>("Key2");
-        propertyBag.Set(key1, "Value1");
-        propertyBag.Set(key2, "Value2");
+        propertyBag.SetValue(key1, "Value1");
+        propertyBag.SetValue(key2, "Value2");
 
         var scope = new DefaultPropertyBagScope(propertyBag, key1);
 
@@ -186,7 +186,7 @@ public class DefaultPropertyBagScopeTests
     {
         var propertyBag = new DefaultPropertyBag();
         var key = new PropertyBagKey<string>("TestKey");
-        propertyBag.Set(key, "TestValue");
+        propertyBag.SetValue(key, "TestValue");
 
         using (new DefaultPropertyBagScope(propertyBag, key))
         {
@@ -202,7 +202,7 @@ public class DefaultPropertyBagScopeTests
     {
         var propertyBag = new DefaultPropertyBag();
         var key = new PropertyBagKey<string>("Culture");
-        propertyBag.Set(key, "en-US");
+        propertyBag.SetValue(key, "en-US");
 
         using (propertyBag.Scope(key, "fr-FR"))
         {
@@ -221,7 +221,7 @@ public class DefaultPropertyBagScopeTests
     {
         var propertyBag = new DefaultPropertyBag();
         var key = new PropertyBagKey<string>("TestKey");
-        propertyBag.Set(key, "TestValue");
+        propertyBag.SetValue(key, "TestValue");
 
         try
         {
@@ -247,7 +247,7 @@ public class DefaultPropertyBagScopeTests
     {
         var propertyBag = new DefaultPropertyBag();
         var key = new PropertyBagKey<int>("Counter");
-        propertyBag.Set(key, 1);
+        propertyBag.SetValue(key, 1);
 
         using (propertyBag.Scope(key, 2))
         {
@@ -277,7 +277,7 @@ public class DefaultPropertyBagScopeTests
     {
         var propertyBag = new DefaultPropertyBag();
         var key = new PropertyBagKey<int>("Counter");
-        propertyBag.Set(key, 1);
+        propertyBag.SetValue(key, 1);
         var outer = propertyBag.Scope(key, 2);
         var inner = propertyBag.Scope(key, 3);
 
@@ -299,7 +299,7 @@ public class DefaultPropertyBagScopeTests
     {
         var propertyBag = new DefaultPropertyBag();
         var key = new PropertyBagKey<string?>("Nullable");
-        propertyBag.Set(key, null);
+        propertyBag.SetValue(key, null);
 
         using (propertyBag.Scope(key, "temp"))
         {
@@ -323,8 +323,8 @@ public class DefaultPropertyBagScopeTests
         var stringKey = new PropertyBagKey<string>("Value");
         var intKey = new PropertyBagKey<int>("Value");
 
-        propertyBag.Set(stringKey, "StringValue");
-        propertyBag.Set(intKey, 42);
+        propertyBag.SetValue(stringKey, "StringValue");
+        propertyBag.SetValue(intKey, 42);
 
         using (new DefaultPropertyBagScope(propertyBag, stringKey))
         {

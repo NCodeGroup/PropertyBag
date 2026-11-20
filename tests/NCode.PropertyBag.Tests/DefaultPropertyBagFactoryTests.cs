@@ -116,7 +116,7 @@ public class DefaultPropertyBagFactoryTests
         var propertyBag1 = factory.Create();
         var propertyBag2 = factory.Create();
 
-        propertyBag1.Set(key, "Value1");
+        propertyBag1.SetValue(key, "Value1");
 
         Assert.True(propertyBag1.TryGetValue(key, out var value1));
         Assert.Equal("Value1", value1);

@@ -7,77 +7,77 @@ using System.Collections;
 
 public class DefaultPropertyBagTests
 {
-    #region Set Tests
+    #region SetValue Tests
 
     [Fact]
-    public void Set_WithStringValue_StoresValue()
+    public void SetValue_WithStringValue_StoresValue()
     {
         var propertyBag = new DefaultPropertyBag();
         var key = new PropertyBagKey<string>("TestKey");
 
-        propertyBag.Set(key, "TestValue");
+        propertyBag.SetValue(key, "TestValue");
 
         Assert.True(propertyBag.TryGetValue(key, out var value));
         Assert.Equal("TestValue", value);
     }
 
     [Fact]
-    public void Set_WithIntValue_StoresValue()
+    public void SetValue_WithIntValue_StoresValue()
     {
         var propertyBag = new DefaultPropertyBag();
         var key = new PropertyBagKey<int>("TestKey");
 
-        propertyBag.Set(key, 42);
+        propertyBag.SetValue(key, 42);
 
         Assert.True(propertyBag.TryGetValue(key, out var value));
         Assert.Equal(42, value);
     }
 
     [Fact]
-    public void Set_WithNullValue_StoresNull()
+    public void SetValue_WithNullValue_StoresNull()
     {
         var propertyBag = new DefaultPropertyBag();
         var key = new PropertyBagKey<string?>("TestKey");
 
-        propertyBag.Set(key, null);
+        propertyBag.SetValue(key, null);
 
         Assert.True(propertyBag.TryGetValue(key, out var value));
         Assert.Null(value);
     }
 
     [Fact]
-    public void Set_OverwritesExistingValue()
+    public void SetValue_OverwritesExistingValue()
     {
         var propertyBag = new DefaultPropertyBag();
         var key = new PropertyBagKey<string>("TestKey");
-        propertyBag.Set(key, "OriginalValue");
+        propertyBag.SetValue(key, "OriginalValue");
 
-        propertyBag.Set(key, "NewValue");
+        propertyBag.SetValue(key, "NewValue");
 
         Assert.True(propertyBag.TryGetValue(key, out var value));
         Assert.Equal("NewValue", value);
     }
 
     [Fact]
-    public void Set_ReturnsSameInstance_ForMethodChaining()
+    public void SetValue_ReturnsSameInstance_ForMethodChaining()
     {
         var propertyBag = new DefaultPropertyBag();
         var key = new PropertyBagKey<string>("TestKey");
 
-        var result = propertyBag.Set(key, "TestValue");
+        var result = propertyBag.SetValue(key, "TestValue");
 
         Assert.Same(propertyBag, result);
     }
 
     [Fact]
-    public void Set_MethodChaining_SetsMultipleValues()
+    public void SetValue_MethodChaining_SetsMultipleValues()
     {
         var propertyBag = new DefaultPropertyBag();
         var key1 = new PropertyBagKey<string>("Key1");
         var key2 = new PropertyBagKey<int>("Key2");
         var key3 = new PropertyBagKey<bool>("Key3");
 
-        propertyBag.Set(key1, "Value1").Set(key2, 42).Set(key3, true);
+        propertyBag.SetValue(key1, "Value1").SetValue(key2, 42).SetValue(key3, true);
 
         Assert.True(propertyBag.TryGetValue(key1, out var value1));
         Assert.Equal("Value1", value1);
@@ -96,7 +96,7 @@ public class DefaultPropertyBagTests
     {
         var propertyBag = new DefaultPropertyBag();
         var key = new PropertyBagKey<string>("TestKey");
-        propertyBag.Set(key, "TestValue");
+        propertyBag.SetValue(key, "TestValue");
 
         var result = propertyBag.TryGetValue(key, out var value);
 
@@ -134,7 +134,7 @@ public class DefaultPropertyBagTests
         var propertyBag = new DefaultPropertyBag();
         var stringKey = new PropertyBagKey<string>("Key");
         var intKey = new PropertyBagKey<int>("Key");
-        propertyBag.Set(stringKey, "StringValue");
+        propertyBag.SetValue(stringKey, "StringValue");
 
         var result = propertyBag.TryGetValue(intKey, out _);
 
@@ -157,7 +157,7 @@ public class DefaultPropertyBagTests
     {
         var propertyBag = new DefaultPropertyBag();
         var key = new PropertyBagKey<WrongTypeClone>("TestKey");
-        propertyBag.Set(key, new WrongTypeClone());
+        propertyBag.SetValue(key, new WrongTypeClone());
 
         // Clone deep-copies an ICloneable value, and this one's Clone returns another type.
         var clone = propertyBag.Clone();
@@ -175,7 +175,7 @@ public class DefaultPropertyBagTests
     {
         var propertyBag = new DefaultPropertyBag();
         var key = new PropertyBagKey<string>("TestKey");
-        propertyBag.Set(key, "TestValue");
+        propertyBag.SetValue(key, "TestValue");
 
         propertyBag.Remove(key);
 
@@ -210,8 +210,8 @@ public class DefaultPropertyBagTests
         var propertyBag = new DefaultPropertyBag();
         var key1 = new PropertyBagKey<string>("Key1");
         var key2 = new PropertyBagKey<string>("Key2");
-        propertyBag.Set(key1, "Value1");
-        propertyBag.Set(key2, "Value2");
+        propertyBag.SetValue(key1, "Value1");
+        propertyBag.SetValue(key2, "Value2");
 
         propertyBag.Remove(key1);
 
@@ -250,8 +250,8 @@ public class DefaultPropertyBagTests
         var propertyBag = new DefaultPropertyBag();
         var key1 = new PropertyBagKey<string>("Key1");
         var key2 = new PropertyBagKey<int>("Key2");
-        propertyBag.Set(key1, "Value1");
-        propertyBag.Set(key2, 42);
+        propertyBag.SetValue(key1, "Value1");
+        propertyBag.SetValue(key2, 42);
 
         var clone = propertyBag.Clone();
 
@@ -266,10 +266,10 @@ public class DefaultPropertyBagTests
     {
         var propertyBag = new DefaultPropertyBag();
         var key = new PropertyBagKey<string>("TestKey");
-        propertyBag.Set(key, "OriginalValue");
+        propertyBag.SetValue(key, "OriginalValue");
 
         var clone = propertyBag.Clone();
-        clone.Set(key, "ClonedValue");
+        clone.SetValue(key, "ClonedValue");
 
         Assert.True(propertyBag.TryGetValue(key, out var originalValue));
         Assert.Equal("OriginalValue", originalValue);
@@ -294,7 +294,7 @@ public class DefaultPropertyBagTests
         var propertyBag = new DefaultPropertyBag();
         var key = new PropertyBagKey<CloneableValue>("TestKey");
         var originalValue = new CloneableValue { Data = "Original" };
-        propertyBag.Set(key, originalValue);
+        propertyBag.SetValue(key, originalValue);
 
         var clone = propertyBag.Clone();
 
@@ -309,7 +309,7 @@ public class DefaultPropertyBagTests
         var propertyBag = new DefaultPropertyBag();
         var key = new PropertyBagKey<NonCloneableValue>("TestKey");
         var originalValue = new NonCloneableValue { Data = "Original" };
-        propertyBag.Set(key, originalValue);
+        propertyBag.SetValue(key, originalValue);
 
         var clone = propertyBag.Clone();
 
@@ -322,7 +322,7 @@ public class DefaultPropertyBagTests
     {
         ICloneable propertyBag = new DefaultPropertyBag();
         var key = new PropertyBagKey<string>("TestKey");
-        ((DefaultPropertyBag)propertyBag).Set(key, "TestValue");
+        ((DefaultPropertyBag)propertyBag).SetValue(key, "TestValue");
 
         var clone = propertyBag.Clone();
 
@@ -394,7 +394,7 @@ public class DefaultPropertyBagTests
     {
         var propertyBag = new DefaultPropertyBag();
         var key = new PropertyBagKey<string>("TestKey");
-        propertyBag.Set(key, "Outer");
+        propertyBag.SetValue(key, "Outer");
 
         using (propertyBag.Scope(key, "Inner"))
         {
@@ -424,8 +424,8 @@ public class DefaultPropertyBagTests
         var propertyBag = new DefaultPropertyBag();
         var key1 = new PropertyBagKey<string>("Key1");
         var key2 = new PropertyBagKey<int>("Key2");
-        propertyBag.Set(key1, "Value1");
-        propertyBag.Set(key2, 42);
+        propertyBag.SetValue(key1, "Value1");
+        propertyBag.SetValue(key2, 42);
 
         IReadOnlyDictionary<PropertyBagKey, object?> dict = propertyBag;
 
@@ -446,8 +446,8 @@ public class DefaultPropertyBagTests
         var propertyBag = new DefaultPropertyBag();
         var key1 = new PropertyBagKey<string>("Key1");
         var key2 = new PropertyBagKey<int>("Key2");
-        propertyBag.Set(key1, "Value1");
-        propertyBag.Set(key2, 42);
+        propertyBag.SetValue(key1, "Value1");
+        propertyBag.SetValue(key2, 42);
 
         IReadOnlyDictionary<PropertyBagKey, object?> dict = propertyBag;
 
@@ -470,8 +470,8 @@ public class DefaultPropertyBagTests
         var propertyBag = new DefaultPropertyBag();
         var key1 = new PropertyBagKey<string>("Key1");
         var key2 = new PropertyBagKey<int>("Key2");
-        propertyBag.Set(key1, "Value1");
-        propertyBag.Set(key2, 42);
+        propertyBag.SetValue(key1, "Value1");
+        propertyBag.SetValue(key2, 42);
 
         IReadOnlyDictionary<PropertyBagKey, object?> dict = propertyBag;
 
@@ -485,7 +485,7 @@ public class DefaultPropertyBagTests
     {
         var propertyBag = new DefaultPropertyBag();
         var key = new PropertyBagKey<string>("TestKey");
-        propertyBag.Set(key, "TestValue");
+        propertyBag.SetValue(key, "TestValue");
 
         IReadOnlyDictionary<PropertyBagKey, object?> dict = propertyBag;
 
@@ -508,7 +508,7 @@ public class DefaultPropertyBagTests
     {
         var propertyBag = new DefaultPropertyBag();
         var key = new PropertyBagKey<string>("TestKey");
-        propertyBag.Set(key, "TestValue");
+        propertyBag.SetValue(key, "TestValue");
 
         IReadOnlyDictionary<PropertyBagKey, object?> dict = propertyBag;
 
@@ -540,7 +540,7 @@ public class DefaultPropertyBagTests
     {
         var propertyBag = new DefaultPropertyBag();
         var key = new PropertyBagKey<string>("TestKey");
-        propertyBag.Set(key, "TestValue");
+        propertyBag.SetValue(key, "TestValue");
 
         IReadOnlyDictionary<PropertyBagKey, object?> dict = propertyBag;
         var result = dict.TryGetValue(key, out var value);
@@ -578,8 +578,8 @@ public class DefaultPropertyBagTests
         var propertyBag = new DefaultPropertyBag();
         var key1 = new PropertyBagKey<string>("Key1");
         var key2 = new PropertyBagKey<int>("Key2");
-        propertyBag.Set(key1, "Value1");
-        propertyBag.Set(key2, 42);
+        propertyBag.SetValue(key1, "Value1");
+        propertyBag.SetValue(key2, 42);
 
         IReadOnlyDictionary<PropertyBagKey, object?> dict = propertyBag;
         var items = dict.ToList();
@@ -592,7 +592,7 @@ public class DefaultPropertyBagTests
     {
         var propertyBag = new DefaultPropertyBag();
         var key = new PropertyBagKey<string>("TestKey");
-        propertyBag.Set(key, "TestValue");
+        propertyBag.SetValue(key, "TestValue");
 
         IEnumerable enumerable = propertyBag;
         var enumerator = enumerable.GetEnumerator();
@@ -605,8 +605,8 @@ public class DefaultPropertyBagTests
     public void Count_AfterAddingItems_CountsThroughIReadOnlyCollection()
     {
         var propertyBag = new DefaultPropertyBag();
-        propertyBag.Set(new PropertyBagKey<string>("Key1"), "Value1");
-        propertyBag.Set(new PropertyBagKey<int>("Key2"), 42);
+        propertyBag.SetValue(new PropertyBagKey<string>("Key1"), "Value1");
+        propertyBag.SetValue(new PropertyBagKey<int>("Key2"), 42);
 
         IReadOnlyCollection<KeyValuePair<PropertyBagKey, object?>> collection = propertyBag;
 
@@ -633,7 +633,7 @@ public class DefaultPropertyBagTests
         var propertyBag = new DefaultPropertyBag();
         var key1 = new PropertyBagKey<string>("Key1");
         var key2 = new PropertyBagKey<int>("Key2");
-        propertyBag.Set(key1, "Value1").Set(key2, 42);
+        propertyBag.SetValue(key1, "Value1").SetValue(key2, 42);
         IEnumerable<KeyValuePair<PropertyBagKey, object?>> typed = propertyBag;
 
         var entries = typed.ToArray();
