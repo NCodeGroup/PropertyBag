@@ -9,10 +9,6 @@
         <PackageTags>property-bag;property-dictionary;typed-dictionary;key-value;strongly-typed;dependency-injection;di;scope;context;cloneable</PackageTags>
     </PropertyGroup>
 
-    <PropertyGroup>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    </PropertyGroup>
-
     <ItemGroup>
         <PackageReference Include="JetBrains.Annotations" PrivateAssets="All" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
