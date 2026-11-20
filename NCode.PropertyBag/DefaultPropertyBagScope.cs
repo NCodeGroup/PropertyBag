@@ -51,12 +51,18 @@ namespace NCode.PropertyBag;
 /// </code>
 /// </example>
 /// <param name="propertyBag">The <see cref="IPropertyBag"/> instance that contains the scoped value.</param>
-/// <param name="key">The <see cref="PropertyBagKey"/> that identifies the scoped value to remove on disposal.</param>
+/// <param name="key">The <see cref="PropertyBagKey"/> that identifies the scoped value that disposal restores or removes.</param>
 /// <seealso cref="IPropertyBagScope"/>
 /// <seealso cref="IPropertyBag.Scope{T}"/>
 /// <seealso cref="DefaultPropertyBag"/>
 public class DefaultPropertyBagScope(IPropertyBag propertyBag, PropertyBagKey key) : IPropertyBagScope
 {
+    /// <summary>
+    /// Initializes a new scope whose <see cref="Dispose"/> calls <paramref name="restore"/> instead of removing the key.
+    /// </summary>
+    /// <param name="propertyBag">The <see cref="IPropertyBag"/> instance that contains the scoped value.</param>
+    /// <param name="key">The <see cref="PropertyBagKey"/> that identifies the scoped value.</param>
+    /// <param name="restore">The action that puts back the state the key held when the scope was created.</param>
     internal DefaultPropertyBagScope(IPropertyBag propertyBag, PropertyBagKey key, Action restore)
         : this(propertyBag, key)
     {
@@ -68,11 +74,18 @@ public class DefaultPropertyBagScope(IPropertyBag propertyBag, PropertyBagKey ke
     public IPropertyBag PropertyBag { get; } = propertyBag;
 
     /// <inheritdoc />
-    /// <value>The key that was passed to the constructor, identifying the value to remove on disposal.</value>
+    /// <value>The key that was passed to the constructor, identifying the value that disposal restores or removes.</value>
     public PropertyBagKey Key { get; } = key;
 
+    /// <summary>
+    /// The action that puts back the state captured when the scope was created,
+    /// or <c>null</c> for a scope that removes its key.
+    /// </summary>
     private Action? Restore { get; }
 
+    /// <summary>
+    /// Indicates whether <see cref="Dispose"/> has already acted.
+    /// </summary>
     private bool IsDisposed { get; set; }
 
     /// <summary>
