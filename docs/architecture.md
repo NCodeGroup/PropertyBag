@@ -74,14 +74,18 @@ The packages do no I/O, start no threads, and share no state except the two sett
 
 ## Build and Release
 
-CI runs the project's commands on every pull request (`.github/workflows/ci.yml`), and `.github/workflows/main.yml`
-builds, tests and packs every push and pull request too. A maintainer publishes each release as a GitHub release, once
-`version.json` holds its version
-([ADR-0138](decisions/project-template/0138-package-versions-come-from-version-json-through-nerdbank-gitversioning.md));
-the `publish` job of `main.yml` then pushes the release's packages to nuget.org with the repository's NuGet API key.
-Its `provenance` job then calls `release-provenance.yml`, which attests the packages and attaches them, a signed
-provenance file and an SBOM to the release
-([ADR-0139](decisions/project-template/0139-releases-carry-build-provenance.md)), and for a stable version its
-`baseline` job calls `raise-baseline.yml`, which opens the pull request that raises the package validation baseline
+`ci.yml` builds, tests and packs every pull request, and fails below 98% line or branch coverage
+([ADR-0026](decisions/project-template/0026-tests-gate-coverage-at-the-gold-thresholds-and-a-release-waits-for-them.md)). CodeQL scans the C# code
+and the workflows through GitHub's code scanning default setup. Merging a release's pull request, which sets
+`version.json` to its version
+([ADR-0138](decisions/project-template/0138-package-versions-come-from-version-json-through-nerdbank-gitversioning.md)),
+makes `tag-release.yml` run `ci.yml` again on the merged commit and, once it passes, tag that commit, signed with
+gitsign, and publish the GitHub release, then start `publish.yml`
+([ADR-0016](decisions/project-template/0016-releases-are-tagged-and-published-when-their-pull-request-merges.md)). `publish.yml` tests
+and packs the tagged commit and pushes to nuget.org through trusted publishing after a maintainer approves. It then
+calls `release-provenance.yml`, which attests the packages and attaches them, a signed provenance file and an SBOM to
+the release
+([ADR-0139](decisions/project-template/0139-releases-carry-build-provenance.md)), and for a stable version
+`raise-baseline.yml`, which opens the pull request that raises the package validation baseline
 ([ADR-0150](decisions/project-template/0150-a-workflow-raises-the-package-validation-baseline-after-each-release.md),
 [ADR-0151](decisions/project-template/0151-release-follow-ups-are-jobs-publish-calls.md)).

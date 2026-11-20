@@ -1,9 +1,20 @@
-[![ci](https://github.com/NCodeGroup/PropertyBag/actions/workflows/main.yml/badge.svg)](https://github.com/NCodeGroup/PropertyBag/actions)
-[![Nuget](https://img.shields.io/nuget/v/NCode.PropertyBag.svg)](https://www.nuget.org/packages/NCode.PropertyBag/)
+<p align="center">
+  <img src="NCodeGroup.png" alt="NCode" width="96" height="96">
+</p>
 
-# NCode.PropertyBag
+<h1 align="center">NCode.PropertyBag</h1>
 
-A lightweight, strongly-typed property bag library for .NET that provides type-safe key-value storage with support for scoped values, cloning, and dependency injection.
+<p align="center">
+  A lightweight, strongly-typed property bag library for .NET that provides type-safe key-value storage with support for scoped values, cloning, and dependency injection.
+</p>
+
+<p align="center">
+  <a href="https://www.nuget.org/packages/NCode.PropertyBag/"><img alt="NuGet version" src="https://img.shields.io/nuget/v/NCode.PropertyBag?logo=nuget"></a>
+  <a href="https://www.nuget.org/packages/NCode.PropertyBag/"><img alt="NuGet downloads" src="https://img.shields.io/nuget/dt/NCode.PropertyBag?logo=nuget"></a>
+  <a href="https://github.com/NCodeGroup/PropertyBag/actions/workflows/ci.yml?query=branch%3Amain"><img alt="CI" src="https://github.com/NCodeGroup/PropertyBag/actions/workflows/ci.yml/badge.svg?branch=main"></a>
+  <a href="https://codecov.io/gh/NCodeGroup/PropertyBag"><img alt="Coverage" src="https://codecov.io/gh/NCodeGroup/PropertyBag/branch/main/graph/badge.svg"></a>
+  <a href="LICENSE.txt"><img alt="License" src="https://img.shields.io/github/license/NCodeGroup/PropertyBag"></a>
+</p>
 
 ## Features
 

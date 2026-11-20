@@ -77,11 +77,13 @@ privilege and open design."
   overrides the application's (R5); an empty bag allocates nothing.
 - **Complete mediation:** every read goes through one lookup that compares the whole key, type and name, and checks the
   stored value's type on each read; nothing caches an earlier answer.
-- **Least privilege:** the library needs no permission or capability (R2). In CI, `main.yml` defaults to
-  `contents: read`; the `publish` job holds no repository permission and gets only the NuGet API key; write permissions
-  are granted only to the `provenance` and `baseline` jobs, each exactly what its called workflow declares.
-- **Open design:** the source is public under Apache-2.0 and Source Link maps each package to it; nothing depends on a
-  secret except the NuGet API key, which only the `publish` job reads.
+- **Least privilege:** the library needs no permission or capability (R2). In CI, `publish.yml` defaults to
+  no permission; the `pack` job reads the repository and holds no credential, the `publish` job runs in the protected
+  `nuget` environment with only an OIDC token, and write permissions are granted only to the `provenance` and `baseline`
+  jobs, each exactly what its called workflow declares.
+- **Open design:** the source is public under Apache-2.0 and Source Link maps each package to it; no stored secret
+  publishes a package: nuget.org trusted publishing exchanges the `publish` job's short-lived OIDC token for a
+  short-lived key.
 - **Least common mechanism:** each bag owns its dictionary; the only shared state is the two settable factory
   properties.
 - **Psychological acceptability:** typed keys make the safe call the natural one, and nullable annotations say where
@@ -114,11 +116,14 @@ privilege and open design."
 
 [//]: # "Maintainers: add the tests and the coverage the project keeps."
 
-- **Gate:** `./build/dod.ps1` builds in Release with warnings as errors
+- **Gate:** `./build/gate.ps1` checks the formatting with CSharpier
+  ([ADR-0148](decisions/project-template/0148-csharp-is-formatted-in-the-gate-and-files-carry-the-spdx-header.md)) and runs
+  `./build/dod.ps1`, which builds in Release with warnings as errors
   ([ADR-0100](decisions/project-template/0100-warnings-are-errors-in-every-project.md)), runs the analyzers and the
   banned-API list in `build/BannedSymbols.txt`
   ([ADR-0102](decisions/project-template/0102-disallowed-apis-are-banned-at-build-time.md)), and runs the tests; CI runs
-  the commands on every pull request.
+  the gate on every pull request, then `./build/Test-Coverage.ps1`, which fails below 98% line or branch coverage
+  ([ADR-0026](decisions/project-template/0026-tests-gate-coverage-at-the-gold-thresholds-and-a-release-waits-for-them.md)).
 - **Static analysis:** with CodeQL's default setup configured and analyzing at least one language, the repository
   ruleset blocks a pull request that adds a CodeQL alert at warning level or above, or a security alert of any severity
   ([ADR-0005](decisions/project-template/0005-the-default-branch-accepts-changes-only-through-pull-requests.md),
@@ -133,12 +138,12 @@ privilege and open design."
   a new version ([ADR-0009](decisions/project-template/0009-new-dependency-versions-wait-a-cooldown.md)). Dependabot proposes the updates. Central package management keeps one version of each package
   ([ADR-0101](decisions/project-template/0101-central-package-management.md)).
 - **Release integrity:** packages are deterministic and source-linked
-  ([ADR-0130](decisions/project-template/0130-source-link-and-symbol-packages.md)). The `build` job of
-  `.github/workflows/main.yml` builds and packs them from the tagged commit of a published GitHub release, whose tag must
-  match `version.json`
+  ([ADR-0130](decisions/project-template/0130-source-link-and-symbol-packages.md)). The `pack` job of
+  `.github/workflows/publish.yml` builds and packs them from the tagged commit of a published GitHub release, whose tag
+  must match `version.json` and name a commit `main` holds
   ([ADR-0138](decisions/project-template/0138-package-versions-come-from-version-json-through-nerdbank-gitversioning.md));
-  its `publish` job, which holds no repository permission, pushes them to nuget.org with the repository's NuGet API key,
-  and its `provenance` job signs a build-provenance attestation for them and attaches it to the release
+  its `publish` job, which runs in the protected `nuget` environment after a maintainer approves, pushes them to
+  nuget.org through trusted publishing with no stored key, and its `provenance` job signs a build-provenance attestation for them and attaches it to the release
   ([ADR-0139](decisions/project-template/0139-releases-carry-build-provenance.md)); nuget.org signs each package it
   accepts.
   [SECURITY.md](../SECURITY.md#verify-a-package) says how to verify a package.
