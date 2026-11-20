@@ -72,3 +72,4 @@ override in `AGENTS.md`.
 | [1007](1007-ncodegroup-docs-releases-are-taken-without-a-cooldown-during-the-build-out.md) | NCodeGroup/docs releases are taken without a cooldown during the build-out | Accepted |
 | [1008](1008-the-documentation-site-is-published-to-github-pages-from-the-default-branch.md) | The documentation site is published to GitHub Pages from the default branch | Accepted |
 | [1009](1009-the-documentation-site-is-served-at-propertybag-ncode-io.md) | The documentation site is served at propertybag.ncode.io | Accepted |
+| [1010](1010-new-capabilities-are-extension-members-and-new-types-and-the-interfaces-stay-unchanged-within-a-major-version.md) | New capabilities are extension members and new types, and the interfaces stay unchanged within a major version | Accepted |
