@@ -40,7 +40,23 @@ The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.
 
 - Both packages target .NET 8.0 as well as .NET 10.0.
 
+## [1.0.1] - 2026-01-18
+
+### Fixed
+
+- Both packages carry the NCode Group icon, which v1.0.0 left out because line-ending normalization had corrupted the image.
+
+## [1.0.0] - 2026-01-18
+
+### Added
+
+- `NCode.PropertyBag.Abstractions`: `IPropertyBag`, `IReadOnlyPropertyBag`, `IPropertyBagScope`, the strongly typed keys `PropertyBagKey` and `PropertyBagKey<T>`, and the `Set` and `TryGet` extensions that name the key after the caller's argument expression.
+- `NCode.PropertyBag`: `DefaultPropertyBag`, with lazy storage, scoped values and cloning, `DefaultPropertyBagScope`, the factories `IPropertyBagFactory`, `DefaultPropertyBagFactory` and `PropertyBagFactory`, and `AddPropertyBag()` for `Microsoft.Extensions.DependencyInjection`.
+- Both packages target .NET 10.0.
+
 [unreleased]: https://github.com/NCodeGroup/PropertyBag/compare/v1.2.0...HEAD
 [1.2.0]: https://github.com/NCodeGroup/PropertyBag/compare/v1.1.1...v1.2.0
 [1.1.1]: https://github.com/NCodeGroup/PropertyBag/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/NCodeGroup/PropertyBag/compare/v1.0.1...v1.1.0
+[1.0.1]: https://github.com/NCodeGroup/PropertyBag/compare/v1.0.0...v1.0.1
+[1.0.0]: https://github.com/NCodeGroup/PropertyBag/releases/tag/v1.0.0
