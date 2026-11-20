@@ -8,7 +8,55 @@ requirements.
 
 ## Components
 
-Not described yet.
+NCode.PropertyBag is two packages, `NCode.PropertyBag.Abstractions` and `NCode.PropertyBag`, both of which target net8.0
+and net10.0 and share the namespace `NCode.PropertyBag`.
+
+```mermaid
+flowchart LR
+  subgraph abs["NCode.PropertyBag.Abstractions"]
+    IRO[IReadOnlyPropertyBag]
+    IPB[IPropertyBag]
+    IPS[IPropertyBagScope]
+    KEY[PropertyBagKey]
+    EXT[PropertyBagExtensions]
+  end
+  subgraph impl["NCode.PropertyBag"]
+    REG[DefaultRegistration]
+    FAC[PropertyBagFactory]
+    DFAC[DefaultPropertyBagFactory]
+    BAG[DefaultPropertyBag]
+    SCOPE[DefaultPropertyBagScope]
+  end
+  APP[Application]
+  APP --> REG
+  APP --> FAC
+  REG -->|registers| DFAC
+  FAC -->|delegates to| DFAC
+  DFAC -->|creates| BAG
+  BAG -->|implements| IPB
+  IPB -->|extends| IRO
+  BAG -->|Scope returns| SCOPE
+  SCOPE -->|implements| IPS
+  BAG -->|stores values by| KEY
+  EXT -->|calls| IPB
+```
+
+| Component | Role |
+| --- | --- |
+| `NCode.PropertyBag.Abstractions` | The contracts; no runtime dependency (`JetBrains.Annotations` is compile-time only); code that only passes or reads bags references this package ([ADR-0132](decisions/project-template/0132-implementation-packages-depend-only-on-abstractions.md)) |
+| `PropertyBagKey<T>` | Readonly struct naming a value by `Name` and the type `T`; converts implicitly to `PropertyBagKey` |
+| `PropertyBagKey` | Readonly struct of `Type` and `Name`, the dictionary key; equal only when both the type and the name (ordinal) match |
+| `IReadOnlyPropertyBag`, `IPropertyBag`, `IPropertyBagScope` | `IReadOnlyPropertyBag` has `TryGetValue<T>` and `Clone`. `IPropertyBag` adds `Set<T>`, `Remove` and `Scope<T>`, each returning for chaining. `IPropertyBagScope` is the `IDisposable` that `Scope<T>` returns, naming its bag and key |
+| `PropertyBagExtensions` | `Set<T>(value)` and `TryGet<T>(out value)`, which name the key after the caller's argument expression (`[CallerArgumentExpression]`) |
+| `NCode.PropertyBag` | The implementation; depends on the abstractions and `Microsoft.Extensions.DependencyInjection.Abstractions` |
+| `DefaultPropertyBag` | `IPropertyBag`, `IReadOnlyDictionary<PropertyBagKey, object?>` and `ICloneable` over a `Dictionary<PropertyBagKey, object?>` allocated on the first `Set`; `TryGetValue<T>` returns a value only when the stored object is `null` or a `T`; `Clone` copies the entries, cloning values that implement `ICloneable`; holds no lock |
+| `DefaultPropertyBagScope` | `Dispose` acts once; a scope from `DefaultPropertyBag.Scope` restores the value its key held when the scope was created, or removes the key when it held none, and one constructed directly removes its key |
+| `IPropertyBagFactory`, `DefaultPropertyBagFactory` | `Create()` returns a new `DefaultPropertyBag`; `DefaultPropertyBagFactory.Singleton` is a settable static instance |
+| `PropertyBagFactory` | Static `Create()` through `DefaultFactory`, settable, which falls back to `DefaultPropertyBagFactory.Singleton` |
+| `DefaultRegistration` | `services.AddPropertyBag()` registers `DefaultPropertyBagFactory` as the singleton `IPropertyBagFactory` with `TryAddSingleton`, so an earlier registration wins |
+| `NCode.PropertyBag.Tests` | xUnit tests of every type above, on net10.0 |
+
+The packages do no I/O, start no threads, and share no state except the two settable factory properties.
 
 ## Design Rules
 
