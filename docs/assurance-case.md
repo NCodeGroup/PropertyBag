@@ -27,10 +27,11 @@ user-facing summary.
 
 Users must not rely on:
 
-- **Thread safety:** `PropertyBagDictionary` and its scopes hold no lock; concurrent use of one bag needs the caller's
-  synchronization.
+- **Thread safety:** `PropertyBagDictionary`, `LayeredPropertyBag` and their scopes hold no lock; concurrent use of one
+  of them needs the caller's synchronization, or a `ConcurrentPropertyBagDictionary`.
 - **Isolation:** `IReadOnlyPropertyBag` is a narrower view, not a protection: code holding a `PropertyBagDictionary`
-  through it can cast it back to `IPropertyBag`, and every caller in the process is trusted.
+  through it can cast it back to `IPropertyBag`; `AsReadOnly()` returns a `ReadOnlyPropertyBag`, which can't be cast
+  back, but every caller in the process is still trusted.
 - **Confidentiality:** values are ordinary managed objects, neither encrypted nor cleared; `Remove` only drops the bag's
   reference.
 - **Bounded size:** a bag holds every entry it is given; an application that lets untrusted input choose key names or
@@ -60,7 +61,7 @@ repository's reviewed code through CI to the packages on nuget.org.
 | The library's registration replaces the application's own factory | Yes | R5 |
 | Untrusted data arrives through files, the network or deserialization | No: the packages have no such input | R2 |
 | Unbounded entries from untrusted input exhaust memory | No: the application bounds what it stores | — |
-| Concurrent writes corrupt a bag | No: a bag isn't thread-safe; the caller synchronizes | — |
+| Concurrent writes corrupt a bag | Yes for `ConcurrentPropertyBagDictionary`, which takes a lock; no for the other bags, whose caller synchronizes | — |
 | Hostile code in the same process reads a bag or replaces the default factory | No: .NET has no isolation within a process | — |
 | A tampered or unreviewed package reaches consumers | Yes | R6, and the review and release evidence below |
 | A vulnerable dependency | Yes | One runtime dependency, `Microsoft.Extensions.DependencyInjection.Abstractions`, pinned centrally and updated by Dependabot; NuGet advisories fail CI |
@@ -71,8 +72,9 @@ repository's reviewed code through CI to the packages on nuget.org.
 privilege and open design."
 
 - **Economy of mechanism:** two small packages: five abstractions (three interfaces, two key structs) plus extensions,
-  and an implementation of one dictionary-backed bag, a scope, a factory and one registration method; one runtime
-  dependency; no configuration.
+  and an implementation of a dictionary-backed bag, a concurrent one behind a single lock, a layered bag, a read-only
+  wrapper, a scope, a factory and two extension classes (one registration method, plus `CreateChild` and `AsReadOnly`);
+  one runtime dependency; no configuration.
 - **Fail-safe defaults:** lookups of a missing or mistyped key return `false` and `default` (R1, R3); registration never
   overrides the application's (R5); an empty bag allocates nothing.
 - **Complete mediation:** every read goes through one lookup that compares the whole key, type and name, and checks the
