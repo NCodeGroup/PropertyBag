@@ -28,8 +28,10 @@ a maintainer; the existing maintainers decide, and the change is recorded in thi
 
 Versions follow Semantic Versioning. A maintainer sets `version.json` to the release's version, then publishes the
 GitHub release, which tags it; the `publish` job of `.github/workflows/main.yml` then pushes its packages to nuget.org
-with the repository's NuGet API key.
-[SECURITY.md](SECURITY.md) says how to verify a package.
+with the repository's NuGet API key. Its `provenance` job then attaches the packages, a signed build-provenance file
+and an SBOM to the release, and for a stable version its `baseline` job opens the draft pull request that raises the
+package validation baseline, which a maintainer merges once CI passes. [SECURITY.md](SECURITY.md) says how to verify a
+package.
 
 ## Continuity
 

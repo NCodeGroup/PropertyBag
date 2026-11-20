@@ -8,26 +8,107 @@ user-facing summary.
 
 [//]: # "Maintainers: list what the project is expected to do as R1, R2, ..., and what users must not rely on."
 
-Not written yet.
+1. **R1 Type-safe retrieval.** A value is returned only under the key it was stored with: `PropertyBagKey` equality
+   compares both `Type` and `Name` (ordinal), and `TryGetValue<T>` returns `true` only when the stored object is `null`
+   or a `T` (an `is T` test, not a cast); otherwise it returns `false` with `default` and never throws
+   `InvalidCastException`.
+2. **R2 No external input or output.** The packages read no file, network, environment variable or configuration, start
+   no process or thread, and serialize, deserialize or load no code; a bag holds only the objects its caller stores, in
+   memory, for the bag's lifetime.
+3. **R3 Fail-safe lookups.** A missing key is reported, never thrown: `TryGetValue<T>`, `TryGet<T>` and
+   `IReadOnlyDictionary.TryGetValue` return `false`, and the `IReadOnlyDictionary` indexer returns `null`.
+4. **R4 Independent clones.** `Clone()` returns a new bag whose entries change without changing the original's; a value
+   that implements `ICloneable` is copied through its own `Clone()`, any other value is shared by reference.
+5. **R5 Registration never overrides.** `AddPropertyBag()` uses `TryAddSingleton`, so an `IPropertyBagFactory` the
+   application registered first is kept.
+6. **R6 Traceable packages.** CI builds the packages from the tagged commit of a published GitHub release,
+   deterministically and with Source Link, refusing a tag that differs from `version.json`; nuget.org signs them, and
+   each release's packages carry a signed build-provenance attestation.
+
+Users must not rely on:
+
+- **Thread safety:** `DefaultPropertyBag` and its scopes hold no lock; concurrent use of one bag needs the caller's
+  synchronization.
+- **Isolation:** `IReadOnlyPropertyBag` is a narrower view, not a protection: code holding a `DefaultPropertyBag`
+  through it can cast it back to `IPropertyBag`, and every caller in the process is trusted.
+- **Confidentiality:** values are ordinary managed objects, neither encrypted nor cleared; `Remove` only drops the bag's
+  reference.
+- **Bounded size:** a bag holds every entry it is given; an application that lets untrusted input choose key names or
+  values bounds them itself.
+- **Out-of-order scopes:** each scope restores the value its key held when the scope was created, so nested scopes
+  disposed out of order leave the value the last disposed one captured.
+- **Deep copies:** `Clone()` shares values that don't implement `ICloneable` and runs the `Clone()` of those that do.
+- **A fixed factory:** `PropertyBagFactory.DefaultFactory` and `DefaultPropertyBagFactory.Singleton` are settable
+  process-wide, so any code in the process can replace the factory `PropertyBagFactory.Create()` uses.
 
 ## Threat Model
 
 [//]: # "Maintainers: add a table (Threat, In scope, Countered by) and state the trust boundary."
 
-Not written yet.
+The library has no trust boundary of its own: it runs in the application's process with the application's permissions,
+and every caller of its API is trusted code. Untrusted data reaches it only as values and key names the application
+chooses to store, after validating them. The trust boundary this project guards is the supply chain, from this
+repository's reviewed code through CI to the packages on nuget.org.
+
+| Threat | In scope | Countered by |
+| --- | --- | --- |
+| A value is read as a type other than the one stored (type confusion) | Yes | R1 |
+| Two components use one key name for different types and overwrite each other | Yes | R1: the key includes the type, so only the same name and type collide |
+| Keys chosen to collide slow the dictionary (hash flooding) | Yes | `PropertyBagKey.GetHashCode` combines `Type` and `Name` with `HashCode.Combine`, whose seed is random per process, over .NET's randomized string hash |
+| A missing or mistyped key throws in the caller | Yes | R1, R3 |
+| A change to a clone leaks into the original | Yes | R4 |
+| The library's registration replaces the application's own factory | Yes | R5 |
+| Untrusted data arrives through files, the network or deserialization | No: the packages have no such input | R2 |
+| Unbounded entries from untrusted input exhaust memory | No: the application bounds what it stores | — |
+| Concurrent writes corrupt a bag | No: a bag isn't thread-safe; the caller synchronizes | — |
+| Hostile code in the same process reads a bag or replaces the default factory | No: .NET has no isolation within a process | — |
+| A tampered or unreviewed package reaches consumers | Yes | R6, and the review and release evidence below |
+| A vulnerable dependency | Yes | One runtime dependency, `Microsoft.Extensions.DependencyInjection.Abstractions`, pinned centrally and updated by Dependabot; NuGet advisories fail CI |
 
 ## Secure Design Principles Applied
 
 [//]: # "Maintainers: say how the design applies economy of mechanism, fail-safe defaults, complete mediation, least
 privilege and open design."
 
-Not written yet.
+- **Economy of mechanism:** two small packages: five abstractions (three interfaces, two key structs) plus extensions,
+  and an implementation of one dictionary-backed bag, a scope, a factory and one registration method; one runtime
+  dependency; no configuration.
+- **Fail-safe defaults:** lookups of a missing or mistyped key return `false` and `default` (R1, R3); registration never
+  overrides the application's (R5); an empty bag allocates nothing.
+- **Complete mediation:** every read goes through one lookup that compares the whole key, type and name, and checks the
+  stored value's type on each read; nothing caches an earlier answer.
+- **Least privilege:** the library needs no permission or capability (R2). In CI, `main.yml` defaults to
+  `contents: read`; the `publish` job holds no repository permission and gets only the NuGet API key; write permissions
+  are granted only to the `provenance` and `baseline` jobs, each exactly what its called workflow declares.
+- **Open design:** the source is public under Apache-2.0 and Source Link maps each package to it; nothing depends on a
+  secret except the NuGet API key, which only the `publish` job reads.
+- **Least common mechanism:** each bag owns its dictionary; the only shared state is the two settable factory
+  properties.
+- **Psychological acceptability:** typed keys make the safe call the natural one, and nullable annotations say where
+  `null` is allowed.
 
 ## Common Weaknesses Countered
 
 [//]: # "Maintainers: list the CWE ids the design counters, each with the requirement that counters it."
 
-Not written yet.
+- **[CWE-843](https://cwe.mitre.org/data/definitions/843.html) Access of Resource Using Incompatible Type ('Type
+  Confusion'):** a value is returned only under the key and type it was stored with (R1).
+- **[CWE-704](https://cwe.mitre.org/data/definitions/704.html) Incorrect Type Conversion or Cast:** `TryGetValue<T>`
+  tests the stored object with `is T`, never a cast (R1).
+- **[CWE-407](https://cwe.mitre.org/data/definitions/407.html) Inefficient Algorithmic Complexity:** randomized key
+  hashing (see the Threat Model).
+- **[CWE-476](https://cwe.mitre.org/data/definitions/476.html) NULL Pointer Dereference:** nullable reference types with
+  warnings as errors, the null-forgiving operator banned outside tests
+  ([ADR-0100](decisions/project-template/0100-warnings-are-errors-in-every-project.md)), and an explicit `null` value
+  contract (R1).
+- **[CWE-502](https://cwe.mitre.org/data/definitions/502.html) Deserialization of Untrusted Data:** the packages
+  deserialize nothing (R2).
+- **[CWE-1104](https://cwe.mitre.org/data/definitions/1104.html) Use of Unmaintained Third Party Components:** pinned
+  dependencies moved by Dependabot
+  ([ADR-0008](decisions/project-template/0008-external-inputs-are-pinned-and-kept-current.md)).
+- **[CWE-494](https://cwe.mitre.org/data/definitions/494.html) Download of Code Without Integrity Check:** nuget.org's
+  signature and the release's provenance attestation let a consumer check a package (R6,
+  [SECURITY.md](../SECURITY.md#verify-a-package)).
 
 ## Evidence
 
@@ -52,10 +133,14 @@ Not written yet.
   a new version ([ADR-0009](decisions/project-template/0009-new-dependency-versions-wait-a-cooldown.md)). Dependabot proposes the updates. Central package management keeps one version of each package
   ([ADR-0101](decisions/project-template/0101-central-package-management.md)).
 - **Release integrity:** packages are deterministic and source-linked
-  ([ADR-0130](decisions/project-template/0130-source-link-and-symbol-packages.md)). The `publish` job of
-  `.github/workflows/main.yml` builds them from the tagged commit of a published GitHub release, whose tag must match
-  `version.json` ([ADR-0138](decisions/project-template/0138-package-versions-come-from-version-json-through-nerdbank-gitversioning.md)),
-  and pushes them to nuget.org with the repository's NuGet API key; nuget.org signs each package it accepts.
+  ([ADR-0130](decisions/project-template/0130-source-link-and-symbol-packages.md)). The `build` job of
+  `.github/workflows/main.yml` builds and packs them from the tagged commit of a published GitHub release, whose tag must
+  match `version.json`
+  ([ADR-0138](decisions/project-template/0138-package-versions-come-from-version-json-through-nerdbank-gitversioning.md));
+  its `publish` job, which holds no repository permission, pushes them to nuget.org with the repository's NuGet API key,
+  and its `provenance` job signs a build-provenance attestation for them and attaches it to the release
+  ([ADR-0139](decisions/project-template/0139-releases-carry-build-provenance.md)); nuget.org signs each package it
+  accepts.
   [SECURITY.md](../SECURITY.md#verify-a-package) says how to verify a package.
 - **Response:** [SECURITY.md](../SECURITY.md) defines private reporting, coordinated disclosure and credit.
 

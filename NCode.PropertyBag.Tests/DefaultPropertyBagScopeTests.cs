@@ -123,6 +123,40 @@ public class DefaultPropertyBagScopeTests
     }
 
     [Fact]
+    public void Dispose_FromScopeMethod_CalledTwice_RestoresOnce()
+    {
+        var propertyBag = new DefaultPropertyBag();
+        var key = new PropertyBagKey<int>("Counter");
+        propertyBag.Set(key, 1);
+
+        var scope = propertyBag.Scope(key, 2);
+        scope.Dispose();
+        propertyBag.Set(key, 3);
+        scope.Dispose();
+
+        var found = propertyBag.TryGetValue(key, out var value);
+        Assert.True(found);
+        Assert.Equal(3, value);
+    }
+
+    [Fact]
+    public void Dispose_CalledTwice_RemovesOnce()
+    {
+        var propertyBag = new DefaultPropertyBag();
+        var key = new PropertyBagKey<string>("TestKey");
+        propertyBag.Set(key, "First");
+
+        var scope = new DefaultPropertyBagScope(propertyBag, key);
+        scope.Dispose();
+        propertyBag.Set(key, "Second");
+        scope.Dispose();
+
+        var found = propertyBag.TryGetValue(key, out var value);
+        Assert.True(found);
+        Assert.Equal("Second", value);
+    }
+
+    [Fact]
     public void Dispose_OnlyRemovesSpecifiedKey()
     {
         var propertyBag = new DefaultPropertyBag();
@@ -169,11 +203,14 @@ public class DefaultPropertyBagScopeTests
 
         using (propertyBag.Scope(key, "fr-FR"))
         {
-            Assert.True(propertyBag.TryGetValue(key, out var value));
+            var foundInScope = propertyBag.TryGetValue(key, out var value);
+            Assert.True(foundInScope);
             Assert.Equal("fr-FR", value);
         }
 
-        Assert.False(propertyBag.TryGetValue(key, out _));
+        var foundAfterScope = propertyBag.TryGetValue(key, out var restored);
+        Assert.True(foundAfterScope);
+        Assert.Equal("en-US", restored);
     }
 
     [Fact]
@@ -203,7 +240,7 @@ public class DefaultPropertyBagScopeTests
     #region Integration Tests
 
     [Fact]
-    public void NestedScopes_RemoveInCorrectOrder()
+    public void NestedScopes_RestoreInReverseOrder()
     {
         var propertyBag = new DefaultPropertyBag();
         var key = new PropertyBagKey<int>("Counter");
@@ -211,21 +248,69 @@ public class DefaultPropertyBagScopeTests
 
         using (propertyBag.Scope(key, 2))
         {
-            Assert.True(propertyBag.TryGetValue(key, out var value1));
+            var foundInOuter = propertyBag.TryGetValue(key, out var value1);
+            Assert.True(foundInOuter);
             Assert.Equal(2, value1);
 
             using (propertyBag.Scope(key, 3))
             {
-                Assert.True(propertyBag.TryGetValue(key, out var value2));
+                var foundInInner = propertyBag.TryGetValue(key, out var value2);
+                Assert.True(foundInInner);
                 Assert.Equal(3, value2);
             }
 
-            // After inner scope disposes, value is removed (not restored to 2)
-            Assert.False(propertyBag.TryGetValue(key, out _));
+            var foundAfterInner = propertyBag.TryGetValue(key, out var value3);
+            Assert.True(foundAfterInner);
+            Assert.Equal(2, value3);
         }
 
-        // After outer scope disposes, still no value
-        Assert.False(propertyBag.TryGetValue(key, out _));
+        var foundAfterOuter = propertyBag.TryGetValue(key, out var value4);
+        Assert.True(foundAfterOuter);
+        Assert.Equal(1, value4);
+    }
+
+    [Fact]
+    public void Dispose_WhenNestedScopesDisposedOutOfOrder_LeavesValueCapturedByLastDisposed()
+    {
+        var propertyBag = new DefaultPropertyBag();
+        var key = new PropertyBagKey<int>("Counter");
+        propertyBag.Set(key, 1);
+        var outer = propertyBag.Scope(key, 2);
+        var inner = propertyBag.Scope(key, 3);
+
+        outer.Dispose();
+
+        var foundAfterOuter = propertyBag.TryGetValue(key, out var valueAfterOuter);
+        Assert.True(foundAfterOuter);
+        Assert.Equal(1, valueAfterOuter);
+
+        inner.Dispose();
+
+        var foundAfterInner = propertyBag.TryGetValue(key, out var valueAfterInner);
+        Assert.True(foundAfterInner);
+        Assert.Equal(2, valueAfterInner);
+    }
+
+    [Fact]
+    public void Scope_WhenKeyHeldNull_RestoresNull()
+    {
+        var propertyBag = new DefaultPropertyBag();
+        var key = new PropertyBagKey<string?>("Nullable");
+        propertyBag.Set(key, null);
+
+        using (propertyBag.Scope(key, "temp"))
+        {
+            var foundInScope = propertyBag.TryGetValue(key, out var value);
+            Assert.True(foundInScope);
+            Assert.Equal("temp", value);
+        }
+
+        var dictionary = (IReadOnlyDictionary<PropertyBagKey, object?>)propertyBag;
+        var containsKey = dictionary.ContainsKey(key);
+        var foundAfterScope = dictionary.TryGetValue(key, out var restored);
+        Assert.True(containsKey);
+        Assert.True(foundAfterScope);
+        Assert.Null(restored);
     }
 
     [Fact]

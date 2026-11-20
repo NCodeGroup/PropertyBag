@@ -37,6 +37,7 @@ The packages are built in CI from a tagged commit of this repository, determinis
 
 - Each package's PDB maps every source file to its commit in this repository, and its symbol package (`.snupkg`) is on the nuget.org symbol server. With Source Link and the nuget.org symbol server turned on in your debugger, you step into the exact source a package was built from. NuGet Package Explorer shows whether a package's Source Link and deterministic build are valid.
 - nuget.org signs every package it accepts: `dotnet nuget verify --all <package>.nupkg` checks that signature.
+- Each release published since build provenance was added carries a signed build-provenance attestation for its packages, made by the `provenance` job of `.github/workflows/main.yml` through `.github/workflows/release-provenance.yml`, and its GitHub release carries the packages, the provenance file (`<tag>.intoto.jsonl`) and an SPDX SBOM (`<tag>.spdx.json`). `gh attestation verify <package>.nupkg --repo NCodeGroup/PropertyBag` checks that a package was built by this repository's workflow. Releases up to v1.2.0 carry none.
 
 ## Scope
 

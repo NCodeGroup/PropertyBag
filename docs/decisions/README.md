@@ -60,7 +60,6 @@ override in `AGENTS.md`.
 
 ## Index
 
-NCode.PropertyBag has no decision records of its own yet; the first one is numbered 1000.
-
 | ADR | Decision | Status |
 | --- | --- | --- |
+| [1000](1000-disposing-a-scope-restores-the-previous-value.md) | Disposing a scope restores the previous value | Accepted |
