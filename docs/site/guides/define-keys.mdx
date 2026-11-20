@@ -1,0 +1,36 @@
+---
+title: Define keys
+description: Declare a typed key once and use it wherever a value is stored or read.
+---
+
+A bag stores each value under a key, and the key carries the type of the value, so reading a value needs no cast. This page shows how to declare keys and what makes two keys the same.
+
+## Declare a key
+
+A key is a `PropertyBagKey<T>`, a readonly struct made from a name. Group the keys of one feature in a static class, as `static readonly` fields, so every caller shares one declaration.
+
+```cs snippet=SiteDefineKeysDeclare
+```
+
+## One name, several types
+
+The key is the type and the name together, so one name can hold values of different types in the same bag.
+
+```cs snippet=SiteDefineKeysSameName
+```
+
+## Equal keys find the same value
+
+Keys compare by value. Code that builds its own key with the same type and name reads the same entry, so a key does not need to be passed around as one instance.
+
+```cs snippet=SiteDefineKeysNewInstance
+```
+
+## Pitfalls
+
+```cs snippet=SiteDefineKeysPitfalls
+```
+
+- `default` and the parameterless constructor give a key whose `Name` is `null`.
+- Names compare ordinally and are case-sensitive: `"UserName"` and `"username"` are two keys.
+- `PropertyBagKey<string>` and `PropertyBagKey<string?>` are one key, while `PropertyBagKey<int>` and `PropertyBagKey<int?>` are two, as [key identity](/concepts/key-identity/) explains.

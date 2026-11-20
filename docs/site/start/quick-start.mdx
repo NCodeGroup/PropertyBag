@@ -1,0 +1,49 @@
+---
+title: Quick start
+description: Install the package, define a key, then store, read, scope and remove a value.
+---
+
+This page takes you from an empty project to a bag that holds, overrides and removes a value.
+
+## Install
+
+```sh
+dotnet add package NCode.PropertyBag
+```
+
+The package brings `NCode.PropertyBag.Abstractions` with it. Both share the namespace `NCode.PropertyBag`.
+
+## Define a key
+
+A key is a `PropertyBagKey<T>`: the type of the value and a name. Declare each key once, as a `static readonly` field, and share it.
+
+```cs snippet=SiteQuickStartKeys
+```
+
+## Store and read a value
+
+`PropertyBagFactory.Create()` returns a new `PropertyBagDictionary`. `SetValue` returns the bag, so calls chain. `TryGetValue` returns `false` and `default` for a key the bag does not hold, and never throws.
+
+```cs snippet=SiteQuickStartStore
+```
+
+## Override a value for a scope
+
+`Scope` sets a value until the scope it returns is disposed. Disposing the scope restores the previous value.
+
+```cs snippet=SiteQuickStartScope
+```
+
+## Remove a value
+
+`Remove` takes the non-generic `PropertyBagKey`, to which a `PropertyBagKey<T>` converts implicitly.
+
+```cs snippet=SiteQuickStartRemove
+```
+
+## Next steps
+
+- [Define keys](/guides/define-keys/) for how keys are declared and compared.
+- [Store and read values](/guides/store-and-read-values/) for what a missing key or a stored `null` returns.
+- [Scope a value](/guides/scope-a-value/) for overriding a value for a block of code.
+- [Dependency injection](/guides/dependency-injection/) for registering the bag factory.

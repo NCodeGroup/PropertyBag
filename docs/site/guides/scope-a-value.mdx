@@ -1,0 +1,45 @@
+---
+title: Scope a value
+description: Override a value for the length of a using block, and get the previous value back when the scope is disposed.
+---
+
+A scope sets a value for a key and gives the previous value back when the scope ends. This page shows how to override a value for a `using` block, what happens to a key that held nothing, how scopes nest, and what to watch for.
+
+## Override a value
+
+`Scope` sets the value at once and returns an `IPropertyBagScope`, an `IDisposable` whose `Key` and `PropertyBag` name what it restores. Disposing the scope puts back the value the key held. The scoped value may be `null`.
+
+```cs snippet=SiteScopeAValueOverride
+```
+
+## Scope a key that held nothing
+
+When the key held no value, disposing the scope removes the key instead of leaving the scoped value behind.
+
+```cs snippet=SiteScopeAValueNoPrevious
+```
+
+## Nest scopes
+
+Scopes over one key nest. A `using` statement disposes them in reverse order, so each level is restored to the value that was current when its scope began.
+
+```cs snippet=SiteScopeAValueNested
+```
+
+## Pitfalls
+
+Scopes disposed out of order restore what each one captured when it began, so the value left is the one the last scope disposed captured. Here the key holds `"A"`, then `"B"` and `"C"` are scoped, and the scope over `"B"` is disposed first:
+
+```cs snippet=SiteScopeAValueOutOfOrder
+```
+
+A `SetValue` made inside a scope does not outlast it. Disposing the scope restores the captured value over whatever was set:
+
+```cs snippet=SiteScopeAValueSetInside
+```
+
+- A second `Dispose` does nothing: a scope acts once.
+- A `DefaultPropertyBagScope` built with its public constructor removes its key instead of restoring it, as [how the default bag works](/concepts/how-the-default-bag-works/) explains.
+- A bag and its scopes hold no lock, so do not share one bag between threads that scope or set values at the same time.
+
+The decision behind this behavior is [ADR-1000](https://github.com/NCodeGroup/PropertyBag/blob/main/docs/decisions/1000-disposing-a-scope-restores-the-previous-value.md).

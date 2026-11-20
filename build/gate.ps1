@@ -1,10 +1,13 @@
+# Copyright © NCode Group
+# SPDX-License-Identifier: Apache-2.0
+
 #requires -version 7
 <#
 .SYNOPSIS
-    The project's gate: restores the local tools, checks that the READMEs' samples match the tests (ADR-1003), then runs the Definition of Done, build/dod.ps1, whose Format stage runs the CSharpier check (project-template ADR-0148).
+    The project's gate: the sample key check, the README samples check (build/Assert-Markdown.ps1, tested offline by build/Test-AssertMarkdown.ps1), the API map check (build/Assert-ApiMap.ps1, whose rules build/Test-AssertApiMap.ps1 tests offline first), the XML documentation examples check (build/Test-XmlDocExamples.ps1, tested by build/Test-TestXmlDocExamples.ps1) and the site script's offline test (build/Test-Site.ps1), then the Definition of Done, build/dod.ps1, whose Format stage runs the CSharpier check (project-template ADR-0148, ADR-1003, ADR-1006).
 .DESCRIPTION
-    build/dod.ps1 is template-owned, so this script runs the samples check before it, as project-template ADR-0117 says. -Fast and -Filter are
-    passed on to build/dod.ps1.
+    build/dod.ps1 is template-owned and has no stage for the samples, so this script runs those checks before it, as
+    project-template ADR-0117 says. -Fast and -Filter are passed on to build/dod.ps1.
 #>
 [CmdletBinding()]
 param([switch]$Fast, [string]$Filter)
@@ -13,13 +16,38 @@ Push-Location (Split-Path -Parent $PSScriptRoot)
 try {
     dotnet tool restore
     if ($LASTEXITCODE) { exit $LASTEXITCODE }
-    # The READMEs' C# samples are copied from the tests (ADR-1003); a sample changed in only one place fails here.
-    $markdown = { git ls-files --cached --others --exclude-standard -- '*.md' | Where-Object { Test-Path -LiteralPath $_ } | ForEach-Object { "$((Get-FileHash -LiteralPath $_).Hash) $_" } }
-    $before = & $markdown
-    dotnet mdsnippets
-    if ($LASTEXITCODE) { 'README samples: FAILED. dotnet mdsnippets could not merge the samples.'; exit 1 }
-    $changed = @(Compare-Object @(& $markdown) @($before) | ForEach-Object { ($_.InputObject -split ' ', 2)[1] } | Select-Object -Unique)
-    if ($changed) { "README samples: FAILED. dotnet mdsnippets updated $($changed -join ', ') from the tests; commit the result."; exit 1 }
+    # The READMEs and the site's pages take their samples by key from every C# file, so every marker has the one form
+    # both tools read alike, a key is PascalCase and defined once, and only a site sample's key, in
+    # tests/NCode.PropertyBag.Site.Tests, starts with Site (ADR-1006). The check's rules are tested offline first, so a
+    # rule broken in the check fails here instead of passing every key.
+    ./build/Test-AssertSampleKeys.ps1
+    if ($LASTEXITCODE) { exit $LASTEXITCODE }
+    ./build/Assert-SampleKeys.ps1
+    if ($LASTEXITCODE) { exit $LASTEXITCODE }
+    # The READMEs' C# samples are copied from the tests (ADR-1003), and MarkdownSnippets must leave the site's pages
+    # alone (ADR-1006): build/Assert-Markdown.ps1 fails on a README or page dotnet mdsnippets changes. Its rules are
+    # tested offline first, so a rule broken in the check fails here instead of passing every README.
+    ./build/Test-AssertMarkdown.ps1
+    if ($LASTEXITCODE) { exit $LASTEXITCODE }
+    ./build/Assert-Markdown.ps1
+    if ($LASTEXITCODE) { exit $LASTEXITCODE }
+    # The API map check's rules are tested offline first, so a rule broken in build/Assert-ApiMap.ps1 fails here
+    # instead of passing every map.
+    ./build/Test-AssertApiMap.ps1
+    if ($LASTEXITCODE) { exit $LASTEXITCODE }
+    # The API map on /reference/api-map/ lists every line of both PublicAPI.Shipped.txt files once.
+    ./build/Assert-ApiMap.ps1
+    if ($LASTEXITCODE) { exit $LASTEXITCODE }
+    # Every example in the XML documentation ships to IntelliSense, so each must compile as written. The check's rules
+    # are tested against fixtures first, so a rule broken in the check fails here instead of passing every example.
+    ./build/Test-TestXmlDocExamples.ps1
+    if ($LASTEXITCODE) { exit $LASTEXITCODE }
+    ./build/Test-XmlDocExamples.ps1
+    if ($LASTEXITCODE) { exit $LASTEXITCODE }
+    # build/site.ps1 finds the documentation site's toolchain from the main checkout and from a worktree alike; its
+    # rules are tested offline, with a fake toolchain and a fake node, though the gate does not build the site.
+    ./build/Test-Site.ps1
+    if ($LASTEXITCODE) { exit $LASTEXITCODE }
     $dod = @{}
     if ($Fast) { $dod.Fast = $true }
     if ($Filter) { $dod.Filter = $Filter }

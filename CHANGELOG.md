@@ -6,9 +6,21 @@ The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.
 
 ## [Unreleased]
 
+## [2.0.1] - 2026-11-20
+
+### Added
+
+- A documentation site at https://propertybag.ncode.io/, built from `docs/site/` by the shared NCodeGroup/docs toolchain: a quick start, a guide for each task, the concepts behind keys and the default bag, and an API map of every public member, which the gate checks against both `PublicAPI.Shipped.txt` files. `.github/workflows/docs.yml` builds it on every pull request and publishes it from `main` ([#37](https://github.com/NCodeGroup/PropertyBag/issues/37), [ADR-1005](docs/decisions/1005-the-documentation-site-is-narrative-guides-built-by-a-shared-toolchain-outside-this-repository.md), [ADR-1008](docs/decisions/1008-the-documentation-site-is-published-to-github-pages-from-the-default-branch.md), [ADR-1009](docs/decisions/1009-the-documentation-site-is-served-at-propertybag-ncode-io.md)).
+- Every C# sample on the site is a compiled test in `tests/NCode.PropertyBag.Site.Tests` that uses only the public API, and the gate checks every sample's marker and key ([#37](https://github.com/NCodeGroup/PropertyBag/issues/37), [ADR-1006](docs/decisions/1006-site-samples-are-compiled-tests-in-a-project-of-their-own-included-by-key-when-the-site-is-built.md)).
+- The gate compiles every example in the XML documentation of `src/` against both packages (`build/Test-XmlDocExamples.ps1`), so each example IntelliSense shows builds as written ([#37](https://github.com/NCodeGroup/PropertyBag/issues/37)).
+
 ### Changed
 
 - Package validation compares each package with the published 2.0.0 package.
+- Each package's project website on nuget.org is the documentation site, https://propertybag.ncode.io/, instead of the repository ([#37](https://github.com/NCodeGroup/PropertyBag/issues/37), [ADR-1009](docs/decisions/1009-the-documentation-site-is-served-at-propertybag-ncode-io.md)).
+- The repository README and both package READMEs link to the documentation site ([#37](https://github.com/NCodeGroup/PropertyBag/issues/37)).
+- The XML documentation of `IReadOnlyPropertyBag.Clone` says that how values are copied is up to the implementation, and that the default implementation clones each `ICloneable` value, as the README and the documentation site say; it described every copy as shallow.
+- The README samples check is `build/Assert-Markdown.ps1`, which the gate tests offline first; it reads file names as git stores them and fails when git fails, where a failure read as "nothing changed" ([#37](https://github.com/NCodeGroup/PropertyBag/issues/37)).
 
 ## [2.0.0] - 2026-11-20
 
@@ -87,7 +99,8 @@ The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.
 - `NCode.PropertyBag`: `DefaultPropertyBag`, with lazy storage, scoped values and cloning, `DefaultPropertyBagScope`, the factories `IPropertyBagFactory`, `DefaultPropertyBagFactory` and `PropertyBagFactory`, and `AddPropertyBag()` for `Microsoft.Extensions.DependencyInjection`.
 - Both packages target .NET 10.0.
 
-[unreleased]: https://github.com/NCodeGroup/PropertyBag/compare/v2.0.0...HEAD
+[unreleased]: https://github.com/NCodeGroup/PropertyBag/compare/v2.0.1...HEAD
+[2.0.1]: https://github.com/NCodeGroup/PropertyBag/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/NCodeGroup/PropertyBag/compare/v1.2.0...v2.0.0
 [1.2.0]: https://github.com/NCodeGroup/PropertyBag/compare/v1.1.1...v1.2.0
 [1.1.1]: https://github.com/NCodeGroup/PropertyBag/compare/v1.1.0...v1.1.1

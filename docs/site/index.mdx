@@ -1,0 +1,53 @@
+---
+title: NCode.PropertyBag
+description: "A strongly typed property bag for .NET: values stored and read by typed keys, scoped values that restore the previous one, clones and dependency injection."
+tableOfContents: false
+hero:
+  title: Typed values, carried by key.
+  tagline: A property bag for .NET whose keys carry the type of their value. Store a value, read it back without a cast, override it for a scope and get the previous value back when the scope ends.
+  actions:
+    - text: Quick start
+      link: /start/quick-start/
+      icon: right-arrow
+      variant: primary
+    - text: API map
+      link: /reference/api-map/
+      variant: secondary
+---
+
+import { CardGrid, LinkCard } from '@ncodegroup/docs/components';
+
+## Install
+
+```sh
+dotnet add package NCode.PropertyBag
+```
+
+Code that only passes or reads bags can reference `NCode.PropertyBag.Abstractions` alone. Both packages are licensed under Apache-2.0, and nuget.org lists their target frameworks on the [Frameworks tab](https://www.nuget.org/packages/NCode.PropertyBag#supportedframeworks-body-tab).
+
+## At a glance
+
+A key names a value and fixes its type, so the bag hands the value back without a cast.
+
+```cs snippet=DefineKeys
+```
+
+```cs snippet=BasicUsage
+```
+
+A key is a type and a name, and `TryGetValue` returns `false` for a key the bag does not hold, never an exception.
+
+## Where to go next
+
+<CardGrid>
+  <LinkCard title="Quick start" description="Install the package, define a key, store a value and read it back." href="/start/quick-start/" />
+  <LinkCard title="Define keys" description="Declare typed keys once and share them." href="/guides/define-keys/" />
+  <LinkCard title="Store and read values" description="Set, read and remove values, and what a missing key or a stored null returns." href="/guides/store-and-read-values/" />
+  <LinkCard title="Scope a value" description="Override a value for a block of code and get the previous one back." href="/guides/scope-a-value/" />
+  <LinkCard title="Infer key names" description="Name a key after the variable you pass." href="/guides/infer-key-names/" />
+  <LinkCard title="Share a bag" description="Pass a read-only view or clone a bag." href="/guides/share-a-bag/" />
+  <LinkCard title="Dependency injection" description="Register the bag factory and create bags from it." href="/guides/dependency-injection/" />
+  <LinkCard title="Key identity" description="When two keys are the same key." href="/concepts/key-identity/" />
+  <LinkCard title="How the default bag works" description="What the default implementation stores, copies and restores." href="/concepts/how-the-default-bag-works/" />
+  <LinkCard title="API map" description="Every public type and member, with its signature and the page that explains it." href="/reference/api-map/" />
+</CardGrid>

@@ -36,7 +36,7 @@ namespace NCode.PropertyBag;
 public interface IReadOnlyPropertyBag
 {
     /// <summary>
-    /// Creates a new mutable <see cref="IPropertyBag"/> instance that is a shallow copy of the current property bag.
+    /// Creates a new mutable <see cref="IPropertyBag"/> instance that holds the key-value pairs of the current property bag.
     /// </summary>
     /// <returns>
     /// A new <see cref="IPropertyBag"/> instance containing all the key-value pairs from the current property bag.
@@ -47,9 +47,10 @@ public interface IReadOnlyPropertyBag
     /// will not affect the original, and vice versa.
     /// </para>
     /// <para>
-    /// This is a shallow copy, meaning that the keys and values themselves are not cloned.
-    /// If a value is a reference type, both the original and cloned property bags will
-    /// reference the same object instance.
+    /// How the values are copied is up to the implementation. A value that is a reference type may be
+    /// shared by the original and the clone, so a change to it shows through both. The default implementation
+    /// in the NCode.PropertyBag package clones each value that implements <see cref="ICloneable"/> and copies
+    /// every other value by reference.
     /// </para>
     /// </remarks>
     /// <example>

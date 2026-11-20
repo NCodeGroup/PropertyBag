@@ -1,0 +1,43 @@
+---
+title: Store and read values
+description: Set, read, replace and remove values, and tell a stored null from a missing key.
+---
+
+A bag holds one value for each key. This page shows how to store a value, read it back, replace it, remove it, and how a stored `null` differs from a key the bag does not hold.
+
+## Set values
+
+`SetValue` stores a value under a key, or replaces the value the key held. It returns the same `IPropertyBag`, so calls chain.
+
+```cs snippet=SiteStoreAndReadValuesSet
+```
+
+## Read a value
+
+`TryGetValue` returns `true` and the value when the key holds one, or `false` and `default(T)` when it does not. It never throws for a missing key.
+
+```cs snippet=SiteStoreAndReadValuesMissing
+```
+
+## Remove a value
+
+`Remove` takes the non-generic `PropertyBagKey`, to which a `PropertyBagKey<T>` converts implicitly. A key the bag does not hold is ignored.
+
+```cs snippet=SiteStoreAndReadValuesRemove
+```
+
+## Store null
+
+`null` is a stored value for a reference type and for a nullable value type, which differs from a removed key: `TryGetValue` returns `true` with `null` for the first, and `false` for the second.
+
+```cs snippet=SiteStoreAndReadValuesNull
+```
+
+## Pitfalls
+
+- `true` from `TryGetValue` does not mean the value is non-null when `T` is nullable. Test the value as well when `null` is possible.
+- With a `PropertyBagKey<string?>`, `TryGetValue(key, out _)` infers `string` from the discard and fails the build under nullable warnings as errors (CS8620). A typed `out string? name` declaration fails the same way (CS8620), because the type argument is inferred as `string` from the out argument too. Name the type argument, `TryGetValue<string?>(key, out var name)` or `TryGetValue<string?>(key, out _)`, or read into `out var`.
+- A key of another type finds nothing and returns `false`, with no cast and no exception.
+- `Remove` with a key of another type removes nothing.
+
+To have the key named after a variable instead, see [name keys after variables](/guides/infer-key-names/) for `SetValue(value)` and `TryGetValue(out value)`.

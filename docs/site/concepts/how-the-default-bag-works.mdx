@@ -1,0 +1,41 @@
+---
+title: How PropertyBagDictionary works
+description: How the default implementation stores values, creates its storage, restores scopes, clones and shares across threads.
+---
+
+`PropertyBagDictionary` is the implementation of `IPropertyBag` that ships with the library. This page explains how it stores values, how it reads them, what a scope remembers, and what it does and does not do across threads. To use it, see the [guides](/guides/store-and-read-values/). Every member is listed in the [API map](/reference/api-map/).
+
+## Storage
+
+A `PropertyBagDictionary` keeps its entries in a `Dictionary<PropertyBagKey, object?>`. The bag creates that dictionary on the first `SetValue`, `Remove` or `Scope`. `TryGetValue`, `Clone`, `Count` and enumeration of an empty bag create none, so a bag that is only read costs no dictionary. Values are stored as `object`, so a value type is boxed.
+
+```cs snippet=SiteHowTheDefaultBagWorksEmpty
+```
+
+## Reading
+
+`TryGetValue` looks up the non-generic key that the `PropertyBagKey<T>` converts to, then returns the value when it is `null` or a `T`. A stored object of another type is not a match, and the call never throws `InvalidCastException`. [Key identity](/concepts/key-identity/) explains which keys are the same key.
+
+## Scopes
+
+`Scope` captures whether the key held a value and which one, then sets the new value. The scope's first `Dispose` restores that state, and later calls do nothing. `DefaultPropertyBagScope` also has a public constructor for an `IPropertyBag` of your own. A scope built with it has captured no value, so its `Dispose` removes the key instead of restoring one.
+
+```cs snippet=SiteHowTheDefaultBagWorksDirectScope
+```
+
+The behavior of a scope, including disposal out of order, is recorded in [ADR-1000](https://github.com/NCodeGroup/PropertyBag/blob/main/docs/decisions/1000-disposing-a-scope-restores-the-previous-value.md).
+
+## Clones
+
+`Clone` copies the entries, copies a value that implements `ICloneable` with its own `Clone()` and shares every other value, as [share, clone and enumerate](/guides/share-a-bag/) shows.
+
+## Threads
+
+Neither the bag nor its scopes take a lock, so concurrent writers must share one of their own.
+
+```cs snippet=SiteHowTheDefaultBagWorksLock
+```
+
+## What it is not
+
+The bag stores ordinary objects. Values are neither encrypted nor cleared, and `Remove` drops only the bag's reference to a value. A bag holds every entry it is given, so it is not a cache that evicts. For what the library does and does not promise, see the [assurance case](https://github.com/NCodeGroup/PropertyBag/blob/main/docs/assurance-case.md).

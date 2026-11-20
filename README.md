@@ -20,6 +20,8 @@
 
 A property bag carries context, such as the current user, a culture or a correlation ID, through code that doesn't need to know every value it passes on. Each value is stored and read through a `PropertyBagKey<T>`, which names the value and fixes its type, so a read returns a `T` without a cast.
 
+The [documentation site](https://propertybag.ncode.io/) has a quick start, a guide for each task, the concepts behind keys and the default bag, and a reference for every public member.
+
 ## Packages
 
 Both packages share the namespace `NCode.PropertyBag`.
@@ -229,6 +231,7 @@ A bag and its scopes hold no lock: synchronize concurrent use of one bag. [docs/
 
 ## Project
 
+- [Documentation site](https://propertybag.ncode.io/): the quick start, the guides, the concepts and the API map.
 - [CONTRIBUTING.md](CONTRIBUTING.md): how to set up, build, test and propose a change.
 - [SECURITY.md](SECURITY.md): report a vulnerability privately through the repository's Security tab, never in a public issue.
 - [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md), [GOVERNANCE.md](GOVERNANCE.md) and [ROADMAP.md](ROADMAP.md): how we work together, who decides, and where the project is going.

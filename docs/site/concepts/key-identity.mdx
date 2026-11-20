@@ -1,0 +1,31 @@
+---
+title: Key identity
+description: "What makes two keys the same key: the value's type and the name, compared ordinally."
+---
+
+A bag finds a value by its key, so what counts as the same key decides which reads see which writes. This page explains the two kinds of key, how keys compare, and how nullable and declared types take part. To declare keys in your code, see [define keys](/guides/define-keys/). Every member is listed in the [API map](/reference/api-map/).
+
+## Two kinds of key
+
+`PropertyBagKey<T>` carries the type `T` and a name, and its `Type` is `typeof(T)`. `PropertyBagKey` holds a `Type` and a name, and it is what the bag stores values by. A `PropertyBagKey<T>` converts implicitly to a `PropertyBagKey`, which is how `Remove` and `IPropertyBagScope.Key` take it.
+
+```cs snippet=SiteKeyIdentityConversion
+```
+
+## Equality
+
+Two `PropertyBagKey` keys are equal when both their `Type` and their `Name` are equal, and the names are compared ordinally. Two `PropertyBagKey<T>` keys compare their names only, because both have the same `T`. Both kinds hash `Type` and `Name` together, so a generic key and the key it converts to find the same entry. `==` and `!=` follow `Equals`.
+
+## Nullable types
+
+A nullable reference type is the same type at run time, so `PropertyBagKey<string>` and `PropertyBagKey<string?>` with one name are one key. A nullable value type is a different type: `int?` is `Nullable<int>`, so `PropertyBagKey<int>` and `PropertyBagKey<int?>` are two keys.
+
+```cs snippet=SiteKeyIdentityNullable
+```
+
+## The declared type
+
+A key's type is the `T` it declares, not the type of the value stored under it. `TryGetValue` returns a value only when the stored object is `null` or a `T`, and it never throws `InvalidCastException`. A string stored under a `PropertyBagKey<object>` is therefore not found by a `PropertyBagKey<string>` with the same name, since that is another key.
+
+```cs snippet=SiteKeyIdentityDeclaredType
+```

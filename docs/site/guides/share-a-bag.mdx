@@ -1,0 +1,39 @@
+---
+title: Share, clone and enumerate a bag
+description: Hand out a read-only view, take an independent copy, and list what a PropertyBagDictionary holds.
+---
+
+A bag often leaves the code that fills it. This page shows how to hand out a read-only view, how to take a copy that changes on its own, how to list what a `PropertyBagDictionary` holds, and what to watch for.
+
+## Hand out a read-only view
+
+`IReadOnlyPropertyBag` is the part of a bag that only reads: `TryGetValue` and `Clone`. The `TryGetValue` extension reads through it too. An `IPropertyBag` is an `IReadOnlyPropertyBag`, so pass the bag where a method asks for the read-only type.
+
+```cs snippet=SiteShareABagReadOnly
+```
+
+## Take a copy
+
+`Clone` returns a new, independent `IPropertyBag`. A change to the copy does not reach the original, and a change to the original does not reach the copy.
+
+```cs snippet=SiteShareABagClone
+```
+
+`PropertyBagDictionary.Clone` copies the entries. It copies a value that implements `ICloneable` with the value's own `Clone()` and shares every other value. Cloning an empty bag gives an empty bag.
+
+```cs snippet=SiteShareABagCloneValues
+```
+
+## List the entries
+
+`PropertyBagDictionary` implements `IReadOnlyDictionary<PropertyBagKey, object?>` explicitly, so the interface members do not show on the class. Cast the bag to the interface for `Count`, `Keys`, `Values`, `ContainsKey` and enumeration.
+
+```cs snippet=SiteShareABagEnumerate
+```
+
+## Pitfalls
+
+- A read-only view is not a protection. Code that holds an `IReadOnlyPropertyBag` can cast it back to `IPropertyBag` and change the bag. Hand out `Clone()` when the receiver must not change the original.
+- A shared mutable value changes in both bags. `Clone` shares every value that is not `ICloneable`, so a `List<int>` is one list in the original and the copy.
+- An `ICloneable` value's own `Clone()` may be shallow, as an array's is: the copy of an array of lists holds the same lists.
+- The indexer gives `null` both for a missing key and for a stored `null`. Use `ContainsKey` or `TryGetValue` to tell them apart.
