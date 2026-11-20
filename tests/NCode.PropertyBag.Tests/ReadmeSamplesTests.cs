@@ -54,9 +54,9 @@ public class ReadmeSamplesTests
     public void ReadmeScopedValuesSample_Runs()
     {
         IPropertyBag propertyBag = new DefaultPropertyBag();
-        string? culture;
 
         // begin-snippet: ReadmeScopedValues
+        string? culture;
         var cultureKey = new PropertyBagKey<string>("Culture");
         propertyBag.Set(cultureKey, "en-US");
 
