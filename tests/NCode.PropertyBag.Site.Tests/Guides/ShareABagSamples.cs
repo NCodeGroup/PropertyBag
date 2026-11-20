@@ -29,6 +29,30 @@ public class ShareABagSamples
     }
 
     [Fact]
+    public void SiteShareABagProtectedViewSample_Runs()
+    {
+        // begin-snippet: SiteShareABagProtectedView
+        PropertyBagKey<string> regionKey = new("Region");
+
+        IPropertyBag bag = new PropertyBagDictionary();
+        bag.SetValue(regionKey, "eu-west");
+
+        IReadOnlyPropertyBag view = bag.AsReadOnly();
+
+        // The view is not an IPropertyBag, so a cast cannot reach the bag
+        bool canWrite = view is IPropertyBag;
+
+        // The view reads through to the bag, so a later change shows
+        bag.SetValue(regionKey, "us-east");
+        bool found = view.TryGetValue(regionKey, out string? region);
+        // end-snippet
+
+        Assert.False(canWrite);
+        Assert.True(found);
+        Assert.Equal("us-east", region);
+    }
+
+    [Fact]
     public void SiteShareABagCloneSample_Runs()
     {
         // begin-snippet: SiteShareABagClone
