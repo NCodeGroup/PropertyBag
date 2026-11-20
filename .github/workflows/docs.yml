@@ -30,7 +30,8 @@ jobs:
       contents: read # checks out this repository
       pages: write # reads the site's URL, and creates the deployment
       id-token: write # proves to GitHub Pages where the deployment comes from
-    # Taken the day it is released, not after project-template ADR-0009's cooldown, while the toolchain is built out (ADR-1007).
+    # Taken the day it is released, not after project-template ADR-0009's cooldown, while the toolchain is built out
+    # (ADR-1007).
     uses: NCodeGroup/docs/.github/workflows/site.yml@2e215958266cc54f0a96fc21c194bbe4c1078ff9 # v0.15.2
     with:
       content-path: docs/site
