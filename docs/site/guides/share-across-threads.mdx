@@ -1,0 +1,33 @@
+---
+title: Share a bag across threads
+description: Use a ConcurrentPropertyBagDictionary to write, add once and enumerate a bag from several threads at once.
+---
+
+A `ConcurrentPropertyBagDictionary` is a bag whose every member is safe to call from several threads at once, behind one lock. This page shows how to write from many threads, add a value once, list the entries, and what to watch for.
+
+## Use a concurrent bag
+
+Create the bag with `new ConcurrentPropertyBagDictionary()` and use it like any other bag. Each call takes the lock, so parallel writes leave a consistent bag.
+
+```cs snippet=SiteShareAcrossThreadsSet
+```
+
+## Add a value once
+
+`GetOrAdd(key, factory)` is atomic: it stores one value for the key and returns it to every caller. The factory runs outside the lock, so under contention it may run more than once, but only one result is stored.
+
+```cs snippet=SiteShareAcrossThreadsGetOrAdd
+```
+
+## List the entries
+
+The bag implements `IReadOnlyDictionary<PropertyBagKey, object?>`. Enumeration, `Keys` and `Values` work over a snapshot taken under the lock, so enumerating while another thread writes never throws.
+
+```cs snippet=SiteShareAcrossThreadsEnumerate
+```
+
+## Pitfalls
+
+- Through an `IPropertyBag` variable, `TryAdd`, `GetOrAdd` and `TryRemove` bind to the non-atomic extension members in `PropertyBagExtensions`. Call them on a `ConcurrentPropertyBagDictionary` variable to get the atomic members.
+- A scope restores the value captured when it was created, even over another thread's later write.
+- The lock guards the bag, not the values stored in it. Share only values that are safe to use from several threads.

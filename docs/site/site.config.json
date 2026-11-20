@@ -25,6 +25,7 @@
         "guides/infer-key-names",
         "guides/share-a-bag",
         "guides/layer-bags",
+        "guides/share-across-threads",
         "guides/dependency-injection"
       ]
     },
