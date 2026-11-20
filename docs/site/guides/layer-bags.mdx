@@ -7,7 +7,7 @@ A child bag holds its own entries on top of a parent bag. This page shows how to
 
 ## Create a child
 
-`CreateChild()` is an extension on `IReadOnlyPropertyBag`. It returns an `IPropertyBag` whose `Parent` is the bag you call it on. A read checks the child's own entries first, then the parent. A write goes to the child, and the parent is never written.
+`CreateChild()` is an extension on `IReadOnlyPropertyBag`. It returns an `IPropertyBag` that is a `LayeredPropertyBag` over the bag you call it on, and that bag is its `Parent`. A read checks the child's own entries first, then the parent. A write goes to the child, and the parent is never written.
 
 ```cs snippet=SiteLayerBagsCreate
 ```

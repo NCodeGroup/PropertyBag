@@ -59,8 +59,8 @@ public class ShareAcrossThreadsSamples
         ConcurrentPropertyBagDictionary bag = new();
         bag.SetValue(regionKey, "eu-west").SetValue(retriesKey, 3);
 
-        // Enumeration walks a snapshot taken under the lock, so a write from another thread
-        // during the loop never throws
+        // Enumeration walks a snapshot taken under the lock, so a write during the loop never
+        // throws and does not appear in the loop
         IReadOnlyDictionary<PropertyBagKey, object?> entries = bag;
         List<string> names = [];
         foreach (KeyValuePair<PropertyBagKey, object?> entry in entries)
