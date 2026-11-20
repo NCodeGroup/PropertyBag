@@ -38,7 +38,7 @@ namespace NCode.PropertyBag;
 /// <seealso cref="IPropertyBag"/>
 /// <seealso cref="IReadOnlyPropertyBag"/>
 /// <seealso cref="DefaultPropertyBagFactory"/>
-public class PropertyBagDictionary
+public sealed class PropertyBagDictionary
     : IPropertyBag,
         IReadOnlyDictionary<PropertyBagKey, object?>,
         ICloneable

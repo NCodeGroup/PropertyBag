@@ -42,7 +42,7 @@ namespace NCode.PropertyBag;
 /// <seealso cref="IPropertyBagScope"/>
 /// <seealso cref="IPropertyBag.Scope{T}"/>
 /// <seealso cref="PropertyBagDictionary"/>
-public class DefaultPropertyBagScope(IPropertyBag propertyBag, PropertyBagKey key)
+public sealed class DefaultPropertyBagScope(IPropertyBag propertyBag, PropertyBagKey key)
     : IPropertyBagScope
 {
     /// <summary>

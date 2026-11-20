@@ -33,7 +33,7 @@ namespace NCode.PropertyBag;
 /// <seealso cref="PropertyBagDictionary"/>
 /// <seealso cref="PropertyBagFactory"/>
 [PublicAPI]
-public class DefaultPropertyBagFactory : IPropertyBagFactory
+public sealed class DefaultPropertyBagFactory: IPropertyBagFactory
 {
     /// <summary>
     /// Gets or sets the singleton instance of the <see cref="DefaultPropertyBagFactory"/> class.
