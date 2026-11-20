@@ -9,8 +9,11 @@ namespace NCode.PropertyBag;
 /// </summary>
 /// <remarks>
 /// <para>
-/// A scope created by <see cref="PropertyBagDictionary.Scope{T}"/> restores the value its key held when the scope
-/// was created, or removes the key when it held none, when the scope is disposed.
+/// A scope created by <see cref="PropertyBagDictionary.Scope{T}"/>,
+/// <see cref="ConcurrentPropertyBagDictionary.Scope{T}"/> or <see cref="LayeredPropertyBag.Scope{T}"/> restores the
+/// value its key held in that bag when the scope was created, or removes the key when it held none, when the scope
+/// is disposed. For a <see cref="LayeredPropertyBag"/>, that is the bag's own entry for the key, so a key it held no
+/// entry for reads through to the parent again.
 /// </para>
 /// <para>
 /// A scope built with the public constructor removes the value associated with the <see cref="Key"/>
@@ -106,8 +109,10 @@ public sealed class DefaultPropertyBagScope(IPropertyBag propertyBag, PropertyBa
     /// </summary>
     /// <remarks>
     /// <para>
-    /// For a scope created by <see cref="PropertyBagDictionary.Scope{T}"/>, this method restores the value
-    /// that <see cref="Key"/> held when the scope was created, or removes the key when it held none.
+    /// For a scope created by <see cref="PropertyBagDictionary.Scope{T}"/>,
+    /// <see cref="ConcurrentPropertyBagDictionary.Scope{T}"/> or <see cref="LayeredPropertyBag.Scope{T}"/>, this method
+    /// restores the value that <see cref="Key"/> held in that bag when the scope was created, or removes the key when it
+    /// held none.
     /// For a scope built with the public constructor, it removes the value associated with <see cref="Key"/>
     /// from the <see cref="PropertyBag"/> by calling <see cref="IPropertyBag.Remove"/>.
     /// </para>
