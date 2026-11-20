@@ -28,12 +28,12 @@ The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.
 - **Breaking:** `PropertyBagDictionary`, `DefaultPropertyBagFactory` and `DefaultPropertyBagScope` are sealed; compose them instead of deriving from them.
 - `SetValue(value)`, `TryGetValue(out value)` and `AddPropertyBag()` throw `ArgumentNullException` for a `null` bag or service collection.
 - The README is rewritten around the 2.0 API, with a usage section per feature and an API overview, and the package descriptions and tags describe each package.
-- Updated the project from project-template v0.41.0 to v0.104.0 (build, analyzers, CI and documentation); the library's behavior is unchanged.
+- Updated the project from project-template v0.41.0 to v0.104.0 (build, analyzers, CI and documentation); the update itself changes no behavior of the library.
 - `AssemblyVersion` moves only with the major version: it is `2.0.0.0` for every 2.x release, while `FileVersion` and `InformationalVersion` keep the exact version.
 - Package and assembly versions come from `version.json` through Nerdbank.GitVersioning instead of the release tag: a release sets `version.json` to its version first, and CI refuses a release whose tag differs.
 - The solution file is `NCode.PropertyBag.slnx`, and `dotnet build` no longer creates packages: `./build/dod.ps1` and CI pack with `dotnet pack` ([#29](https://github.com/NCodeGroup/PropertyBag/issues/29)).
 - Each package's description and tags are set in its project file and describe that package, since the `project.props` files that held them were no longer imported; the project files keep only the settings `build/ProjectTemplate.props` doesn't make, and no file starts with a byte order mark ([#29](https://github.com/NCodeGroup/PropertyBag/issues/29)).
-- The projects are in `src/` and the test project in `tests/`, the layout the project template gives .NET projects; the packages and their contents are unchanged.
+- The projects are in `src/` and the test project in `tests/`, the layout the project template gives .NET projects; moving them changes no package contents.
 - Releases are tagged and published when their pull request merges, and the packages reach nuget.org through trusted publishing, with no stored API key, from `.github/workflows/publish.yml` after a maintainer approves the `nuget` environment; `.github/workflows/main.yml` and the `NUGET_APIKEY` secret it used are gone ([#24](https://github.com/NCodeGroup/PropertyBag/issues/24)).
 - Every C# file starts with `// Copyright © NCode Group` and `// SPDX-License-Identifier: Apache-2.0` in place of the Apache license preamble, and CSharpier formats the code.
 - `PropertyBagKey<T>` compares two keys by name, since both always have the type `T`; the result of `Equals` does not change.
