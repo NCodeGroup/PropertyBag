@@ -34,8 +34,10 @@ public class ReadmeSamplesTests
         }
         // end-snippet
 
+        var foundAge = propertyBag.TryGetValue(UserKeys.UserAge, out var userAge);
+
         Assert.Equal("Alice", userName);
-        Assert.True(propertyBag.TryGetValue(UserKeys.UserAge, out var userAge));
+        Assert.True(foundAge);
         Assert.Equal(30, userAge);
     }
 
@@ -92,15 +94,16 @@ public class ReadmeSamplesTests
     public void InferredKeysSample_Runs()
     {
         var propertyBag = PropertyBagFactory.Create();
-        ConnectionSettings.Save(propertyBag, "Server=localhost", TimeSpan.FromSeconds(30));
+        var timeout = TimeSpan.FromSeconds(30);
+        ConnectionSettings.Save(propertyBag, "Server=localhost", timeout);
 
         var connectionString = ConnectionSettings.LoadConnectionString(propertyBag);
         var timeoutKey = new PropertyBagKey<TimeSpan>("timeout");
-        var found = propertyBag.TryGetValue(timeoutKey, out var timeout);
+        var found = propertyBag.TryGetValue(timeoutKey, out var storedTimeout);
 
         Assert.Equal("Server=localhost", connectionString);
         Assert.True(found);
-        Assert.Equal(TimeSpan.FromSeconds(30), timeout);
+        Assert.Equal(timeout, storedTimeout);
     }
 
     [Fact]
@@ -115,8 +118,10 @@ public class ReadmeSamplesTests
         propertyBag.TryGetValue(UserKeys.UserName, out var original); // still "Alice"
         // end-snippet
 
+        var foundCopy = copy.TryGetValue(UserKeys.UserName, out var copied);
+
         Assert.Equal("Alice", original);
-        Assert.True(copy.TryGetValue(UserKeys.UserName, out var copied));
+        Assert.True(foundCopy);
         Assert.Equal("Bob", copied);
     }
 
@@ -156,7 +161,9 @@ public class ReadmeSamplesTests
         var contextFactory = provider.GetRequiredService<RequestContextFactory>();
         var context = contextFactory.CreateContext("Alice");
 
-        Assert.True(context.TryGetValue(UserKeys.UserName, out var userName));
+        var found = context.TryGetValue(UserKeys.UserName, out var userName);
+
+        Assert.True(found);
         Assert.Equal("Alice", userName);
     }
 

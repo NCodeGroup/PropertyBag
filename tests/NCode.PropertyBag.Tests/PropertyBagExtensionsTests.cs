@@ -185,7 +185,7 @@ public class PropertyBagExtensionsTests
     #region Round-Trip Tests
 
     [Fact]
-    public void SetValueAndTryGetValue_WithSameVariableName_RoundTrips()
+    public void SetValueAndTryGetValue_WithDifferentVariableName_ReturnsFalse()
     {
         var propertyBag = new PropertyBagDictionary();
         const string userName = "TestUser";
@@ -299,7 +299,7 @@ public class PropertyBagExtensionsTests
     }
 
     [Fact]
-    public void SetValueAndTryGetValue_CallerArgumentExpression_MatchingVariableNames_RoundTrips()
+    public void SetValueAndTryGetValue_CallerArgumentExpression_DifferentVariableNames_ReturnsFalse()
     {
         var propertyBag = new PropertyBagDictionary();
         const string sharedKeyName = "StoredValue";
