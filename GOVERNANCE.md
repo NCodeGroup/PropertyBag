@@ -9,9 +9,9 @@ what and how decisions are made.
 
 | Role | Who | Responsibilities |
 | --- | --- | --- |
-| Maintainer | The repository's owners | Sets direction, triages issues, reviews and merges pull requests, approves each publication in the `nuget` environment, answers vulnerability reports, owns the repository's settings and the nuget.org packages |
+| Maintainer | The repository's owners | Sets direction, triages issues, reviews and merges pull requests, publishes each GitHub release, answers vulnerability reports, owns the repository's settings and the nuget.org packages |
 | Contributor | Anyone | Opens issues and pull requests, under [CONTRIBUTING.md](CONTRIBUTING.md) and the [Code of Conduct](CODE_OF_CONDUCT.md) |
-| Automation | `ncode-review[bot]`, Dependabot, GitHub Actions | Reviews and approves a clean pull request, proposes dependency updates, runs CI, tags and publishes releases; never merges a pull request except the pin bump `code-review-auto-merge.yml` merges once a maintainer approves it |
+| Automation | `ncode-review[bot]`, Dependabot, GitHub Actions | Reviews and approves a clean pull request, proposes dependency updates, runs CI and pushes a published release's packages to nuget.org; never merges a pull request except the pin bump `code-review-auto-merge.yml` merges once a maintainer approves it |
 
 Only a maintainer has write access. A contributor who keeps contributing reviewed, merged work can be invited to become
 a maintainer; the existing maintainers decide, and the change is recorded in this file.
@@ -26,16 +26,16 @@ a maintainer; the existing maintainers decide, and the change is recorded in thi
 
 ## Releases
 
-Versions follow Semantic Versioning. Releases are tagged and published as
-[ADR-0016](docs/decisions/project-template/0016-releases-are-tagged-and-published-when-their-pull-request-merges.md)
-records. Packages reach nuget.org only after a maintainer approves the `nuget` environment.
+Versions follow Semantic Versioning. A maintainer sets `version.json` to the release's version, then publishes the
+GitHub release, which tags it; the `publish` job of `.github/workflows/main.yml` then pushes its packages to nuget.org
+with the repository's NuGet API key.
 [SECURITY.md](SECURITY.md) says how to verify a package.
 
 ## Continuity
 
 The repository, its issues, decision records, build, release automation and documentation are all in the
 GitHub organization that owns it, so anyone given access can carry
-on with no knowledge held elsewhere. nuget.org publishing uses trusted publishing, with no stored API key to hand over.
+on with no knowledge held elsewhere. nuget.org publishing uses the repository's `NUGET_APIKEY` secret, which a new owner replaces with an API key of their own.
 
 [//]: # "Maintainers: name the owners, and keep the list current."
 
