@@ -56,6 +56,9 @@ flowchart LR
 | `DefaultRegistration` | `services.AddPropertyBag()` registers `DefaultPropertyBagFactory` as the singleton `IPropertyBagFactory` with `TryAddSingleton`, so an earlier registration wins |
 | `NCode.PropertyBag.Tests` | xUnit tests of every type above, on net10.0 |
 
+Each package's project is in its own folder under `src/`, `src/NCode.PropertyBag.Abstractions/` and
+`src/NCode.PropertyBag/`, and the tests are in `tests/NCode.PropertyBag.Tests/`.
+
 The packages do no I/O, start no threads, and share no state except the two settable factory properties.
 
 ## Design Rules

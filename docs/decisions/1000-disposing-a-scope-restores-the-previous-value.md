@@ -39,7 +39,7 @@ that state on its first `Dispose`; later calls do nothing.
 
 ## References
 
-- [DefaultPropertyBag.cs](../../NCode.PropertyBag/DefaultPropertyBag.cs)
-- [DefaultPropertyBagScope.cs](../../NCode.PropertyBag/DefaultPropertyBagScope.cs)
-- [IPropertyBagScope.cs](../../NCode.PropertyBag.Abstractions/IPropertyBagScope.cs)
+- [DefaultPropertyBag.cs](../../src/NCode.PropertyBag/DefaultPropertyBag.cs)
+- [DefaultPropertyBagScope.cs](../../src/NCode.PropertyBag/DefaultPropertyBagScope.cs)
+- [IPropertyBagScope.cs](../../src/NCode.PropertyBag.Abstractions/IPropertyBagScope.cs)
 - [Issue #31](https://github.com/NCodeGroup/PropertyBag/issues/31)
