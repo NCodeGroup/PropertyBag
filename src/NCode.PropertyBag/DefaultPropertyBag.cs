@@ -114,6 +114,16 @@ public class DefaultPropertyBag
 
     /// <inheritdoc />
     /// <remarks>
+    /// If the key already exists, its value is overwritten with the new value.
+    /// </remarks>
+    public IPropertyBag SetValue<T>(PropertyBagKey<T> key, T? value)
+    {
+        Items[key] = value;
+        return this;
+    }
+
+    /// <inheritdoc />
+    /// <remarks>
     /// If the key does not exist in the property bag, this method has no effect.
     /// </remarks>
     public IPropertyBag Remove(PropertyBagKey key)
