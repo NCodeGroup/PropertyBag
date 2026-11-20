@@ -6,7 +6,8 @@ using ReadmeSamples;
 
 namespace NCode.PropertyBag.Tests;
 
-// dotnet mdsnippets copies each begin-snippet block into README.md (ADR-1002). PropertyBagFactory.Create reads the process-wide factory, so the class runs in the static factories collection.
+// dotnet mdsnippets copies each begin-snippet block into README.md (ADR-1002). PropertyBagFactory.Create reads the
+// process-wide factory, so the class runs in the static factories collection.
 [Collection(StaticFactoryCollection.Name)]
 public class ReadmeSamplesTests
 {
@@ -42,7 +43,8 @@ public class ReadmeSamplesTests
         // end-snippet
 
         Assert.Equal("Alice", userName);
-        Assert.True(propertyBag.TryGetValue(UserAgeKey, out var userAge));
+        bool foundAge = propertyBag.TryGetValue(UserAgeKey, out var userAge);
+        Assert.True(foundAge);
         Assert.Equal(30, userAge);
     }
 
@@ -79,7 +81,7 @@ public class ReadmeSamplesTests
     #region Dependency Injection Tests
 
     [Fact]
-    public void ReadmeRegisterServicesSample_Runs()
+    public async Task ReadmeRegisterServicesSample_Runs()
     {
         var services = new ServiceCollection();
 
@@ -87,18 +89,19 @@ public class ReadmeSamplesTests
         services.AddPropertyBag();
         // end-snippet
 
-        using var provider = services.BuildServiceProvider();
-        Assert.IsType<DefaultPropertyBagFactory>(
-            provider.GetRequiredService<IPropertyBagFactory>()
-        );
+        await using var provider = services.BuildServiceProvider();
+        var resolvedFactory = provider.GetRequiredService<IPropertyBagFactory>();
+        Assert.IsType<DefaultPropertyBagFactory>(resolvedFactory);
     }
 
     [Fact]
     public void ReadmeInjectFactorySample_Runs()
     {
-        var service = new MyService(new DefaultPropertyBagFactory());
+        var factory = new DefaultPropertyBagFactory();
+        var service = new MyService(factory);
 
-        Assert.IsType<DefaultPropertyBag>(service.CreateContext());
+        var context = service.CreateContext();
+        Assert.IsType<DefaultPropertyBag>(context);
     }
 
     #endregion
@@ -118,16 +121,17 @@ public class ReadmeSamplesTests
         propertyBag.Set(connectionString).Set(timeout);
         // end-snippet
 
-        Assert.True(
-            propertyBag.TryGetValue(
-                new PropertyBagKey<string>("connectionString"),
-                out var storedConnectionString
-            )
+        var connectionStringKey = new PropertyBagKey<string>("connectionString");
+        bool foundConnectionString = propertyBag.TryGetValue(
+            connectionStringKey,
+            out var storedConnectionString
         );
+        Assert.True(foundConnectionString);
         Assert.Equal(connectionString, storedConnectionString);
-        Assert.True(
-            propertyBag.TryGetValue(new PropertyBagKey<TimeSpan>("timeout"), out var storedTimeout)
-        );
+
+        var timeoutKey = new PropertyBagKey<TimeSpan>("timeout");
+        bool foundTimeout = propertyBag.TryGetValue(timeoutKey, out var storedTimeout);
+        Assert.True(foundTimeout);
         Assert.Equal(timeout, storedTimeout);
     }
 
@@ -135,10 +139,8 @@ public class ReadmeSamplesTests
     public void ReadmeReadInferredSample_Runs()
     {
         IPropertyBag propertyBag = new DefaultPropertyBag();
-        propertyBag.Set(
-            new PropertyBagKey<string>("connectionString"),
-            "Server=localhost;Database=test"
-        );
+        var seededKey = new PropertyBagKey<string>("connectionString");
+        propertyBag.Set(seededKey, "Server=localhost;Database=test");
 
         // begin-snippet: ReadmeReadInferred
         // Retrieve with inferred key name
@@ -151,7 +153,8 @@ public class ReadmeSamplesTests
         // end-snippet
 
         Assert.Equal("Server=localhost;Database=test", connectionString);
-        Assert.True(propertyBag.TryGet(out connectionString));
+        bool foundAgain = propertyBag.TryGet(out connectionString);
+        Assert.True(foundAgain);
     }
 
     #endregion
@@ -184,9 +187,11 @@ public class ReadmeSamplesTests
         }
         // end-snippet
 
-        Assert.True(propertyBag.TryGetValue(optionalNameKey, out var stored));
+        bool foundOptional = propertyBag.TryGetValue(optionalNameKey, out var stored);
+        Assert.True(foundOptional);
         Assert.Null(stored);
-        Assert.False(propertyBag.TryGetValue<string?>(missingKey, out _));
+        bool foundMissing = propertyBag.TryGetValue<string?>(missingKey, out _);
+        Assert.False(foundMissing);
     }
 
     #endregion
