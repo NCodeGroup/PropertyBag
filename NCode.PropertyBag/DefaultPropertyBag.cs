@@ -131,13 +131,27 @@ public class DefaultPropertyBag : IPropertyBag, IReadOnlyDictionary<PropertyBagK
 
     /// <inheritdoc />
     /// <remarks>
-    /// This method sets the value using <see cref="Set{T}"/> and returns a <see cref="DefaultPropertyBagScope"/>
-    /// that will restore the previous state when disposed.
+    /// This method sets the value and returns a <see cref="DefaultPropertyBagScope"/> that, when disposed,
+    /// restores the value the key held before this call, or removes the key when it held none.
     /// </remarks>
     public IPropertyBagScope Scope<T>(PropertyBagKey<T> key, T? value)
     {
-        Set(key, value);
-        return new DefaultPropertyBagScope(this, key);
+        var items = Items;
+        PropertyBagKey baseKey = key;
+        var hadValue = items.TryGetValue(baseKey, out var previousValue);
+        items[baseKey] = value;
+
+        return new DefaultPropertyBagScope(this, key, () =>
+        {
+            if (hadValue)
+            {
+                Items[baseKey] = previousValue;
+            }
+            else
+            {
+                Items.Remove(baseKey);
+            }
+        });
     }
 
     /// <inheritdoc />

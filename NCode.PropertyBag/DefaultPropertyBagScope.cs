@@ -20,16 +20,19 @@ namespace NCode.PropertyBag;
 
 /// <summary>
 /// Provides the default implementation of the <see cref="IPropertyBagScope"/> interface
-/// that removes a value from a property bag when disposed.
+/// that restores or removes a value in a property bag when disposed.
 /// </summary>
 /// <remarks>
 /// <para>
-/// This class is created by <see cref="DefaultPropertyBag.Scope{T}"/> and provides automatic
-/// cleanup of temporarily scoped values when the scope is disposed.
+/// A scope created by <see cref="DefaultPropertyBag.Scope{T}"/> restores the value its key held when the scope
+/// was created, or removes the key when it held none, when the scope is disposed.
 /// </para>
 /// <para>
-/// When <see cref="Dispose"/> is called, the value associated with the <see cref="Key"/> is
-/// removed from the <see cref="PropertyBag"/>.
+/// A scope built with the public constructor removes the value associated with the <see cref="Key"/>
+/// from the <see cref="PropertyBag"/> when it is disposed.
+/// </para>
+/// <para>
+/// <see cref="Dispose"/> acts only on its first call.
 /// </para>
 /// <para>
 /// This class is typically used within a <c>using</c> statement to ensure proper cleanup:
@@ -54,6 +57,12 @@ namespace NCode.PropertyBag;
 /// <seealso cref="DefaultPropertyBag"/>
 public class DefaultPropertyBagScope(IPropertyBag propertyBag, PropertyBagKey key) : IPropertyBagScope
 {
+    internal DefaultPropertyBagScope(IPropertyBag propertyBag, PropertyBagKey key, Action restore)
+        : this(propertyBag, key)
+    {
+        Restore = restore;
+    }
+
     /// <inheritdoc />
     /// <value>The property bag instance that was passed to the constructor.</value>
     public IPropertyBag PropertyBag { get; } = propertyBag;
@@ -62,26 +71,46 @@ public class DefaultPropertyBagScope(IPropertyBag propertyBag, PropertyBagKey ke
     /// <value>The key that was passed to the constructor, identifying the value to remove on disposal.</value>
     public PropertyBagKey Key { get; } = key;
 
+    private Action? Restore { get; }
+
+    private bool IsDisposed { get; set; }
+
     /// <summary>
-    /// Removes the scoped value from the property bag and suppresses finalization.
+    /// Restores or removes the scoped value in the property bag and suppresses finalization.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// This method removes the value associated with <see cref="Key"/> from the <see cref="PropertyBag"/>
-    /// by calling <see cref="IPropertyBag.Remove"/>.
+    /// For a scope created by <see cref="DefaultPropertyBag.Scope{T}"/>, this method restores the value
+    /// that <see cref="Key"/> held when the scope was created, or removes the key when it held none.
+    /// For a scope built with the public constructor, it removes the value associated with <see cref="Key"/>
+    /// from the <see cref="PropertyBag"/> by calling <see cref="IPropertyBag.Remove"/>.
     /// </para>
     /// <para>
     /// This method calls <see cref="GC.SuppressFinalize"/> to prevent the finalizer from running,
     /// following the standard dispose pattern.
     /// </para>
     /// <para>
-    /// This method can be called multiple times safely; subsequent calls will have no effect
-    /// since the key has already been removed.
+    /// This method acts only on its first call; subsequent calls have no effect.
     /// </para>
     /// </remarks>
     public void Dispose()
     {
-        PropertyBag.Remove(Key);
+        if (IsDisposed)
+        {
+            return;
+        }
+
+        IsDisposed = true;
+
+        if (Restore is null)
+        {
+            PropertyBag.Remove(Key);
+        }
+        else
+        {
+            Restore();
+        }
+
         GC.SuppressFinalize(this);
     }
 }

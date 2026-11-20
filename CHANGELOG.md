@@ -23,6 +23,10 @@ The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.
 - The solution file is `NCode.PropertyBag.slnx`, and `dotnet build` no longer creates packages: `./build/dod.ps1` and CI pack with `dotnet pack` ([#29](https://github.com/NCodeGroup/PropertyBag/issues/29)).
 - Each package's description and tags are set in its project file, as v1.2.0 published them, since the `project.props` files that held them were no longer imported; the project files keep only the settings `build/ProjectTemplate.props` doesn't make, and no file starts with a byte order mark ([#29](https://github.com/NCodeGroup/PropertyBag/issues/29)).
 
+### Fixed
+
+- Disposing the scope that `DefaultPropertyBag.Scope` returns restores the value its key held before, as `IPropertyBag.Scope`, `IPropertyBagScope` and the README say, instead of removing the key; a key that held no value is still removed, and a second `Dispose` does nothing ([ADR-1000](docs/decisions/1000-disposing-a-scope-restores-the-previous-value.md)).
+
 ## [1.2.0] - 2026-01-19
 
 ### Added
