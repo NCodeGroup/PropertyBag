@@ -7,8 +7,13 @@ using JetBrains.Annotations;
 namespace NCode.PropertyBag;
 
 /// <summary>
-/// Provides the <see cref="IReadOnlyPropertyBag"/> extension that names a key after the caller's argument expression.
+/// Provides the <see cref="IReadOnlyPropertyBag"/> extensions that read values: one that names a key after the
+/// caller's argument expression, and the <c>GetValue</c>, <c>GetValueOrDefault</c> and <c>ContainsKey</c> helpers.
 /// </summary>
+/// <remarks>
+/// Every helper reads through <see cref="IReadOnlyPropertyBag.TryGetValue{T}"/>, so a stored <c>null</c>
+/// counts as a value that is present.
+/// </remarks>
 [PublicAPI]
 public static class ReadOnlyPropertyBagExtensions
 {
@@ -73,6 +78,90 @@ public static class ReadOnlyPropertyBagExtensions
         {
             ArgumentNullException.ThrowIfNull(bag);
             return bag.TryGetValue(new PropertyBagKey<T>(name ?? string.Empty), out value);
+        }
+
+        /// <summary>
+        /// Retrieves a strongly typed value from the property bag, and throws when the bag holds none.
+        /// </summary>
+        /// <param name="key">The key of the value to retrieve.</param>
+        /// <typeparam name="T">The type of the value to retrieve from the property bag.</typeparam>
+        /// <returns>
+        /// The value associated with <paramref name="key"/>. It may be <c>null</c> when <c>null</c>
+        /// was explicitly stored for the key.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">The property bag is <c>null</c>.</exception>
+        /// <exception cref="KeyNotFoundException">The property bag holds no value for <paramref name="key"/>.</exception>
+        /// <remarks>
+        /// A stored <c>null</c> counts as a value, so it is returned instead of throwing.
+        /// Use <c>GetValueOrDefault</c> or <see cref="IReadOnlyPropertyBag.TryGetValue{T}"/> to avoid the exception.
+        /// </remarks>
+        /// <example>
+        /// <code>
+        /// var key = new PropertyBagKey&lt;string&gt;("userName");
+        /// propertyBag.SetValue(key, "alice");
+        /// var name = propertyBag.GetValue(key);
+        /// </code>
+        /// </example>
+        public T? GetValue<T>(PropertyBagKey<T> key)
+        {
+            ArgumentNullException.ThrowIfNull(bag);
+
+            if (bag.TryGetValue<T>(key, out var value))
+            {
+                return value;
+            }
+
+            throw new KeyNotFoundException($"The property bag holds no value for the key '{key}'.");
+        }
+
+        /// <summary>
+        /// Retrieves a strongly typed value from the property bag, or a default value when the bag holds none.
+        /// </summary>
+        /// <param name="key">The key of the value to retrieve.</param>
+        /// <param name="defaultValue">The value to return when the bag holds no value for <paramref name="key"/>.</param>
+        /// <typeparam name="T">The type of the value to retrieve from the property bag.</typeparam>
+        /// <returns>
+        /// The value associated with <paramref name="key"/> when the bag holds one, which may be <c>null</c>
+        /// when <c>null</c> was explicitly stored; otherwise, <paramref name="defaultValue"/>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">The property bag is <c>null</c>.</exception>
+        /// <remarks>
+        /// A stored <c>null</c> counts as a value, so it is returned instead of <paramref name="defaultValue"/>.
+        /// </remarks>
+        /// <example>
+        /// <code>
+        /// var key = new PropertyBagKey&lt;int&gt;("retries");
+        /// var retries = propertyBag.GetValueOrDefault(key, 3);
+        /// </code>
+        /// </example>
+        public T? GetValueOrDefault<T>(PropertyBagKey<T> key, T? defaultValue = default)
+        {
+            ArgumentNullException.ThrowIfNull(bag);
+
+            return bag.TryGetValue<T>(key, out var value) ? value : defaultValue;
+        }
+
+        /// <summary>
+        /// Determines whether the property bag holds a value for the specified key.
+        /// </summary>
+        /// <param name="key">The key to look for.</param>
+        /// <typeparam name="T">The type of the value stored for the key.</typeparam>
+        /// <returns>
+        /// <c>true</c> if the property bag holds a value for <paramref name="key"/>, a stored <c>null</c> included;
+        /// otherwise, <c>false</c>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">The property bag is <c>null</c>.</exception>
+        /// <example>
+        /// <code>
+        /// var key = new PropertyBagKey&lt;string&gt;("userName");
+        /// var present = propertyBag.ContainsKey(key);
+        /// </code>
+        /// </example>
+        public bool ContainsKey<T>(PropertyBagKey<T> key)
+        {
+            ArgumentNullException.ThrowIfNull(bag);
+
+            return bag.TryGetValue<T>(key, out _);
         }
     }
 }

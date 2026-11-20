@@ -152,6 +152,181 @@ public class ReadOnlyPropertyBagExtensionsTests
 
     #endregion
 
+    #region GetValue Tests
+
+    [Fact]
+    public void GetValue_WhenBagIsNull_ThrowsArgumentNullException()
+    {
+        IReadOnlyPropertyBag? propertyBag = null;
+        var key = new PropertyBagKey<string>("Name");
+
+        var exception = Assert.Throws<ArgumentNullException>(() => propertyBag!.GetValue(key));
+
+        Assert.Equal("bag", exception.ParamName);
+    }
+
+    [Fact]
+    public void GetValue_WhenValueExists_ReturnsValue()
+    {
+        var propertyBag = new PropertyBagDictionary();
+        var key = new PropertyBagKey<string>("Name");
+        propertyBag.SetValue(key, "TestUser");
+
+        var result = propertyBag.GetValue(key);
+
+        Assert.Equal("TestUser", result);
+    }
+
+    [Fact]
+    public void GetValue_WhenNullIsStored_ReturnsNull()
+    {
+        var propertyBag = new PropertyBagDictionary();
+        var key = new PropertyBagKey<string?>("Name");
+        propertyBag.SetValue(key, null);
+
+        var result = propertyBag.GetValue(key);
+
+        Assert.Null(result);
+    }
+
+    [Fact]
+    public void GetValue_WhenKeyIsMissing_ThrowsKeyNotFoundExceptionNamingTheKey()
+    {
+        var propertyBag = new PropertyBagDictionary();
+        var key = new PropertyBagKey<string>("Missing");
+
+        var exception = Assert.Throws<KeyNotFoundException>(() => propertyBag.GetValue(key));
+
+        Assert.Contains("Missing (System.String)", exception.Message);
+    }
+
+    #endregion
+
+    #region GetValueOrDefault Tests
+
+    [Fact]
+    public void GetValueOrDefault_WhenBagIsNull_ThrowsArgumentNullException()
+    {
+        IReadOnlyPropertyBag? propertyBag = null;
+        var key = new PropertyBagKey<string>("Name");
+
+        var exception = Assert.Throws<ArgumentNullException>(() =>
+            propertyBag!.GetValueOrDefault(key)
+        );
+
+        Assert.Equal("bag", exception.ParamName);
+    }
+
+    [Fact]
+    public void GetValueOrDefault_WhenValueExists_ReturnsValue()
+    {
+        var propertyBag = new PropertyBagDictionary();
+        var key = new PropertyBagKey<string>("Name");
+        propertyBag.SetValue(key, "TestUser");
+
+        var result = propertyBag.GetValueOrDefault(key, "Fallback");
+
+        Assert.Equal("TestUser", result);
+    }
+
+    [Fact]
+    public void GetValueOrDefault_WhenNullIsStored_ReturnsNull()
+    {
+        var propertyBag = new PropertyBagDictionary();
+        var key = new PropertyBagKey<string?>("Name");
+        propertyBag.SetValue(key, null);
+
+        var result = propertyBag.GetValueOrDefault(key, "Fallback");
+
+        Assert.Null(result);
+    }
+
+    [Fact]
+    public void GetValueOrDefault_WhenKeyIsMissing_ReturnsProvidedDefault()
+    {
+        var propertyBag = new PropertyBagDictionary();
+        var key = new PropertyBagKey<string>("Missing");
+
+        var result = propertyBag.GetValueOrDefault(key, "Fallback");
+
+        Assert.Equal("Fallback", result);
+    }
+
+    [Fact]
+    public void GetValueOrDefault_WhenKeyIsMissingAndNoDefault_ReturnsDefault()
+    {
+        var propertyBag = new PropertyBagDictionary();
+        var key = new PropertyBagKey<int>("Missing");
+
+        var result = propertyBag.GetValueOrDefault(key);
+
+        Assert.Equal(0, result);
+    }
+
+    [Fact]
+    public void GetValueOrDefault_OnPropertyBagDictionary_CallsExtension()
+    {
+        PropertyBagDictionary propertyBag = new();
+        var key = new PropertyBagKey<string>("Name");
+        propertyBag.SetValue(key, "TestUser");
+
+        var result = propertyBag.GetValueOrDefault(key, "Fallback");
+
+        Assert.Equal("TestUser", result);
+    }
+
+    #endregion
+
+    #region ContainsKey Tests
+
+    [Fact]
+    public void ContainsKey_WhenBagIsNull_ThrowsArgumentNullException()
+    {
+        IReadOnlyPropertyBag? propertyBag = null;
+        var key = new PropertyBagKey<string>("Name");
+
+        var exception = Assert.Throws<ArgumentNullException>(() => propertyBag!.ContainsKey(key));
+
+        Assert.Equal("bag", exception.ParamName);
+    }
+
+    [Fact]
+    public void ContainsKey_WhenValueExists_ReturnsTrue()
+    {
+        var propertyBag = new PropertyBagDictionary();
+        var key = new PropertyBagKey<string>("Name");
+        propertyBag.SetValue(key, "TestUser");
+
+        var result = propertyBag.ContainsKey(key);
+
+        Assert.True(result);
+    }
+
+    [Fact]
+    public void ContainsKey_WhenNullIsStored_ReturnsTrue()
+    {
+        var propertyBag = new PropertyBagDictionary();
+        var key = new PropertyBagKey<string?>("Name");
+        propertyBag.SetValue(key, null);
+
+        var result = propertyBag.ContainsKey(key);
+
+        Assert.True(result);
+    }
+
+    [Fact]
+    public void ContainsKey_WhenKeyIsMissing_ReturnsFalse()
+    {
+        var propertyBag = new PropertyBagDictionary();
+        var key = new PropertyBagKey<string>("Missing");
+
+        var result = propertyBag.ContainsKey(key);
+
+        Assert.False(result);
+    }
+
+    #endregion
+
     #region Helper Classes
 
     private sealed class TestConfiguration
