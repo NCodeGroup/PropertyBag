@@ -18,4 +18,29 @@ The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.
 - `AssemblyVersion` now moves only with the major version: every later 1.x release keeps `1.2.0.0`, the `AssemblyVersion` v1.2.0 shipped with, and 2.0.0 moves it to `2.0.0.0`; before, it was the full version. `FileVersion` and `InformationalVersion` keep the exact version.
 - Package and assembly versions come from `version.json` through Nerdbank.GitVersioning instead of the release tag: a release sets `version.json` to its version first, and CI refuses a release whose tag differs.
 
-[Unreleased]: https://github.com/NCodeGroup/PropertyBag/compare/v1.2.0...HEAD
+## [1.2.0] - 2026-01-19
+
+### Added
+
+- `IPropertyBag.Set`, `IPropertyBag.Scope` and the `Set` extension accept `null` for reference types and nullable value types and store it explicitly, which differs from removing the key.
+
+### Changed
+
+- **Breaking:** `TryGetValue` and the `TryGet` extension return `true`, with a `null` value, for a key that holds `null`; before, they returned `false`. Check the value for `null` where a stored `null` should count as missing.
+
+## [1.1.1] - 2026-01-18
+
+### Fixed
+
+- The `TryGet` extension's documentation example declares its variable before the call: an inline `out string? userName` declaration gives `CallerArgumentExpression` a key name other than the variable's.
+
+## [1.1.0] - 2026-01-18
+
+### Added
+
+- Both packages target .NET 8.0 as well as .NET 10.0.
+
+[unreleased]: https://github.com/NCodeGroup/PropertyBag/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/NCodeGroup/PropertyBag/compare/v1.1.1...v1.2.0
+[1.1.1]: https://github.com/NCodeGroup/PropertyBag/compare/v1.1.0...v1.1.1
+[1.1.0]: https://github.com/NCodeGroup/PropertyBag/compare/v1.0.1...v1.1.0
