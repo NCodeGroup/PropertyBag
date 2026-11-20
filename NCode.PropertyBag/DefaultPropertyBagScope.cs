@@ -58,15 +58,27 @@ namespace NCode.PropertyBag;
 public class DefaultPropertyBagScope(IPropertyBag propertyBag, PropertyBagKey key) : IPropertyBagScope
 {
     /// <summary>
-    /// Initializes a new scope whose <see cref="Dispose"/> calls <paramref name="restore"/> instead of removing the key.
+    /// Initializes a new scope whose <see cref="Dispose"/> hands the captured state back to the bag
+    /// instead of removing the key.
     /// </summary>
-    /// <param name="propertyBag">The <see cref="IPropertyBag"/> instance that contains the scoped value.</param>
+    /// <param name="propertyBag">The <see cref="DefaultPropertyBag"/> instance that contains the scoped value.</param>
     /// <param name="key">The <see cref="PropertyBagKey"/> that identifies the scoped value.</param>
-    /// <param name="restore">The action that puts back the state the key held when the scope was created.</param>
-    internal DefaultPropertyBagScope(IPropertyBag propertyBag, PropertyBagKey key, Action restore)
+    /// <param name="hadPreviousValue">
+    /// <c>true</c> if the key held a value when the scope was created; otherwise, <c>false</c>.
+    /// </param>
+    /// <param name="previousValue">
+    /// The value the key held when the scope was created, when <paramref name="hadPreviousValue"/> is <c>true</c>.
+    /// </param>
+    internal DefaultPropertyBagScope(
+        DefaultPropertyBag propertyBag,
+        PropertyBagKey key,
+        bool hadPreviousValue,
+        object? previousValue)
         : this(propertyBag, key)
     {
-        Restore = restore;
+        RestoreTarget = propertyBag;
+        HadPreviousValue = hadPreviousValue;
+        PreviousValue = previousValue;
     }
 
     /// <inheritdoc />
@@ -78,10 +90,20 @@ public class DefaultPropertyBagScope(IPropertyBag propertyBag, PropertyBagKey ke
     public PropertyBagKey Key { get; } = key;
 
     /// <summary>
-    /// Gets the action that puts back the state captured when the scope was created,
+    /// Gets the bag that <see cref="Dispose"/> hands the captured state back to,
     /// or <c>null</c> for a scope that removes its key.
     /// </summary>
-    private Action? Restore { get; }
+    private DefaultPropertyBag? RestoreTarget { get; }
+
+    /// <summary>
+    /// Gets a value that indicates whether the key held a value when the scope was created.
+    /// </summary>
+    private bool HadPreviousValue { get; }
+
+    /// <summary>
+    /// Gets the value the key held when the scope was created, when <see cref="HadPreviousValue"/> is <c>true</c>.
+    /// </summary>
+    private object? PreviousValue { get; }
 
     /// <summary>
     /// Gets or sets a value that indicates whether <see cref="Dispose"/> has already acted.
@@ -115,13 +137,13 @@ public class DefaultPropertyBagScope(IPropertyBag propertyBag, PropertyBagKey ke
 
         IsDisposed = true;
 
-        if (Restore is null)
+        if (RestoreTarget is null)
         {
             PropertyBag.Remove(Key);
         }
         else
         {
-            Restore();
+            RestoreTarget.Restore(Key, HadPreviousValue, PreviousValue);
         }
 
         GC.SuppressFinalize(this);

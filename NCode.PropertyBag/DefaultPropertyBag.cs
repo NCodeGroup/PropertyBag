@@ -141,17 +141,29 @@ public class DefaultPropertyBag : IPropertyBag, IReadOnlyDictionary<PropertyBagK
         var hadValue = items.TryGetValue(baseKey, out var previousValue);
         items[baseKey] = value;
 
-        return new DefaultPropertyBagScope(this, key, () =>
+        return new DefaultPropertyBagScope(this, key, hadValue, previousValue);
+    }
+
+    /// <summary>
+    /// Puts back the state that a key held before a scope set its value.
+    /// </summary>
+    /// <param name="key">The key whose state to put back.</param>
+    /// <param name="hadValue">
+    /// <c>true</c> if the key held a value before the scope set it; otherwise, <c>false</c>.
+    /// </param>
+    /// <param name="previousValue">
+    /// The value the key held before the scope set it, when <paramref name="hadValue"/> is <c>true</c>.
+    /// </param>
+    internal void Restore(PropertyBagKey key, bool hadValue, object? previousValue)
+    {
+        if (hadValue)
         {
-            if (hadValue)
-            {
-                Items[baseKey] = previousValue;
-            }
-            else
-            {
-                Items.Remove(baseKey);
-            }
-        });
+            Items[key] = previousValue;
+        }
+        else
+        {
+            ItemsOrNull?.Remove(key);
+        }
     }
 
     /// <inheritdoc />

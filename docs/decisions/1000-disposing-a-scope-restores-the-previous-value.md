@@ -20,7 +20,7 @@ that state on its first `Dispose`; later calls do nothing.
 - Nested scopes restore in reverse order. Scopes disposed out of order leave the state that the last disposed one
   captured.
 - The public API does not change: `DefaultPropertyBag.Scope<T>` builds the scope through an `internal` constructor that
-  takes the action that restores the captured state.
+  takes the bag and the captured state, and hands that state back to the bag on disposal.
 
 ## Options considered
 
