@@ -78,13 +78,13 @@ public class DefaultPropertyBagScope(IPropertyBag propertyBag, PropertyBagKey ke
     public PropertyBagKey Key { get; } = key;
 
     /// <summary>
-    /// The action that puts back the state captured when the scope was created,
+    /// Gets the action that puts back the state captured when the scope was created,
     /// or <c>null</c> for a scope that removes its key.
     /// </summary>
     private Action? Restore { get; }
 
     /// <summary>
-    /// Indicates whether <see cref="Dispose"/> has already acted.
+    /// Gets or sets a value that indicates whether <see cref="Dispose"/> has already acted.
     /// </summary>
     private bool IsDisposed { get; set; }
 
