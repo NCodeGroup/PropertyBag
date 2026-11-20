@@ -262,6 +262,28 @@ public class DefaultPropertyBagScopeTests
     }
 
     [Fact]
+    public void Dispose_WhenNestedScopesDisposedOutOfOrder_LeavesValueCapturedByLastDisposed()
+    {
+        var propertyBag = new DefaultPropertyBag();
+        var key = new PropertyBagKey<int>("Counter");
+        propertyBag.Set(key, 1);
+        var outer = propertyBag.Scope(key, 2);
+        var inner = propertyBag.Scope(key, 3);
+
+        outer.Dispose();
+
+        var foundAfterOuter = propertyBag.TryGetValue(key, out var valueAfterOuter);
+        Assert.True(foundAfterOuter);
+        Assert.Equal(1, valueAfterOuter);
+
+        inner.Dispose();
+
+        var foundAfterInner = propertyBag.TryGetValue(key, out var valueAfterInner);
+        Assert.True(foundAfterInner);
+        Assert.Equal(2, valueAfterInner);
+    }
+
+    [Fact]
     public void Scope_WhenKeyHeldNull_RestoresNull()
     {
         var propertyBag = new DefaultPropertyBag();
