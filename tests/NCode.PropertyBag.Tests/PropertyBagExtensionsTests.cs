@@ -405,6 +405,177 @@ public class PropertyBagExtensionsTests
 
     #endregion
 
+    #region TryAdd Tests
+
+    [Fact]
+    public void TryAdd_WhenBagIsNull_ThrowsArgumentNullException()
+    {
+        IPropertyBag? propertyBag = null;
+        var key = new PropertyBagKey<string>("Name");
+
+        var exception = Assert.Throws<ArgumentNullException>(() =>
+            propertyBag!.TryAdd(key, "Alice")
+        );
+
+        Assert.Equal("bag", exception.ParamName);
+    }
+
+    [Fact]
+    public void TryAdd_WhenKeyIsMissing_StoresValueAndReturnsTrue()
+    {
+        var propertyBag = new PropertyBagDictionary();
+        var key = new PropertyBagKey<string>("Name");
+
+        var added = propertyBag.TryAdd(key, "Alice");
+
+        Assert.True(added);
+        Assert.True(propertyBag.TryGetValue(key, out var retrieved));
+        Assert.Equal("Alice", retrieved);
+    }
+
+    [Fact]
+    public void TryAdd_WhenKeyIsPresent_KeepsOldValueAndReturnsFalse()
+    {
+        var propertyBag = new PropertyBagDictionary();
+        var key = new PropertyBagKey<string>("Name");
+        propertyBag.SetValue(key, "Alice");
+
+        var added = propertyBag.TryAdd(key, "Bob");
+
+        Assert.False(added);
+        Assert.True(propertyBag.TryGetValue(key, out var retrieved));
+        Assert.Equal("Alice", retrieved);
+    }
+
+    [Fact]
+    public void TryAdd_WhenStoredValueIsNull_KeepsNullAndReturnsFalse()
+    {
+        var propertyBag = new PropertyBagDictionary();
+        var key = new PropertyBagKey<string?>("Name");
+        propertyBag.SetValue(key, null);
+
+        var added = propertyBag.TryAdd(key, "Bob");
+
+        Assert.False(added);
+        Assert.True(propertyBag.TryGetValue<string?>(key, out var retrieved));
+        Assert.Null(retrieved);
+    }
+
+    #endregion
+
+    #region GetOrAdd Tests
+
+    [Fact]
+    public void GetOrAdd_WhenBagIsNull_ThrowsArgumentNullException()
+    {
+        IPropertyBag? propertyBag = null;
+        var key = new PropertyBagKey<string>("Name");
+
+        var exception = Assert.Throws<ArgumentNullException>(() =>
+            propertyBag!.GetOrAdd(key, _ => "Alice")
+        );
+
+        Assert.Equal("bag", exception.ParamName);
+    }
+
+    [Fact]
+    public void GetOrAdd_WhenFactoryIsNull_ThrowsArgumentNullException()
+    {
+        var propertyBag = new PropertyBagDictionary();
+        var key = new PropertyBagKey<string>("Name");
+
+        var exception = Assert.Throws<ArgumentNullException>(() =>
+            propertyBag.GetOrAdd(key, null!)
+        );
+
+        Assert.Equal("valueFactory", exception.ParamName);
+    }
+
+    [Fact]
+    public void GetOrAdd_WhenValueExists_ReturnsItWithoutCallingFactory()
+    {
+        var propertyBag = new PropertyBagDictionary();
+        var key = new PropertyBagKey<string>("Name");
+        propertyBag.SetValue(key, "Alice");
+        var calls = 0;
+
+        var value = propertyBag.GetOrAdd(key, _ =>
+        {
+            calls++;
+            return "Bob";
+        });
+
+        Assert.Equal("Alice", value);
+        Assert.Equal(0, calls);
+    }
+
+    [Fact]
+    public void GetOrAdd_WhenValueIsMissing_CallsFactoryOnceAndStoresResult()
+    {
+        var propertyBag = new PropertyBagDictionary();
+        var key = new PropertyBagKey<string>("Name");
+        var calls = 0;
+        PropertyBagKey<string> receivedKey = default;
+
+        var value = propertyBag.GetOrAdd(key, k =>
+        {
+            calls++;
+            receivedKey = k;
+            return "Alice";
+        });
+
+        Assert.Equal("Alice", value);
+        Assert.Equal(1, calls);
+        Assert.Equal(key, receivedKey);
+        Assert.True(propertyBag.TryGetValue(key, out var retrieved));
+        Assert.Equal("Alice", retrieved);
+    }
+
+    #endregion
+
+    #region TryRemove Tests
+
+    [Fact]
+    public void TryRemove_WhenBagIsNull_ThrowsArgumentNullException()
+    {
+        IPropertyBag? propertyBag = null;
+        var key = new PropertyBagKey<string>("Name");
+
+        var exception = Assert.Throws<ArgumentNullException>(() =>
+            propertyBag!.TryRemove(key, out _)
+        );
+
+        Assert.Equal("bag", exception.ParamName);
+    }
+
+    [Fact]
+    public void TryRemove_WhenKeyIsPresent_ReturnsValueAndRemovesKey()
+    {
+        var propertyBag = new PropertyBagDictionary();
+        var key = new PropertyBagKey<string>("Name");
+        propertyBag.SetValue(key, "Alice");
+
+        var removed = propertyBag.TryRemove(key, out var value);
+
+        Assert.True(removed);
+        Assert.Equal("Alice", value);
+        Assert.False(propertyBag.TryGetValue(key, out _));
+    }
+
+    [Fact]
+    public void TryRemove_WhenKeyIsMissing_ReturnsFalseWithDefault()
+    {
+        var propertyBag = new PropertyBagDictionary();
+        var key = new PropertyBagKey<string>("Name");
+
+        var removed = propertyBag.TryRemove(key, out var value);
+
+        Assert.False(removed);
+        Assert.Null(value);
+    }
+
+    #endregion
+
     #region Helper Classes
 
     private sealed class TestConfiguration

@@ -7,7 +7,8 @@ using JetBrains.Annotations;
 namespace NCode.PropertyBag;
 
 /// <summary>
-/// Provides the <see cref="IPropertyBag"/> extension that names a key after the caller's argument expression.
+/// Provides the <see cref="IPropertyBag"/> extensions that write values: one that names a key after the
+/// caller's argument expression, and the <c>TryAdd</c>, <c>GetOrAdd</c> and <c>TryRemove</c> helpers.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -90,6 +91,134 @@ public static class PropertyBagExtensions
         {
             ArgumentNullException.ThrowIfNull(bag);
             return bag.SetValue(new PropertyBagKey<T>(name ?? string.Empty), value);
+        }
+
+        /// <summary>
+        /// Sets a strongly typed value in the property bag only when the bag holds no value for the key.
+        /// </summary>
+        /// <param name="key">The key of the value to add.</param>
+        /// <param name="value">
+        /// The value to store when the key is missing. This value may be <c>null</c> for reference types
+        /// and nullable value types.
+        /// </param>
+        /// <typeparam name="T">The type of the value to store in the property bag.</typeparam>
+        /// <returns>
+        /// <c>true</c> if the value was stored; <c>false</c> if the bag already held a value for
+        /// <paramref name="key"/>, which is left unchanged.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">The property bag is <c>null</c>.</exception>
+        /// <remarks>
+        /// <para>
+        /// A stored <c>null</c> counts as a value, so the key is not added again.
+        /// </para>
+        /// <para>
+        /// This method composes <see cref="IReadOnlyPropertyBag.TryGetValue{T}"/> and
+        /// <see cref="IPropertyBag.SetValue{T}"/>, so it is not atomic. <c>ConcurrentPropertyBag</c> has
+        /// an atomic version.
+        /// </para>
+        /// </remarks>
+        /// <example>
+        /// <code>
+        /// var key = new PropertyBagKey&lt;string&gt;("userName");
+        /// var added = propertyBag.TryAdd(key, "alice");
+        /// </code>
+        /// </example>
+        public bool TryAdd<T>(PropertyBagKey<T> key, T? value)
+        {
+            ArgumentNullException.ThrowIfNull(bag);
+
+            if (bag.TryGetValue<T>(key, out _))
+            {
+                return false;
+            }
+
+            bag.SetValue(key, value);
+            return true;
+        }
+
+        /// <summary>
+        /// Retrieves the value stored for the key, or creates it with a factory and stores it.
+        /// </summary>
+        /// <param name="key">The key of the value to retrieve or add.</param>
+        /// <param name="valueFactory">The function that creates the value when the bag holds none.</param>
+        /// <typeparam name="T">The type of the value to retrieve or store.</typeparam>
+        /// <returns>
+        /// The value already stored for <paramref name="key"/>, which may be <c>null</c>; otherwise, the value
+        /// that <paramref name="valueFactory"/> created and this method stored.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// The property bag or <paramref name="valueFactory"/> is <c>null</c>.
+        /// </exception>
+        /// <remarks>
+        /// <para>
+        /// The factory is not called when the bag already holds a value, a stored <c>null</c> included.
+        /// </para>
+        /// <para>
+        /// This method composes <see cref="IReadOnlyPropertyBag.TryGetValue{T}"/> and
+        /// <see cref="IPropertyBag.SetValue{T}"/>, so it is not atomic. <c>ConcurrentPropertyBag</c> has
+        /// an atomic version.
+        /// </para>
+        /// </remarks>
+        /// <example>
+        /// <code>
+        /// var key = new PropertyBagKey&lt;string&gt;("userName");
+        /// var name = propertyBag.GetOrAdd(key, k => k.Name.ToUpperInvariant());
+        /// </code>
+        /// </example>
+        public T? GetOrAdd<T>(PropertyBagKey<T> key, Func<PropertyBagKey<T>, T?> valueFactory)
+        {
+            ArgumentNullException.ThrowIfNull(bag);
+            ArgumentNullException.ThrowIfNull(valueFactory);
+
+            if (bag.TryGetValue<T>(key, out var existing))
+            {
+                return existing;
+            }
+
+            var value = valueFactory(key);
+            bag.SetValue(key, value);
+            return value;
+        }
+
+        /// <summary>
+        /// Removes the value stored for the key and returns it.
+        /// </summary>
+        /// <param name="key">The key of the value to remove.</param>
+        /// <param name="value">
+        /// When this method returns, contains the removed value if the key was found; otherwise, the default
+        /// value for type <typeparamref name="T"/>.
+        /// </param>
+        /// <typeparam name="T">The type of the value to remove from the property bag.</typeparam>
+        /// <returns>
+        /// <c>true</c> if the bag held a value for <paramref name="key"/> and it was removed; otherwise,
+        /// <c>false</c>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">The property bag is <c>null</c>.</exception>
+        /// <remarks>
+        /// This method composes <see cref="IReadOnlyPropertyBag.TryGetValue{T}"/> and
+        /// <see cref="IPropertyBag.Remove"/>, so it is not atomic. <c>ConcurrentPropertyBag</c> has
+        /// an atomic version.
+        /// </remarks>
+        /// <example>
+        /// <code>
+        /// var key = new PropertyBagKey&lt;string&gt;("userName");
+        /// if (propertyBag.TryRemove(key, out var removed))
+        /// {
+        ///     Console.WriteLine($"Removed {removed}");
+        /// }
+        /// </code>
+        /// </example>
+        public bool TryRemove<T>(PropertyBagKey<T> key, out T? value)
+        {
+            ArgumentNullException.ThrowIfNull(bag);
+
+            if (bag.TryGetValue(key, out value))
+            {
+                bag.Remove(key);
+                return true;
+            }
+
+            return false;
         }
     }
 }
