@@ -90,6 +90,20 @@
       ]
     },
     {
+      "id": "propertybagkey-t-tostring",
+      "group": "keys",
+      "type": "PropertyBagKey<T>",
+      "member": "ToString",
+      "signatures": [
+        "public override string ToString()"
+      ],
+      "summary": "`Name (Type)`, such as `UserName (System.String)`.",
+      "page": "/guides/define-keys/",
+      "api": [
+        "override NCode.PropertyBag.PropertyBagKey<T>.ToString() -> string!"
+      ]
+    },
+    {
       "id": "propertybagkey-t-conversion",
       "group": "keys",
       "type": "PropertyBagKey<T>",
@@ -170,6 +184,20 @@
       ]
     },
     {
+      "id": "propertybagkey-tostring",
+      "group": "keys",
+      "type": "PropertyBagKey",
+      "member": "ToString",
+      "signatures": [
+        "public override string ToString()"
+      ],
+      "summary": "`Name (Type)`, such as `UserName (System.String)`.",
+      "page": "/guides/define-keys/",
+      "api": [
+        "override NCode.PropertyBag.PropertyBagKey.ToString() -> string!"
+      ]
+    },
+    {
       "id": "ireadonlypropertybag",
       "group": "bags",
       "type": "IReadOnlyPropertyBag",
@@ -209,6 +237,96 @@
       "page": "/guides/share-a-bag/",
       "api": [
         "NCode.PropertyBag.IReadOnlyPropertyBag.Clone() -> NCode.PropertyBag.IPropertyBag!"
+      ]
+    },
+    {
+      "id": "readonlypropertybagextensions-getvalue",
+      "group": "bags",
+      "type": "ReadOnlyPropertyBagExtensions",
+      "member": "GetValue",
+      "signatures": [
+        "public T? GetValue<T>(PropertyBagKey<T> key)"
+      ],
+      "summary": "The value, or `KeyNotFoundException` naming the key.",
+      "page": "/guides/store-and-read-values/",
+      "api": [
+        "NCode.PropertyBag.ReadOnlyPropertyBagExtensions.extension(NCode.PropertyBag.IReadOnlyPropertyBag!).GetValue<T>(NCode.PropertyBag.PropertyBagKey<T> key) -> T?",
+        "static NCode.PropertyBag.ReadOnlyPropertyBagExtensions.GetValue<T>(this NCode.PropertyBag.IReadOnlyPropertyBag! bag, NCode.PropertyBag.PropertyBagKey<T> key) -> T?"
+      ]
+    },
+    {
+      "id": "readonlypropertybagextensions-getvalueordefault",
+      "group": "bags",
+      "type": "ReadOnlyPropertyBagExtensions",
+      "member": "GetValueOrDefault",
+      "signatures": [
+        "public T? GetValueOrDefault<T>(PropertyBagKey<T> key, T? defaultValue = default)"
+      ],
+      "summary": "The value, or `defaultValue`.",
+      "page": "/guides/store-and-read-values/",
+      "api": [
+        "NCode.PropertyBag.ReadOnlyPropertyBagExtensions.extension(NCode.PropertyBag.IReadOnlyPropertyBag!).GetValueOrDefault<T>(NCode.PropertyBag.PropertyBagKey<T> key, T? defaultValue = default(T?)) -> T?",
+        "static NCode.PropertyBag.ReadOnlyPropertyBagExtensions.GetValueOrDefault<T>(this NCode.PropertyBag.IReadOnlyPropertyBag! bag, NCode.PropertyBag.PropertyBagKey<T> key, T? defaultValue = default(T?)) -> T?"
+      ]
+    },
+    {
+      "id": "readonlypropertybagextensions-containskey",
+      "group": "bags",
+      "type": "ReadOnlyPropertyBagExtensions",
+      "member": "ContainsKey",
+      "signatures": [
+        "public bool ContainsKey<T>(PropertyBagKey<T> key)"
+      ],
+      "summary": "Whether `TryGetValue` finds a value, a stored `null` included.",
+      "page": "/guides/store-and-read-values/",
+      "api": [
+        "NCode.PropertyBag.ReadOnlyPropertyBagExtensions.extension(NCode.PropertyBag.IReadOnlyPropertyBag!).ContainsKey<T>(NCode.PropertyBag.PropertyBagKey<T> key) -> bool",
+        "static NCode.PropertyBag.ReadOnlyPropertyBagExtensions.ContainsKey<T>(this NCode.PropertyBag.IReadOnlyPropertyBag! bag, NCode.PropertyBag.PropertyBagKey<T> key) -> bool"
+      ]
+    },
+    {
+      "id": "propertybagextensions-tryadd",
+      "group": "bags",
+      "type": "PropertyBagExtensions",
+      "member": "TryAdd",
+      "signatures": [
+        "public bool TryAdd<T>(PropertyBagKey<T> key, T? value)"
+      ],
+      "summary": "Sets the value only when the key holds none; not atomic.",
+      "page": "/guides/store-and-read-values/",
+      "api": [
+        "NCode.PropertyBag.PropertyBagExtensions.extension(NCode.PropertyBag.IPropertyBag!).TryAdd<T>(NCode.PropertyBag.PropertyBagKey<T> key, T? value) -> bool",
+        "static NCode.PropertyBag.PropertyBagExtensions.TryAdd<T>(this NCode.PropertyBag.IPropertyBag! bag, NCode.PropertyBag.PropertyBagKey<T> key, T? value) -> bool"
+      ]
+    },
+    {
+      "id": "propertybagextensions-getoradd",
+      "group": "bags",
+      "type": "PropertyBagExtensions",
+      "member": "GetOrAdd",
+      "signatures": [
+        "public T? GetOrAdd<T>(PropertyBagKey<T> key, Func<PropertyBagKey<T>, T?> valueFactory)"
+      ],
+      "summary": "The stored value, or the factory's result, stored; not atomic.",
+      "page": "/guides/store-and-read-values/",
+      "api": [
+        "NCode.PropertyBag.PropertyBagExtensions.extension(NCode.PropertyBag.IPropertyBag!).GetOrAdd<T>(NCode.PropertyBag.PropertyBagKey<T> key, System.Func<NCode.PropertyBag.PropertyBagKey<T>, T?>! valueFactory) -> T?",
+        "static NCode.PropertyBag.PropertyBagExtensions.GetOrAdd<T>(this NCode.PropertyBag.IPropertyBag! bag, NCode.PropertyBag.PropertyBagKey<T> key, System.Func<NCode.PropertyBag.PropertyBagKey<T>, T?>! valueFactory) -> T?"
+      ]
+    },
+    {
+      "id": "propertybagextensions-tryremove",
+      "group": "bags",
+      "type": "PropertyBagExtensions",
+      "member": "TryRemove",
+      "signatures": [
+        "public bool TryRemove<T>(PropertyBagKey<T> key, out T? value)"
+      ],
+      "summary": "Removes and returns the value when the key holds one; not atomic.",
+      "page": "/guides/store-and-read-values/",
+      "api": [
+        "NCode.PropertyBag.PropertyBagExtensions.extension(NCode.PropertyBag.IPropertyBag!).TryRemove<T>(NCode.PropertyBag.PropertyBagKey<T> key, out T? value) -> bool",
+        "static NCode.PropertyBag.PropertyBagExtensions.TryRemove<T>(this NCode.PropertyBag.IPropertyBag! bag, NCode.PropertyBag.PropertyBagKey<T> key, out T? value) -> bool"
       ]
     },
     {
