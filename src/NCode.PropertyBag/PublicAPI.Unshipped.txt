@@ -1,15 +1,1 @@
 #nullable enable
-*REMOVED*NCode.PropertyBag.DefaultPropertyBag
-*REMOVED*NCode.PropertyBag.DefaultPropertyBag.Clone() -> NCode.PropertyBag.IPropertyBag!
-*REMOVED*NCode.PropertyBag.DefaultPropertyBag.DefaultPropertyBag() -> void
-*REMOVED*NCode.PropertyBag.DefaultPropertyBag.Remove(NCode.PropertyBag.PropertyBagKey key) -> NCode.PropertyBag.IPropertyBag!
-*REMOVED*NCode.PropertyBag.DefaultPropertyBag.Scope<T>(NCode.PropertyBag.PropertyBagKey<T> key, T? value) -> NCode.PropertyBag.IPropertyBagScope!
-*REMOVED*NCode.PropertyBag.DefaultPropertyBag.Set<T>(NCode.PropertyBag.PropertyBagKey<T> key, T? value) -> NCode.PropertyBag.IPropertyBag!
-*REMOVED*NCode.PropertyBag.DefaultPropertyBag.TryGetValue<T>(NCode.PropertyBag.PropertyBagKey<T> key, out T? value) -> bool
-NCode.PropertyBag.PropertyBagDictionary
-NCode.PropertyBag.PropertyBagDictionary.Clone() -> NCode.PropertyBag.IPropertyBag!
-NCode.PropertyBag.PropertyBagDictionary.PropertyBagDictionary() -> void
-NCode.PropertyBag.PropertyBagDictionary.Remove(NCode.PropertyBag.PropertyBagKey key) -> NCode.PropertyBag.IPropertyBag!
-NCode.PropertyBag.PropertyBagDictionary.Scope<T>(NCode.PropertyBag.PropertyBagKey<T> key, T? value) -> NCode.PropertyBag.IPropertyBagScope!
-NCode.PropertyBag.PropertyBagDictionary.SetValue<T>(NCode.PropertyBag.PropertyBagKey<T> key, T? value) -> NCode.PropertyBag.IPropertyBag!
-NCode.PropertyBag.PropertyBagDictionary.TryGetValue<T>(NCode.PropertyBag.PropertyBagKey<T> key, out T? value) -> bool

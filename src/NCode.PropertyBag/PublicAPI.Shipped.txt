@@ -1,11 +1,4 @@
 #nullable enable
-NCode.PropertyBag.DefaultPropertyBag
-NCode.PropertyBag.DefaultPropertyBag.Clone() -> NCode.PropertyBag.IPropertyBag!
-NCode.PropertyBag.DefaultPropertyBag.DefaultPropertyBag() -> void
-NCode.PropertyBag.DefaultPropertyBag.Remove(NCode.PropertyBag.PropertyBagKey key) -> NCode.PropertyBag.IPropertyBag!
-NCode.PropertyBag.DefaultPropertyBag.Scope<T>(NCode.PropertyBag.PropertyBagKey<T> key, T? value) -> NCode.PropertyBag.IPropertyBagScope!
-NCode.PropertyBag.DefaultPropertyBag.Set<T>(NCode.PropertyBag.PropertyBagKey<T> key, T? value) -> NCode.PropertyBag.IPropertyBag!
-NCode.PropertyBag.DefaultPropertyBag.TryGetValue<T>(NCode.PropertyBag.PropertyBagKey<T> key, out T? value) -> bool
 NCode.PropertyBag.DefaultPropertyBagFactory
 NCode.PropertyBag.DefaultPropertyBagFactory.Create() -> NCode.PropertyBag.IPropertyBag!
 NCode.PropertyBag.DefaultPropertyBagFactory.DefaultPropertyBagFactory() -> void
@@ -19,6 +12,13 @@ NCode.PropertyBag.DefaultRegistration.extension(Microsoft.Extensions.DependencyI
 NCode.PropertyBag.DefaultRegistration.extension(Microsoft.Extensions.DependencyInjection.IServiceCollection!).AddPropertyBag() -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
 NCode.PropertyBag.IPropertyBagFactory
 NCode.PropertyBag.IPropertyBagFactory.Create() -> NCode.PropertyBag.IPropertyBag!
+NCode.PropertyBag.PropertyBagDictionary
+NCode.PropertyBag.PropertyBagDictionary.Clone() -> NCode.PropertyBag.IPropertyBag!
+NCode.PropertyBag.PropertyBagDictionary.PropertyBagDictionary() -> void
+NCode.PropertyBag.PropertyBagDictionary.Remove(NCode.PropertyBag.PropertyBagKey key) -> NCode.PropertyBag.IPropertyBag!
+NCode.PropertyBag.PropertyBagDictionary.Scope<T>(NCode.PropertyBag.PropertyBagKey<T> key, T? value) -> NCode.PropertyBag.IPropertyBagScope!
+NCode.PropertyBag.PropertyBagDictionary.SetValue<T>(NCode.PropertyBag.PropertyBagKey<T> key, T? value) -> NCode.PropertyBag.IPropertyBag!
+NCode.PropertyBag.PropertyBagDictionary.TryGetValue<T>(NCode.PropertyBag.PropertyBagKey<T> key, out T? value) -> bool
 NCode.PropertyBag.PropertyBagFactory
 static NCode.PropertyBag.DefaultPropertyBagFactory.Singleton.get -> NCode.PropertyBag.IPropertyBagFactory!
 static NCode.PropertyBag.DefaultPropertyBagFactory.Singleton.set -> void
