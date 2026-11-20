@@ -1,0 +1,45 @@
+---
+title: Name keys after variables
+description: Let Set and TryGet name the key after the variable you pass, through CallerArgumentExpression.
+---
+
+`PropertyBagExtensions` lets you skip the key declaration. `Set<T>(value)` extends `IPropertyBag` and `TryGet<T>(out value)` extends `IReadOnlyPropertyBag`. Each builds `new PropertyBagKey<T>(name)`, where `name` is the text of the argument expression the compiler read through `CallerArgumentExpression`, and `T` is the type of the variable. This page shows how to store and read a value that way, how an expression or an explicit name changes the key, and what to watch for.
+
+The extension members are C# 14 extension blocks, which earlier C# versions call as ordinary extension methods ([API map](/reference/api-map/)).
+
+## Store under the variable's name
+
+`Set(value)` stores the value under a key named after the variable and typed after it. The call returns the bag, so calls chain.
+
+```cs snippet=SiteInferKeyNamesSet
+```
+
+## Read it back
+
+`TryGet(out value)` reads the key named after the variable you pass. Declare the variable first, so its name is the whole argument expression.
+
+```cs snippet=SiteInferKeyNamesTryGet
+```
+
+## Expressions and explicit names
+
+The name is the text of the whole argument expression, so a member access names the key with its dots:
+
+```cs snippet=SiteInferKeyNamesExpression
+```
+
+Pass `name` to choose the key's name yourself. An explicit name wins over the inferred one:
+
+```cs snippet=SiteInferKeyNamesExplicit
+```
+
+## Pitfalls
+
+An inline declaration names the key with its type. This `TryGet` reads the key `string? region`, which the bag does not hold, so it returns `false`:
+
+```cs snippet=SiteInferKeyNamesInlineOut
+```
+
+- `TryGet(out var x)` does not compile: the compiler cannot infer `T` (CS0411). `TryGet<string>(out var x)` compiles, but it reads the key `var x`.
+- Renaming a variable renames its key, so the code that writes a value and the code that reads it must agree on the name.
+- `int count` and `long count` are two keys, because a key is a type and a name together.
