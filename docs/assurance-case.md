@@ -154,10 +154,27 @@ privilege and open design."
   read back only under its key's type (R1), the default bag matches a dictionary model under any mix of sets and
   removes, nested scopes restore each enclosing value as they are disposed, and a clone and its original stay
   independent. They replay one fixed seed, `20261120,12345`, so every run checks the same generated cases.
+- **Assertions while testing:** the library has no `Debug.Assert` or other check that a Release build removes: its
+  checks are `ArgumentNullException.ThrowIfNull` guards that run in every build, so the tests run every check the code
+  has. The tests' own assertions (xUnit, and the FsCheck properties) check every result. CI runs the tests twice: in
+  Release in the gate, and in Debug, the `dotnet test` default, in `./build/Test-Coverage.ps1`, where `DEBUG` is
+  defined.
+- **Regression tests:** the fix that makes disposing a scope restore the previous value
+  ([ADR-1000](decisions/1000-disposing-a-scope-restores-the-previous-value.md), pull request
+  [#39](https://github.com/NCodeGroup/PropertyBag/pull/39)) added `Dispose_FromScopeMethod_CalledTwice_RestoresOnce`
+  and `Scope_WhenKeyHeldNull_RestoresNull` and turned the nested-scope test into `NestedScopes_RestoreInReverseOrder`,
+  in `tests/NCode.PropertyBag.Tests/DefaultPropertyBagScopeTests.cs`; each fails without the fix.
 - **Static analysis:** with CodeQL's default setup configured and analyzing at least one language, the repository
   ruleset blocks a pull request that adds a CodeQL alert at warning level or above, or a security alert of any severity
   ([ADR-0005](decisions/project-template/0005-the-default-branch-accepts-changes-only-through-pull-requests.md),
   [ADR-0030](decisions/project-template/0030-the-code-scanning-rule-is-added-only-where-codeql-analyzes-a-language.md)).
+- **Dismissed alerts:** CodeQL alerts #4 and #5 (`actions/untrusted-checkout/high` and
+  `actions/untrusted-checkout-toctou/high`, `code-review.yml` line 58) flagged a step that checked the pull request's
+  head out into `pr/` in a `pull_request_target` and `issue_comment` workflow; that step was removed in commit dede4be
+  on 2026-10-30, and CodeQL's analysis of `main` no longer reports it. The workflow checks out only the default branch,
+  runs only for pull requests from this repository's branches, and the NCode Review action fetches the pull request to
+  read it, building and running nothing from it, as `code-review.yml`'s header says. The alerts stay dismissed as
+  won't fix.
 - **Review:** every change reaches the default branch through a pull request with passing CI and every conversation
   resolved, and the ruleset refuses force pushes and deletion
   ([ADR-0005](decisions/project-template/0005-the-default-branch-accepts-changes-only-through-pull-requests.md),
@@ -178,6 +195,11 @@ privilege and open design."
   ([ADR-0139](decisions/project-template/0139-releases-carry-build-provenance.md)); nuget.org signs each package it
   accepts.
   [SECURITY.md](../SECURITY.md#verify-a-package) says how to verify a package.
+- **Reproducible builds:** `.github/workflows/reproducible-build.yml` packs every pull request and push to `main` twice,
+  from checkouts in different folders, and every Monday rebuilds the newest release's tag and compares the packages with
+  the ones attached to its GitHub release, each with `build/Compare-Packages.ps1`, entry by entry
+  ([ADR-1010](decisions/1010-package-builds-are-reproducible-and-ci-compares-rebuilds-entry-by-entry.md)). On
+  2026-11-20 a rebuild of `v2.0.1` in a Linux container matched its released packages entry for entry.
 - **Response:** [SECURITY.md](../SECURITY.md) defines private reporting, coordinated disclosure and credit.
 
 ## Security Reviews
