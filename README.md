@@ -25,7 +25,7 @@ A property bag carries context, such as the current user, a culture or a correla
 Both packages share the namespace `NCode.PropertyBag`.
 
 | Package | Reference it from |
-|---------|-------------------|
+| --- | --- |
 | [NCode.PropertyBag](https://www.nuget.org/packages/NCode.PropertyBag/) | Applications: the bag, its factories and AddPropertyBag() |
 | [NCode.PropertyBag.Abstractions](https://www.nuget.org/packages/NCode.PropertyBag.Abstractions/) | Libraries that accept or read a bag |
 

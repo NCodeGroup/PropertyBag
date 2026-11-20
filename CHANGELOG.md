@@ -45,7 +45,7 @@ The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.
 
 ### Fixed
 
-- Disposing the scope that `PropertyBagDictionary.Scope` returns restores the value its key held before, as `IPropertyBag.Scope`, `IPropertyBagScope` and the README say, instead of removing the key; a key that held no value is still removed, and a second `Dispose` does nothing ([ADR-1000](docs/decisions/1000-disposing-a-scope-restores-the-previous-value.md)).
+- **Breaking:** Disposing the scope that `PropertyBagDictionary.Scope` returns restores the value its key held before, as `IPropertyBag.Scope`, `IPropertyBagScope` and the README say, instead of removing the key; a key that held no value is still removed, and a second `Dispose` does nothing. Code that relied on the key being removed after a scope over an existing value calls `Remove` after disposing the scope ([ADR-1000](docs/decisions/1000-disposing-a-scope-restores-the-previous-value.md)).
 
 ## [1.2.0] - 2026-01-19
 
