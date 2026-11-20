@@ -5,7 +5,8 @@ using NCode.PropertyBag;
 
 namespace SiteSamples.Guides;
 
-// The samples of docs/site/guides/scope-a-value.mdx. The site's build includes each begin-snippet region in the page by its key (ADR-1004).
+// The samples of docs/site/guides/scope-a-value.mdx. The site's build includes each begin-snippet
+// region in the page by its key (ADR-1004).
 public class ScopeAValueSamples
 {
     [Fact]
