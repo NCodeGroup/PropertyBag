@@ -8,7 +8,38 @@ user-facing summary.
 
 [//]: # "Maintainers: list what the project is expected to do as R1, R2, ..., and what users must not rely on."
 
-Not written yet.
+1. **R1 Type-safe retrieval.** A value is returned only under the key it was stored with: `PropertyBagKey` equality
+   compares both `Type` and `Name` (ordinal), and `TryGetValue<T>` returns `true` only when the stored object is `null`
+   or a `T` (an `is T` test, not a cast); otherwise it returns `false` with `default` and never throws
+   `InvalidCastException`.
+2. **R2 No external input or output.** The packages read no file, network, environment variable or configuration, start
+   no process or thread, and serialize, deserialize or load no code; a bag holds only the objects its caller stores, in
+   memory, for the bag's lifetime.
+3. **R3 Fail-safe lookups.** A missing key is reported, never thrown: `TryGetValue<T>`, `TryGet<T>` and
+   `IReadOnlyDictionary.TryGetValue` return `false`, and the `IReadOnlyDictionary` indexer returns `null`.
+4. **R4 Independent clones.** `Clone()` returns a new bag whose entries change without changing the original's; a value
+   that implements `ICloneable` is copied through its own `Clone()`, any other value is shared by reference.
+5. **R5 Registration never overrides.** `AddPropertyBag()` uses `TryAddSingleton`, so an `IPropertyBagFactory` the
+   application registered first is kept.
+6. **R6 Traceable packages.** CI builds the packages from the tagged commit of a published GitHub release,
+   deterministically and with Source Link, refusing a tag that differs from `version.json`; nuget.org signs them, and
+   each release's packages carry a signed build-provenance attestation.
+
+Users must not rely on:
+
+- **Thread safety:** `DefaultPropertyBag` and its scopes hold no lock; concurrent use of one bag needs the caller's
+  synchronization.
+- **Isolation:** `IReadOnlyPropertyBag` is a narrower view, not a protection: code holding a `DefaultPropertyBag`
+  through it can cast it back to `IPropertyBag`, and every caller in the process is trusted.
+- **Confidentiality:** values are ordinary managed objects, neither encrypted nor cleared; `Remove` only drops the bag's
+  reference.
+- **Bounded size:** a bag holds every entry it is given; an application that lets untrusted input choose key names or
+  values bounds them itself.
+- **Out-of-order scopes:** each scope restores the value its key held when the scope was created, so nested scopes
+  disposed out of order leave the value the last disposed one captured.
+- **Deep copies:** `Clone()` shares values that don't implement `ICloneable` and runs the `Clone()` of those that do.
+- **A fixed factory:** `PropertyBagFactory.DefaultFactory` and `DefaultPropertyBagFactory.Singleton` are settable
+  process-wide, so any code in the process can replace the factory `PropertyBagFactory.Create()` uses.
 
 ## Threat Model
 
