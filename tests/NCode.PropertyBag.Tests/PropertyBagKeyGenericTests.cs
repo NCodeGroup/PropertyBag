@@ -184,7 +184,9 @@ public class PropertyBagKeyGenericTests
     {
         var key = new PropertyBagKey<int>("Age");
 
-        Assert.Equal("Age (System.Int32)", key.ToString());
+        var text = key.ToString();
+
+        Assert.Equal("Age (System.Int32)", text);
     }
 
     #endregion

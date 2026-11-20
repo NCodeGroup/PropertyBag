@@ -163,7 +163,9 @@ public class PropertyBagKeyTests
     {
         var key = new PropertyBagKey(typeof(string), "UserName");
 
-        Assert.Equal("UserName (System.String)", key.ToString());
+        var text = key.ToString();
+
+        Assert.Equal("UserName (System.String)", text);
     }
 
     [Fact]
@@ -171,7 +173,9 @@ public class PropertyBagKeyTests
     {
         var key = default(PropertyBagKey);
 
-        Assert.Equal(" ()", key.ToString());
+        var text = key.ToString();
+
+        Assert.Equal(" ()", text);
     }
 
     #endregion
