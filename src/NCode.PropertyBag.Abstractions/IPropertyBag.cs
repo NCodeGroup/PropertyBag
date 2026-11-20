@@ -21,7 +21,7 @@ namespace NCode.PropertyBag;
 /// <example>
 /// <code>
 /// var key = new PropertyBagKey&lt;string&gt;("UserName");
-/// propertyBag.Set(key, "Alice");
+/// propertyBag.SetValue(key, "Alice");
 ///
 /// if (propertyBag.TryGetValue(key, out var userName))
 /// {
@@ -89,7 +89,7 @@ public interface IPropertyBag : IReadOnlyPropertyBag
     /// <example>
     /// <code>
     /// var key = new PropertyBagKey&lt;string&gt;("TempValue");
-    /// propertyBag.Set(key, "temporary");
+    /// propertyBag.SetValue(key, "temporary");
     ///
     /// // Later, remove the value
     /// propertyBag.Remove(key);
@@ -128,7 +128,7 @@ public interface IPropertyBag : IReadOnlyPropertyBag
     /// <example>
     /// <code>
     /// var cultureKey = new PropertyBagKey&lt;string?&gt;("Culture");
-    /// propertyBag.Set(cultureKey, "en-US");
+    /// propertyBag.SetValue(cultureKey, "en-US");
     ///
     /// using (propertyBag.Scope(cultureKey, "fr-FR"))
     /// {

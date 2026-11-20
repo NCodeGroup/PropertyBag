@@ -27,7 +27,7 @@ namespace NCode.PropertyBag;
 /// var propertyBag = new PropertyBagDictionary();
 /// var key = new PropertyBagKey&lt;string&gt;("UserName");
 ///
-/// propertyBag.Set(key, "Alice");
+/// propertyBag.SetValue(key, "Alice");
 ///
 /// if (propertyBag.TryGetValue(key, out var userName))
 /// {
