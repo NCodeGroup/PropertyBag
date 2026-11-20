@@ -144,6 +144,70 @@ public class ReadmeSamplesTests
         Assert.Equal(["UserName (String) = Alice", "UserAge (Int32) = 30"], lines);
     }
 
+    [Fact]
+    public void ReadHelpersSample_Runs()
+    {
+        var propertyBag = PropertyBagFactory.Create();
+
+        // begin-snippet: ReadHelpers
+        var age = propertyBag.GetValueOrDefault(UserKeys.UserAge, 18); // 18: no value yet
+        var name = propertyBag.GetOrAdd(UserKeys.UserName, _ => "Guest"); // stores "Guest"
+        var added = propertyBag.TryAdd(UserKeys.UserAge, 30); // true: the key was free
+        var storedAge = propertyBag.GetValue(UserKeys.UserAge); // 30
+        // end-snippet
+
+        Assert.Equal(18, age);
+        Assert.Equal("Guest", name);
+        Assert.True(added);
+        Assert.Equal(30, storedAge);
+    }
+
+    [Fact]
+    public void ChildBagSample_Runs()
+    {
+        var propertyBag = PropertyBagFactory.Create().SetValue(UserKeys.UserName, "Alice");
+
+        // begin-snippet: ChildBag
+        var request = propertyBag.CreateChild();
+        request.SetValue(UserKeys.UserAge, 30);
+
+        request.TryGetValue(UserKeys.UserName, out var inherited); // "Alice", read from the parent
+        var parentHasAge = propertyBag.ContainsKey(UserKeys.UserAge); // false: the parent is untouched
+        // end-snippet
+
+        Assert.Equal("Alice", inherited);
+        Assert.False(parentHasAge);
+    }
+
+    [Fact]
+    public void ReadOnlyViewSample_Runs()
+    {
+        var propertyBag = PropertyBagFactory.Create().SetValue(UserKeys.UserName, "Alice");
+
+        // begin-snippet: ReadOnlyView
+        IReadOnlyPropertyBag view = propertyBag.AsReadOnly();
+
+        view.TryGetValue(UserKeys.UserName, out var userName); // "Alice"
+        // end-snippet
+
+        Assert.Equal("Alice", userName);
+        Assert.IsNotAssignableFrom<IPropertyBag>(view);
+    }
+
+    [Fact]
+    public void ConcurrentBagSample_Runs()
+    {
+        // begin-snippet: ConcurrentBag
+        var shared = new ConcurrentPropertyBagDictionary();
+
+        Parallel.For(0, 100, i => shared.GetOrAdd(UserKeys.UserAge, _ => i));
+
+        var winner = shared.GetValue(UserKeys.UserAge); // one of the values; every thread saw it
+        // end-snippet
+
+        Assert.InRange(winner, 0, 99);
+    }
+
     #endregion
 
     #region Dependency Injection Tests
