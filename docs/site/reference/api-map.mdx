@@ -1,0 +1,54 @@
+---
+title: API map
+description: Every public type and member of both packages, with its signature, what it does and the page that explains it.
+---
+
+import ApiMap from '@site/components/ApiMap.astro';
+
+This page lists every public type and member of `NCode.PropertyBag.Abstractions` and `NCode.PropertyBag`, which share the
+namespace `NCode.PropertyBag`. The gate fails when this map and the packages' `PublicAPI.Shipped.txt` files differ, so
+every member that ships has an entry.
+
+## Keys
+
+<ApiMap group="keys" />
+
+## Property bags
+
+<ApiMap group="bags" />
+
+## Key names from variables
+
+<ApiMap group="extensions" />
+
+## Default implementation
+
+<ApiMap group="default" />
+
+## Factories and dependency injection
+
+<ApiMap group="factories" />
+
+## Extension members
+
+`PropertyBagExtensions.Set`, `PropertyBagExtensions.TryGet` and `DefaultRegistration.AddPropertyBag` are declared in
+C# 14 `extension` blocks and compiled to ordinary static extension methods, so a project on an earlier C# version calls
+them the same way, or in their static form, `PropertyBagExtensions.Set(bag, timeout)`. [Infer key
+names](/guides/infer-key-names/) shows both.
+
+## Package
+
+```sh
+dotnet add package NCode.PropertyBag
+```
+
+This package holds the implementation, and depends on `NCode.PropertyBag.Abstractions` and on
+`Microsoft.Extensions.DependencyInjection.Abstractions`.
+
+```sh
+dotnet add package NCode.PropertyBag.Abstractions
+```
+
+This package holds the contracts, for code that only passes or reads bags.
+
+Both packages target net8.0 and net10.0.
