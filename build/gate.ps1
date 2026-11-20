@@ -1,7 +1,7 @@
 #requires -version 7
 <#
 .SYNOPSIS
-    The project's gate: restores the local tools, then runs the Definition of Done, build/dod.ps1, whose Format stage runs the CSharpier check (ADR-1002).
+    The project's gate: restores the local tools, then runs the Definition of Done, build/dod.ps1, whose Format stage runs the CSharpier check (project-template ADR-0148).
 .DESCRIPTION
     build/dod.ps1 is template-owned, so this script wraps it, as project-template ADR-0117 says. -Fast and -Filter are
     passed on to build/dod.ps1.

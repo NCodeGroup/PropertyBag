@@ -7,53 +7,73 @@ namespace NCode.PropertyBag.Tests;
 
 public class DefaultRegistrationTests
 {
+    #region AddPropertyBag Tests
+
     [Fact]
-    public void AddPropertyBag_RegistersTheDefaultFactoryAsSingleton()
+    public async Task AddPropertyBag_WhenCalled_ResolvesTheDefaultFactory()
     {
-        var services = new TestServiceCollection();
+        var serviceCollection = new ServiceCollection();
+        serviceCollection.AddPropertyBag();
 
-        services.AddPropertyBag();
+        await using var serviceProvider = serviceCollection.BuildServiceProvider();
+        var factory = serviceProvider.GetRequiredService<IPropertyBagFactory>();
 
-        var descriptor = Assert.Single(services);
-        Assert.Equal(typeof(IPropertyBagFactory), descriptor.ServiceType);
-        Assert.Equal(typeof(DefaultPropertyBagFactory), descriptor.ImplementationType);
-        Assert.Equal(ServiceLifetime.Singleton, descriptor.Lifetime);
+        Assert.IsType<DefaultPropertyBagFactory>(factory);
     }
 
     [Fact]
-    public void AddPropertyBag_ReturnsTheSameCollection()
+    public async Task AddPropertyBag_WhenCalled_RegistersTheFactoryAsSingleton()
     {
-        IServiceCollection services = new TestServiceCollection();
+        var serviceCollection = new ServiceCollection();
+        serviceCollection.AddPropertyBag();
 
-        Assert.Same(services, services.AddPropertyBag());
+        await using var serviceProvider = serviceCollection.BuildServiceProvider();
+        var first = serviceProvider.GetRequiredService<IPropertyBagFactory>();
+        var second = serviceProvider.GetRequiredService<IPropertyBagFactory>();
+
+        Assert.Same(first, second);
     }
 
     [Fact]
-    public void AddPropertyBag_DoesNotOverwriteAnExistingRegistration()
+    public void AddPropertyBag_WhenCalled_ReturnsTheSameCollection()
     {
-        var services = new TestServiceCollection();
-        services.AddSingleton<IPropertyBagFactory, CustomFactory>();
+        var serviceCollection = new ServiceCollection();
 
-        services.AddPropertyBag();
+        var result = serviceCollection.AddPropertyBag();
 
-        var descriptor = Assert.Single(services);
-        Assert.Equal(typeof(CustomFactory), descriptor.ImplementationType);
+        Assert.Same(serviceCollection, result);
     }
 
     [Fact]
-    public void AddPropertyBag_CalledTwice_RegistersOnce()
+    public async Task AddPropertyBag_WhenFactoryAlreadyRegistered_KeepsTheExistingRegistration()
     {
-        var services = new TestServiceCollection();
+        var serviceCollection = new ServiceCollection();
+        serviceCollection.AddSingleton<IPropertyBagFactory, CustomFactory>();
+        serviceCollection.AddPropertyBag();
 
-        services.AddPropertyBag().AddPropertyBag();
+        await using var serviceProvider = serviceCollection.BuildServiceProvider();
+        var factory = serviceProvider.GetRequiredService<IPropertyBagFactory>();
 
-        Assert.Single(services);
+        Assert.IsType<CustomFactory>(factory);
     }
+
+    [Fact]
+    public void AddPropertyBag_WhenCalledTwice_RegistersTheFactoryOnce()
+    {
+        var serviceCollection = new ServiceCollection();
+        serviceCollection.AddPropertyBag().AddPropertyBag();
+
+        var descriptors = serviceCollection.Where(descriptor =>
+            descriptor.ServiceType == typeof(IPropertyBagFactory)
+        );
+
+        Assert.Single(descriptors);
+    }
+
+    #endregion
 
     private sealed class CustomFactory : IPropertyBagFactory
     {
         public IPropertyBag Create() => new DefaultPropertyBag();
     }
-
-    private sealed class TestServiceCollection : List<ServiceDescriptor>, IServiceCollection;
 }

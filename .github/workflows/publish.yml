@@ -79,7 +79,8 @@ jobs:
       - uses: ./.github/actions/install-dotnet
       - name: Test
         run: dotnet test --configuration Release -p:PublicRelease=true
-      # Nerdbank.GitVersioning takes the version from version.json (ADR-1000); PublicRelease drops the -g<commit> suffix, as the commit is the tagged one on the default branch.
+      # Nerdbank.GitVersioning takes the version from version.json (ADR-0138 in docs/decisions/project-template/);
+      # PublicRelease drops the -g<commit> suffix, as the commit is the tagged one on the default branch.
       - name: Pack
         run: dotnet pack --configuration Release --output artifacts/packages -p:PublicRelease=true
       # version.json must hold the tag's version: when it doesn't, nothing is published.

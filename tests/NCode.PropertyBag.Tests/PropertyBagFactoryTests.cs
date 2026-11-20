@@ -6,14 +6,18 @@ namespace NCode.PropertyBag.Tests;
 [Collection(StaticFactoryCollection.Name)]
 public class PropertyBagFactoryTests
 {
+    #region DefaultFactory Property Tests
+
     [Fact]
-    public void DefaultFactory_WhenNotSet_IsTheDefaultSingleton()
+    public void DefaultFactory_WhenNotSet_ReturnsDefaultSingleton()
     {
-        Assert.Same(DefaultPropertyBagFactory.Singleton, PropertyBagFactory.DefaultFactory);
+        var factory = PropertyBagFactory.DefaultFactory;
+
+        Assert.Same(DefaultPropertyBagFactory.Singleton, factory);
     }
 
     [Fact]
-    public void DefaultFactory_WhenSet_ReturnsTheCustomFactory()
+    public void DefaultFactory_WhenSet_ReturnsCustomFactory()
     {
         var customFactory = new DefaultPropertyBagFactory();
 
@@ -21,7 +25,9 @@ public class PropertyBagFactoryTests
         {
             PropertyBagFactory.DefaultFactory = customFactory;
 
-            Assert.Same(customFactory, PropertyBagFactory.DefaultFactory);
+            var factory = PropertyBagFactory.DefaultFactory;
+
+            Assert.Same(customFactory, factory);
         }
         finally
         {
@@ -30,26 +36,34 @@ public class PropertyBagFactoryTests
     }
 
     [Fact]
-    public void DefaultFactory_WhenResetToNull_FallsBackToTheDefaultSingleton()
+    public void DefaultFactory_WhenResetToNull_ReturnsDefaultSingleton()
     {
         PropertyBagFactory.DefaultFactory = new DefaultPropertyBagFactory();
         PropertyBagFactory.DefaultFactory = null!;
 
-        Assert.Same(DefaultPropertyBagFactory.Singleton, PropertyBagFactory.DefaultFactory);
+        var factory = PropertyBagFactory.DefaultFactory;
+
+        Assert.Same(DefaultPropertyBagFactory.Singleton, factory);
     }
 
+    #endregion
+
+    #region Create Tests
+
     [Fact]
-    public void Create_ReturnsANewEmptyBag()
+    public void Create_WhenCalledTwice_ReturnsDistinctEmptyBags()
     {
         var first = PropertyBagFactory.Create();
         var second = PropertyBagFactory.Create();
 
+        var firstHasValue = first.TryGetValue(new PropertyBagKey<string>("Key"), out _);
+
         Assert.NotSame(first, second);
-        Assert.False(first.TryGetValue(new PropertyBagKey<string>("Key"), out _));
+        Assert.False(firstHasValue);
     }
 
     [Fact]
-    public void Create_UsesTheCustomFactory()
+    public void Create_WhenDefaultFactoryIsCustom_ReturnsTheCustomFactorysBag()
     {
         var bag = new DefaultPropertyBag();
 
@@ -57,13 +71,17 @@ public class PropertyBagFactoryTests
         {
             PropertyBagFactory.DefaultFactory = new FixedFactory(bag);
 
-            Assert.Same(bag, PropertyBagFactory.Create());
+            var created = PropertyBagFactory.Create();
+
+            Assert.Same(bag, created);
         }
         finally
         {
             PropertyBagFactory.DefaultFactory = null!;
         }
     }
+
+    #endregion
 
     private sealed class FixedFactory(IPropertyBag bag) : IPropertyBagFactory
     {

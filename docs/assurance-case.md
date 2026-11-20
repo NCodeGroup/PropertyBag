@@ -143,7 +143,8 @@ privilege and open design."
   must match `version.json` and name a commit `main` holds
   ([ADR-0138](decisions/project-template/0138-package-versions-come-from-version-json-through-nerdbank-gitversioning.md));
   its `publish` job, which runs in the protected `nuget` environment after a maintainer approves, pushes them to
-  nuget.org through trusted publishing with no stored key, and its `provenance` job signs a build-provenance attestation for them and attaches it to the release
+  nuget.org through trusted publishing with no stored key, and its `provenance` job signs a build-provenance
+  attestation for them and attaches it to the release
   ([ADR-0139](decisions/project-template/0139-releases-carry-build-provenance.md)); nuget.org signs each package it
   accepts.
   [SECURITY.md](../SECURITY.md#verify-a-package) says how to verify a package.

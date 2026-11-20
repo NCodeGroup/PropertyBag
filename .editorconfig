@@ -81,7 +81,7 @@ trim_trailing_whitespace = false
 [*.{htm,html,cshtml,js,ts,css,scss}]
 indent_size = 2
 
-# Every C# file starts with the two-line header file_header_template sets above; the build fails without it, generated code excepted (ADR-1002).
+# Every C# file starts with the two-line header file_header_template sets above; the build fails without it, generated code excepted (project-template ADR-0148).
 [*.cs]
 dotnet_diagnostic.IDE0073.severity = warning
 
