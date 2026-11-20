@@ -1,6 +1,7 @@
 // Copyright © NCode Group
 // SPDX-License-Identifier: Apache-2.0
 
+using Microsoft.Extensions.DependencyInjection;
 using ReadmeSamples;
 
 namespace NCode.PropertyBag.Tests;
@@ -85,6 +86,75 @@ public class ReadmeSamplesTests
         Assert.Null(middleName);
         Assert.False(missing);
         Assert.Null(nickname);
+    }
+
+    [Fact]
+    public void InferredKeysSample_Runs()
+    {
+        var propertyBag = PropertyBagFactory.Create();
+        ConnectionSettings.Save(propertyBag, "Server=localhost", TimeSpan.FromSeconds(30));
+
+        Assert.Equal("Server=localhost", ConnectionSettings.LoadConnectionString(propertyBag));
+        Assert.True(
+            propertyBag.TryGetValue(new PropertyBagKey<TimeSpan>("timeout"), out var timeout)
+        );
+        Assert.Equal(TimeSpan.FromSeconds(30), timeout);
+    }
+
+    [Fact]
+    public void CloneSample_Runs()
+    {
+        var propertyBag = PropertyBagFactory.Create().SetValue(UserKeys.UserName, "Alice");
+
+        // begin-snippet: Clone
+        var copy = propertyBag.Clone();
+        copy.SetValue(UserKeys.UserName, "Bob");
+
+        propertyBag.TryGetValue(UserKeys.UserName, out var original); // still "Alice"
+        // end-snippet
+
+        Assert.Equal("Alice", original);
+        Assert.True(copy.TryGetValue(UserKeys.UserName, out var copied));
+        Assert.Equal("Bob", copied);
+    }
+
+    [Fact]
+    public void EnumerateEntriesSample_Runs()
+    {
+        var lines = new List<string>();
+
+        // begin-snippet: EnumerateEntries
+        var propertyBag = new PropertyBagDictionary();
+        propertyBag.SetValue(UserKeys.UserName, "Alice").SetValue(UserKeys.UserAge, 30);
+
+        IReadOnlyDictionary<PropertyBagKey, object?> entries = propertyBag;
+        foreach (var (key, value) in entries)
+        {
+            lines.Add($"{key.Name} ({key.Type.Name}) = {value}");
+        }
+        // end-snippet
+
+        Assert.Equal(["UserName (String) = Alice", "UserAge (Int32) = 30"], lines);
+    }
+
+    #endregion
+
+    #region Dependency Injection Tests
+
+    [Fact]
+    public async Task RegisterServicesSample_Runs()
+    {
+        // begin-snippet: RegisterServices
+        var services = new ServiceCollection();
+        services.AddPropertyBag();
+        services.AddSingleton<RequestContextFactory>();
+        // end-snippet
+
+        await using var provider = services.BuildServiceProvider();
+        var context = provider.GetRequiredService<RequestContextFactory>().CreateContext("Alice");
+
+        Assert.True(context.TryGetValue(UserKeys.UserName, out var userName));
+        Assert.Equal("Alice", userName);
     }
 
     #endregion
