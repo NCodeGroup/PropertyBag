@@ -52,6 +52,7 @@ public static class DefaultRegistration
         /// Registers the default PropertyBag services with the dependency injection container.
         /// </summary>
         /// <returns>The <see cref="IServiceCollection"/> instance for method chaining.</returns>
+        /// <exception cref="ArgumentNullException">The service collection is <c>null</c>.</exception>
         /// <remarks>
         /// <para>
         /// This method registers <see cref="DefaultPropertyBagFactory"/> as the implementation for
@@ -76,6 +77,8 @@ public static class DefaultRegistration
         [PublicAPI]
         public IServiceCollection AddPropertyBag()
         {
+            ArgumentNullException.ThrowIfNull(serviceCollection);
+
             serviceCollection.TryAddSingleton<IPropertyBagFactory, DefaultPropertyBagFactory>();
 
             return serviceCollection;

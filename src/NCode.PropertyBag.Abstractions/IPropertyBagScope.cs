@@ -30,7 +30,7 @@ namespace NCode.PropertyBag;
 /// <example>
 /// <code>
 /// var cultureKey = new PropertyBagKey&lt;string&gt;("Culture");
-/// propertyBag.Set(cultureKey, "en-US");
+/// propertyBag.SetValue(cultureKey, "en-US");
 ///
 /// using (IPropertyBagScope scope = propertyBag.Scope(cultureKey, "fr-FR"))
 /// {

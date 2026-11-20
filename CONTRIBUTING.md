@@ -19,7 +19,7 @@ Once in each clone, run `git config core.hooksPath .githooks`. It turns on `.git
 | --- | --- |
 | Build | `dotnet build` |
 | Test | `dotnet test` |
-| Format | `dotnet tool restore` once, then `dotnet csharpier format .` |
+| Format | `dotnet tool restore` once (it installs the CSharpier and MarkdownSnippets versions `.config/dotnet-tools.json` pins), then `dotnet csharpier format .` |
 | Copy the README samples from the tests | `dotnet mdsnippets` |
 | Serve the documentation site | `./build/site.ps1 dev` |
 | Build the documentation site, then check its layout | `./build/site.ps1 build -Out <folder>`, then `./build/site.ps1 check -Out <folder> -Browser <path>` |
@@ -28,7 +28,7 @@ Once in each clone, run `git config core.hooksPath .githooks`. It turns on `.git
 | Only the tests a filter matches | `./build/gate.ps1 -Fast -Filter 'FullyQualifiedName~OrderStore'` |
 | Code coverage: lists every line no test runs, and fails below 98% line or branch coverage, as CI does; `-ReportDirectory artifacts/coverage` also keeps the Cobertura report | `./build/Test-Coverage.ps1` |
 
-The gate checks the sample keys, the README samples and the API map and tests the site script offline, then runs the Definition of Done, `./build/dod.ps1`, whose Format stage checks the formatting with CSharpier, and which checks the decision index, builds in Release with warnings as errors, runs the tests, packs and ends with `Definition of Done: PASSED`. CI runs `./build/gate.ps1` and `./build/Test-Coverage.ps1` on every pull request. Every C# file starts with the two lines `// Copyright © NCode Group` and `// SPDX-License-Identifier: Apache-2.0`.
+The gate checks the sample keys, that the READMEs' C# samples match the tests they are copied from and that the API map covers the public API, and tests the site script offline, then runs the Definition of Done, `./build/dod.ps1`, which checks the decision index, builds in Release with warnings as errors, runs the tests, packs, checks the formatting with CSharpier, validates each package against the last release and ends with `Definition of Done: PASSED`. CI runs `./build/gate.ps1` and `./build/Test-Coverage.ps1` on every pull request. Every C# file starts with the two lines `// Copyright © NCode Group` and `// SPDX-License-Identifier: Apache-2.0`.
 
 ## Make a Change
 
@@ -105,7 +105,7 @@ To see the result, clone NCodeGroup/docs into a folder named `docs` beside the m
 
 A reformat or a large move brings back the CodeQL alerts dismissed on the code it moves, since a dismissal follows the alert's location, not the code: dismiss each again, with its reason. When that reason isn't obvious from the code, put it in a comment beside the code, so the next dismissal takes a minute.
 
-- The C# samples in `README.md` are tests in `tests/NCode.PropertyBag.Tests/ReadmeSamplesTests.cs` and `tests/NCode.PropertyBag.Tests/ReadmeSamples/MyService.cs`, which `dotnet mdsnippets` copies into the README ([ADR-1002](docs/decisions/1002-readme-samples-are-compiled-tests-that-markdownsnippets-copies-into-the-readme.md)): change a sample in its test, between `// begin-snippet: <name>` and `// end-snippet`, then run `dotnet mdsnippets`.
+The C# samples in the READMEs are tests in `tests/NCode.PropertyBag.Tests/ReadmeSamplesTests.cs` and `tests/NCode.PropertyBag.Tests/ReadmeSamples/`, which `dotnet mdsnippets` copies into the READMEs ([ADR-1003](docs/decisions/1003-readme-samples-are-compiled-tests-that-markdownsnippets-copies-into-the-readmes.md)): change a sample in its test, then run `dotnet mdsnippets`.
 
 ## AI-Assisted Work
 

@@ -6,74 +6,142 @@ using ReadmeSamples;
 
 namespace NCode.PropertyBag.Tests;
 
-// dotnet mdsnippets copies each begin-snippet block into README.md (ADR-1002). PropertyBagFactory.Create reads the
-// process-wide factory, so the class runs in the static factories collection.
+// `dotnet mdsnippets` copies each begin-snippet block into README.md and the package READMEs (ADR-1003).
+// PropertyBagFactory.Create reads a process-wide factory, so these tests run with the other static-factory tests.
 [Collection(StaticFactoryCollection.Name)]
 public class ReadmeSamplesTests
 {
-    // begin-snippet: ReadmeDefineKeys
-    // Define keys (typically as static readonly fields)
-    public static readonly PropertyBagKey<string> UserNameKey = new("UserName");
-    public static readonly PropertyBagKey<int> UserAgeKey = new("UserAge");
-
-    // end-snippet
-
-    #region Basic Usage Tests
+    #region Quick Start Tests
 
     [Fact]
-    public void ReadmeDefineKeysSample_Runs()
+    public void DefineKeysSample_Runs()
     {
-        Assert.Equal("UserName", UserNameKey.Name);
-        Assert.Equal("UserAge", UserAgeKey.Name);
+        Assert.Equal("UserName", UserKeys.UserName.Name);
+        Assert.Equal(typeof(int), UserKeys.UserAge.Type);
     }
 
     [Fact]
-    public void ReadmeBasicUsageSample_Runs()
+    public void BasicUsageSample_Runs()
     {
-        // begin-snippet: ReadmeBasicUsage
-        // Create and use a property bag
+        // begin-snippet: BasicUsage
         var propertyBag = PropertyBagFactory.Create();
 
-        propertyBag.Set(UserNameKey, "Alice").Set(UserAgeKey, 30);
+        propertyBag.SetValue(UserKeys.UserName, "Alice").SetValue(UserKeys.UserAge, 30);
 
-        if (propertyBag.TryGetValue(UserNameKey, out var userName))
+        if (propertyBag.TryGetValue(UserKeys.UserName, out var userName))
         {
-            Console.WriteLine($"User: {userName}"); // Output: User: Alice
+            Console.WriteLine($"User: {userName}"); // User: Alice
         }
         // end-snippet
 
+        var foundAge = propertyBag.TryGetValue(UserKeys.UserAge, out var userAge);
+
         Assert.Equal("Alice", userName);
-        bool foundAge = propertyBag.TryGetValue(UserAgeKey, out var userAge);
         Assert.True(foundAge);
         Assert.Equal(30, userAge);
     }
 
     #endregion
 
-    #region Scoped Values Tests
+    #region Usage Tests
 
     [Fact]
-    public void ReadmeScopedValuesSample_Runs()
+    public void ScopedValuesSample_Runs()
     {
-        IPropertyBag propertyBag = new DefaultPropertyBag();
+        var propertyBag = PropertyBagFactory.Create();
 
-        // begin-snippet: ReadmeScopedValues
-        string? culture;
+        // begin-snippet: ScopedValues
         var cultureKey = new PropertyBagKey<string>("Culture");
-        propertyBag.Set(cultureKey, "en-US");
+        propertyBag.SetValue(cultureKey, "en-US");
 
+        string? inScope;
         using (propertyBag.Scope(cultureKey, "fr-FR"))
         {
-            // Within this scope, Culture is "fr-FR"
-            propertyBag.TryGetValue(cultureKey, out culture); // "fr-FR"
+            propertyBag.TryGetValue(cultureKey, out inScope); // "fr-FR"
         }
 
-        // After disposal, Culture is restored to "en-US"
-        propertyBag.TryGetValue(cultureKey, out var restored); // "en-US"
+        propertyBag.TryGetValue(cultureKey, out var afterScope); // "en-US" again
         // end-snippet
 
-        Assert.Equal("fr-FR", culture);
-        Assert.Equal("en-US", restored);
+        Assert.Equal("fr-FR", inScope);
+        Assert.Equal("en-US", afterScope);
+    }
+
+    [Fact]
+    public void NullValuesSample_Runs()
+    {
+        var propertyBag = PropertyBagFactory.Create();
+
+        // begin-snippet: NullValues
+        var middleNameKey = new PropertyBagKey<string?>("MiddleName");
+        propertyBag.SetValue(middleNameKey, null);
+
+        // True, with a null value: the key holds null.
+        var found = propertyBag.TryGetValue(middleNameKey, out var middleName);
+
+        // False: a missing key differs from a stored null.
+        var nicknameKey = new PropertyBagKey<string?>("Nickname");
+        var missing = propertyBag.TryGetValue(nicknameKey, out var nickname);
+        // end-snippet
+
+        Assert.True(found);
+        Assert.Null(middleName);
+        Assert.False(missing);
+        Assert.Null(nickname);
+    }
+
+    [Fact]
+    public void InferredKeysSample_Runs()
+    {
+        var propertyBag = PropertyBagFactory.Create();
+        var timeout = TimeSpan.FromSeconds(30);
+        ConnectionSettings.Save(propertyBag, "Server=localhost", timeout);
+
+        var connectionString = ConnectionSettings.LoadConnectionString(propertyBag);
+        var timeoutKey = new PropertyBagKey<TimeSpan>("timeout");
+        var found = propertyBag.TryGetValue(timeoutKey, out var storedTimeout);
+
+        Assert.Equal("Server=localhost", connectionString);
+        Assert.True(found);
+        Assert.Equal(timeout, storedTimeout);
+    }
+
+    [Fact]
+    public void CloneSample_Runs()
+    {
+        var propertyBag = PropertyBagFactory.Create().SetValue(UserKeys.UserName, "Alice");
+
+        // begin-snippet: Clone
+        var copy = propertyBag.Clone();
+        copy.SetValue(UserKeys.UserName, "Bob");
+
+        propertyBag.TryGetValue(UserKeys.UserName, out var original); // still "Alice"
+        // end-snippet
+
+        var foundCopy = copy.TryGetValue(UserKeys.UserName, out var copied);
+
+        Assert.Equal("Alice", original);
+        Assert.True(foundCopy);
+        Assert.Equal("Bob", copied);
+    }
+
+    [Fact]
+    public void EnumerateEntriesSample_Runs()
+    {
+        var lines = new List<string>();
+
+        // begin-snippet: EnumerateEntries
+        var propertyBag = new PropertyBagDictionary();
+        propertyBag.SetValue(UserKeys.UserName, "Alice").SetValue(UserKeys.UserAge, 30);
+
+        IReadOnlyDictionary<PropertyBagKey, object?> entries = propertyBag;
+        foreach (var (key, value) in entries)
+        {
+            lines.Add($"{key.Name} ({key.Type.Name}) = {value}");
+        }
+        // end-snippet
+
+        Assert.Equal(["UserName (String) = Alice", "UserAge (Int32) = 30"], lines);
     }
 
     #endregion
@@ -81,117 +149,22 @@ public class ReadmeSamplesTests
     #region Dependency Injection Tests
 
     [Fact]
-    public async Task ReadmeRegisterServicesSample_Runs()
+    public async Task RegisterServicesSample_Runs()
     {
+        // begin-snippet: RegisterServices
         var services = new ServiceCollection();
-
-        // begin-snippet: ReadmeRegisterServices
         services.AddPropertyBag();
+        services.AddSingleton<RequestContextFactory>();
         // end-snippet
 
         await using var provider = services.BuildServiceProvider();
-        var resolvedFactory = provider.GetRequiredService<IPropertyBagFactory>();
-        Assert.IsType<DefaultPropertyBagFactory>(resolvedFactory);
-    }
+        var contextFactory = provider.GetRequiredService<RequestContextFactory>();
+        var context = contextFactory.CreateContext("Alice");
 
-    [Fact]
-    public void ReadmeInjectFactorySample_Runs()
-    {
-        var factory = new DefaultPropertyBagFactory();
-        var service = new MyService(factory);
+        var found = context.TryGetValue(UserKeys.UserName, out var userName);
 
-        var context = service.CreateContext();
-        Assert.IsType<DefaultPropertyBag>(context);
-    }
-
-    #endregion
-
-    #region Convenience Extensions Tests
-
-    [Fact]
-    public void ReadmeSetInferredSample_Runs()
-    {
-        IPropertyBag propertyBag = new DefaultPropertyBag();
-
-        // begin-snippet: ReadmeSetInferred
-        const string connectionString = "Server=localhost;Database=test";
-        var timeout = TimeSpan.FromSeconds(30);
-
-        // Keys are inferred as "connectionString" and "timeout"
-        propertyBag.Set(connectionString).Set(timeout);
-        // end-snippet
-
-        var connectionStringKey = new PropertyBagKey<string>("connectionString");
-        bool foundConnectionString = propertyBag.TryGetValue(
-            connectionStringKey,
-            out var storedConnectionString
-        );
-        Assert.True(foundConnectionString);
-        Assert.Equal(connectionString, storedConnectionString);
-
-        var timeoutKey = new PropertyBagKey<TimeSpan>("timeout");
-        bool foundTimeout = propertyBag.TryGetValue(timeoutKey, out var storedTimeout);
-        Assert.True(foundTimeout);
-        Assert.Equal(timeout, storedTimeout);
-    }
-
-    [Fact]
-    public void ReadmeReadInferredSample_Runs()
-    {
-        IPropertyBag propertyBag = new DefaultPropertyBag();
-        var seededKey = new PropertyBagKey<string>("connectionString");
-        propertyBag.Set(seededKey, "Server=localhost;Database=test");
-
-        // begin-snippet: ReadmeReadInferred
-        // Retrieve with inferred key name
-        // Declare the variable first: an inline declaration (out string? x) names the key "string? x"
-        string? connectionString;
-        if (propertyBag.TryGet(out connectionString)) // Key inferred as "connectionString"
-        {
-            Console.WriteLine(connectionString);
-        }
-        // end-snippet
-
-        Assert.Equal("Server=localhost;Database=test", connectionString);
-        bool foundAgain = propertyBag.TryGet(out connectionString);
-        Assert.True(foundAgain);
-    }
-
-    #endregion
-
-    #region Nullable Values Tests
-
-    [Fact]
-    public void ReadmeNullableValuesSample_Runs()
-    {
-        IPropertyBag propertyBag = new DefaultPropertyBag();
-
-        // begin-snippet: ReadmeNullableValues
-        var optionalNameKey = new PropertyBagKey<string?>("OptionalName");
-
-        // Explicitly store null
-        propertyBag.Set(optionalNameKey, null);
-
-        // TryGetValue returns true because the key exists (even though value is null)
-        if (propertyBag.TryGetValue(optionalNameKey, out var name))
-        {
-            // name is null here, but the key was found
-            Console.WriteLine(name ?? "(not set)");
-        }
-
-        // This is different from a missing key (name the type argument: a bare discard infers string)
-        var missingKey = new PropertyBagKey<string?>("Missing");
-        if (!propertyBag.TryGetValue<string?>(missingKey, out _))
-        {
-            // Key does not exist
-        }
-        // end-snippet
-
-        bool foundOptional = propertyBag.TryGetValue(optionalNameKey, out var stored);
-        Assert.True(foundOptional);
-        Assert.Null(stored);
-        bool foundMissing = propertyBag.TryGetValue<string?>(missingKey, out _);
-        Assert.False(foundMissing);
+        Assert.True(found);
+        Assert.Equal("Alice", userName);
     }
 
     #endregion

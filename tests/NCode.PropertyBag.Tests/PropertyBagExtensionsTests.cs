@@ -5,15 +5,26 @@ namespace NCode.PropertyBag.Tests;
 
 public class PropertyBagExtensionsTests
 {
-    #region Set Extension Method Tests
+    #region SetValue Extension Method Tests
 
     [Fact]
-    public void Set_WithValue_InfersKeyNameFromVariable()
+    public void SetValue_WhenBagIsNull_ThrowsArgumentNullException()
     {
-        var propertyBag = new DefaultPropertyBag();
+        IPropertyBag? propertyBag = null;
+        const string userName = "Alice";
+
+        var exception = Assert.Throws<ArgumentNullException>(() => propertyBag!.SetValue(userName));
+
+        Assert.Equal("bag", exception.ParamName);
+    }
+
+    [Fact]
+    public void SetValue_WithValue_InfersKeyNameFromVariable()
+    {
+        var propertyBag = new PropertyBagDictionary();
         const string userName = "TestUser";
 
-        propertyBag.Set(userName);
+        propertyBag.SetValue(userName);
 
         var key = new PropertyBagKey<string>("userName");
         Assert.True(propertyBag.TryGetValue(key, out var retrieved));
@@ -21,12 +32,12 @@ public class PropertyBagExtensionsTests
     }
 
     [Fact]
-    public void Set_WithIntValue_InfersKeyNameFromVariable()
+    public void SetValue_WithIntValue_InfersKeyNameFromVariable()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         const int userId = 42;
 
-        propertyBag.Set(userId);
+        propertyBag.SetValue(userId);
 
         var key = new PropertyBagKey<int>("userId");
         Assert.True(propertyBag.TryGetValue(key, out var retrieved));
@@ -34,12 +45,12 @@ public class PropertyBagExtensionsTests
     }
 
     [Fact]
-    public void Set_WithNullableValue_InfersKeyNameFromVariable()
+    public void SetValue_WithNullableValue_InfersKeyNameFromVariable()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         string? optionalValue = "HasValue";
 
-        propertyBag.Set(optionalValue);
+        propertyBag.SetValue(optionalValue);
 
         var key = new PropertyBagKey<string?>("optionalValue");
         Assert.True(propertyBag.TryGetValue(key, out var retrieved));
@@ -47,24 +58,24 @@ public class PropertyBagExtensionsTests
     }
 
     [Fact]
-    public void Set_ReturnsPropertyBagForChaining()
+    public void SetValue_ReturnsPropertyBagForChaining()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         const string value1 = "First";
         const int value2 = 100;
 
-        var result = propertyBag.Set(value1).Set(value2);
+        var result = propertyBag.SetValue(value1).SetValue(value2);
 
         Assert.Same(propertyBag, result);
     }
 
     [Fact]
-    public void Set_WithExplicitName_UsesProvidedName()
+    public void SetValue_WithExplicitName_UsesProvidedName()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         const string someVariable = "TestValue";
 
-        propertyBag.Set(someVariable, "customKeyName");
+        propertyBag.SetValue(someVariable, "customKeyName");
 
         var key = new PropertyBagKey<string>("customKeyName");
         Assert.True(propertyBag.TryGetValue(key, out var retrieved));
@@ -72,12 +83,12 @@ public class PropertyBagExtensionsTests
     }
 
     [Fact]
-    public void Set_WithNullName_UsesEmptyString()
+    public void SetValue_WithNullName_UsesEmptyString()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         const string value = "TestValue";
 
-        propertyBag.Set(value, null);
+        propertyBag.SetValue(value, null);
 
         var key = new PropertyBagKey<string>(string.Empty);
         Assert.True(propertyBag.TryGetValue(key, out var retrieved));
@@ -85,30 +96,30 @@ public class PropertyBagExtensionsTests
     }
 
     [Fact]
-    public void Set_OverwritesExistingValue()
+    public void SetValue_OverwritesExistingValue()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         var key = new PropertyBagKey<string>("testValue");
-        propertyBag.Set(key, "Original");
+        propertyBag.SetValue(key, "Original");
         const string testValue = "Updated";
 
-        propertyBag.Set(testValue);
+        propertyBag.SetValue(testValue);
 
         Assert.True(propertyBag.TryGetValue(key, out var retrieved));
         Assert.Equal("Updated", retrieved);
     }
 
     [Fact]
-    public void Set_WithComplexType_InfersKeyName()
+    public void SetValue_WithComplexType_InfersKeyName()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         var configuration = new TestConfiguration
         {
             Timeout = 30,
             Endpoint = "https://api.example.com",
         };
 
-        propertyBag.Set(configuration);
+        propertyBag.SetValue(configuration);
 
         var key = new PropertyBagKey<TestConfiguration>("configuration");
         Assert.True(propertyBag.TryGetValue(key, out var retrieved));
@@ -118,12 +129,12 @@ public class PropertyBagExtensionsTests
     }
 
     [Fact]
-    public void Set_WithDateTimeValue_InfersKeyName()
+    public void SetValue_WithDateTimeValue_InfersKeyName()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         var createdAt = new DateTime(2026, 1, 18, 12, 0, 0, DateTimeKind.Utc);
 
-        propertyBag.Set(createdAt);
+        propertyBag.SetValue(createdAt);
 
         var key = new PropertyBagKey<DateTime>("createdAt");
         Assert.True(propertyBag.TryGetValue(key, out var retrieved));
@@ -131,14 +142,14 @@ public class PropertyBagExtensionsTests
     }
 
     [Fact]
-    public void Set_ChainMultipleValues_AllValuesStored()
+    public void SetValue_ChainMultipleValues_AllValuesStored()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         const string name = "Alice";
         const int age = 30;
         const bool isActive = true;
 
-        propertyBag.Set(name).Set(age).Set(isActive);
+        propertyBag.SetValue(name).SetValue(age).SetValue(isActive);
 
         Assert.True(
             propertyBag.TryGetValue(new PropertyBagKey<string>("name"), out var retrievedName)
@@ -152,124 +163,21 @@ public class PropertyBagExtensionsTests
         Assert.True(retrievedIsActive);
     }
 
-    #endregion
-
-    #region TryGet Extension Method Tests
-
     [Fact]
-    public void TryGet_WhenValueExists_ReturnsTrueAndValue()
+    public void SetValue_WithKeyAndStringValue_CallsTheInterfaceMethod()
     {
-        var propertyBag = new DefaultPropertyBag();
-        propertyBag.Set("TestUser", "testKey");
+        IPropertyBag propertyBag = new PropertyBagDictionary();
+        var key = new PropertyBagKey<string>("UserName");
 
-        var result = propertyBag.TryGet(out string? value, "testKey");
+        propertyBag.SetValue(key, "Alice");
 
-        Assert.True(result);
-        Assert.Equal("TestUser", value);
-    }
+        var found = propertyBag.TryGetValue(key, out var value);
+        var wrongKey = new PropertyBagKey<PropertyBagKey<string>>("Alice");
+        var foundWrongKey = propertyBag.TryGetValue(wrongKey, out _);
 
-    [Fact]
-    public void TryGet_WhenValueNotExists_ReturnsFalseAndDefault()
-    {
-        var propertyBag = new DefaultPropertyBag();
-
-        string? userName;
-        var result = propertyBag.TryGet(out userName);
-
-        Assert.False(result);
-        Assert.Null(userName);
-    }
-
-    [Fact]
-    public void TryGet_WithIntValue_ReturnsTrueAndValue()
-    {
-        var propertyBag = new DefaultPropertyBag();
-        propertyBag.Set(42, "testKey");
-
-        var result = propertyBag.TryGet(out int value, "testKey");
-
-        Assert.True(result);
-        Assert.Equal(42, value);
-    }
-
-    [Fact]
-    public void TryGet_WithIntValue_WhenNotExists_ReturnsFalseAndZero()
-    {
-        var propertyBag = new DefaultPropertyBag();
-
-        int userId;
-        var result = propertyBag.TryGet(out userId);
-
-        Assert.False(result);
-        Assert.Equal(0, userId);
-    }
-
-    [Fact]
-    public void TryGet_WithExplicitName_UsesProvidedName()
-    {
-        var propertyBag = new DefaultPropertyBag();
-        var key = new PropertyBagKey<string>("customKeyName");
-        propertyBag.Set(key, "TestValue");
-
-        var result = propertyBag.TryGet(out string? someVariable, "customKeyName");
-
-        Assert.True(result);
-        Assert.Equal("TestValue", someVariable);
-    }
-
-    [Fact]
-    public void TryGet_WithNullName_UsesEmptyString()
-    {
-        var propertyBag = new DefaultPropertyBag();
-        var key = new PropertyBagKey<string>(string.Empty);
-        propertyBag.Set(key, "TestValue");
-
-        var result = propertyBag.TryGet(out string? value, null);
-
-        Assert.True(result);
-        Assert.Equal("TestValue", value);
-    }
-
-    [Fact]
-    public void TryGet_WithComplexType_ReturnsTrueAndValue()
-    {
-        var propertyBag = new DefaultPropertyBag();
-        var original = new TestConfiguration { Timeout = 30, Endpoint = "https://api.example.com" };
-        propertyBag.Set(original, "testKey");
-
-        var result = propertyBag.TryGet(out TestConfiguration? configuration, "testKey");
-
-        Assert.True(result);
-        Assert.NotNull(configuration);
-        Assert.Equal(30, configuration.Timeout);
-        Assert.Equal("https://api.example.com", configuration.Endpoint);
-    }
-
-    [Fact]
-    public void TryGet_WithWrongType_ReturnsFalse()
-    {
-        var propertyBag = new DefaultPropertyBag();
-        var key = new PropertyBagKey<string>("value");
-        propertyBag.Set(key, "StringValue");
-
-        int value;
-        var result = propertyBag.TryGet(out value);
-
-        Assert.False(result);
-        Assert.Equal(0, value);
-    }
-
-    [Fact]
-    public void TryGet_OnReadOnlyPropertyBag_Works()
-    {
-        var propertyBag = new DefaultPropertyBag();
-        propertyBag.Set("TestUser", "testKey");
-        IReadOnlyPropertyBag readOnlyBag = propertyBag;
-
-        var result = readOnlyBag.TryGet(out string? value, "testKey");
-
-        Assert.True(result);
-        Assert.Equal("TestUser", value);
+        Assert.True(found);
+        Assert.Equal("Alice", value);
+        Assert.False(foundWrongKey);
     }
 
     #endregion
@@ -277,47 +185,47 @@ public class PropertyBagExtensionsTests
     #region Round-Trip Tests
 
     [Fact]
-    public void SetAndTryGet_WithSameVariableName_RoundTrips()
+    public void SetValueAndTryGetValue_WithDifferentVariableName_ReturnsFalse()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         const string userName = "TestUser";
 
-        propertyBag.Set(userName);
+        propertyBag.SetValue(userName);
 
         string? userName2;
-        var result = propertyBag.TryGet(out userName2);
+        var result = propertyBag.TryGetValue(out userName2);
 
         Assert.False(result); // "userName2" != "userName"
     }
 
     [Fact]
-    public void SetAndTryGet_WithExplicitMatchingNames_RoundTrips()
+    public void SetValueAndTryGetValue_WithExplicitMatchingNames_RoundTrips()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         const string inputValue = "TestValue";
 
-        propertyBag.Set(inputValue, "sharedKey");
-        var result = propertyBag.TryGet(out string? outputValue, "sharedKey");
+        propertyBag.SetValue(inputValue, "sharedKey");
+        var result = propertyBag.TryGetValue(out string? outputValue, "sharedKey");
 
         Assert.True(result);
         Assert.Equal("TestValue", outputValue);
     }
 
     [Fact]
-    public void SetAndTryGet_MultipleTypes_RoundTrips()
+    public void SetValueAndTryGetValue_MultipleTypes_RoundTrips()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
 
         propertyBag
-            .Set("Alice", "name")
-            .Set(30, "age")
-            .Set(true, "isActive")
-            .Set(DateTime.UtcNow, "createdAt");
+            .SetValue("Alice", "name")
+            .SetValue(30, "age")
+            .SetValue(true, "isActive")
+            .SetValue(DateTime.UtcNow, "createdAt");
 
-        Assert.True(propertyBag.TryGet(out string? name, "name"));
-        Assert.True(propertyBag.TryGet(out int age, "age"));
-        Assert.True(propertyBag.TryGet(out bool isActive, "isActive"));
-        Assert.True(propertyBag.TryGet(out DateTime createdAt, "createdAt"));
+        Assert.True(propertyBag.TryGetValue(out string? name, "name"));
+        Assert.True(propertyBag.TryGetValue(out int age, "age"));
+        Assert.True(propertyBag.TryGetValue(out bool isActive, "isActive"));
+        Assert.True(propertyBag.TryGetValue(out DateTime createdAt, "createdAt"));
 
         Assert.Equal("Alice", name);
         Assert.Equal(30, age);
@@ -329,12 +237,12 @@ public class PropertyBagExtensionsTests
     #region CallerArgumentExpression Behavior Tests
 
     [Fact]
-    public void Set_CallerArgumentExpression_CapturesVariableName()
+    public void SetValue_CallerArgumentExpression_CapturesVariableName()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         const string myVariableName = "TestValue";
 
-        propertyBag.Set(myVariableName);
+        propertyBag.SetValue(myVariableName);
 
         // The key name should be "myVariableName" (the variable name, not the value)
         var key = new PropertyBagKey<string>("myVariableName");
@@ -343,12 +251,12 @@ public class PropertyBagExtensionsTests
     }
 
     [Fact]
-    public void Set_CallerArgumentExpression_CapturesPropertyAccess()
+    public void SetValue_CallerArgumentExpression_CapturesPropertyAccess()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         var config = new TestConfiguration { Timeout = 60 };
 
-        propertyBag.Set(config.Timeout);
+        propertyBag.SetValue(config.Timeout);
 
         // The key name should be "config.Timeout" (the property access expression)
         var key = new PropertyBagKey<int>("config.Timeout");
@@ -357,114 +265,114 @@ public class PropertyBagExtensionsTests
     }
 
     [Fact]
-    public void TryGet_CallerArgumentExpression_CapturesOutVariableName()
+    public void TryGetValue_CallerArgumentExpression_CapturesOutVariableName()
     {
         // CallerArgumentExpression on an out parameter captures the variable name
         // when using an existing variable (not inline declaration)
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
 
         // Store with key name matching the out variable name
         var key = new PropertyBagKey<string>("retrievedValue");
-        propertyBag.Set(key, "TestValue");
+        propertyBag.SetValue(key, "TestValue");
 
         // Declare variable first, then use with out - this captures just "retrievedValue"
         string? retrievedValue;
-        var result = propertyBag.TryGet(out retrievedValue);
+        var result = propertyBag.TryGetValue(out retrievedValue);
 
         Assert.True(result);
         Assert.Equal("TestValue", retrievedValue);
     }
 
     [Fact]
-    public void TryGet_CallerArgumentExpression_DifferentVariableName_ReturnsFalse()
+    public void TryGetValue_CallerArgumentExpression_DifferentVariableName_ReturnsFalse()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         var key = new PropertyBagKey<string>("storedKey");
-        propertyBag.Set(key, "TestValue");
+        propertyBag.SetValue(key, "TestValue");
 
-        // TryGet infers "differentKey" which doesn't match "storedKey"
+        // TryGetValue infers "differentKey" which doesn't match "storedKey"
         string? differentKey;
-        var result = propertyBag.TryGet(out differentKey);
+        var result = propertyBag.TryGetValue(out differentKey);
 
         Assert.False(result);
         Assert.Null(differentKey);
     }
 
     [Fact]
-    public void SetAndTryGet_CallerArgumentExpression_MatchingVariableNames_RoundTrips()
+    public void SetValueAndTryGetValue_CallerArgumentExpression_DifferentVariableNames_ReturnsFalse()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         const string sharedKeyName = "StoredValue";
 
-        // Set using CallerArgumentExpression (key = "sharedKeyName")
-        propertyBag.Set(sharedKeyName);
+        // SetValue using CallerArgumentExpression (key = "sharedKeyName")
+        propertyBag.SetValue(sharedKeyName);
 
-        // TryGet with different variable name should fail (key = "sharedKeyName2")
+        // TryGetValue with different variable name should fail (key = "sharedKeyName2")
         string? sharedKeyName2;
-        var result = propertyBag.TryGet(out sharedKeyName2);
+        var result = propertyBag.TryGetValue(out sharedKeyName2);
 
         // This should fail because "sharedKeyName2" != "sharedKeyName"
         Assert.False(result);
     }
 
     [Fact]
-    public void SetAndTryGet_CallerArgumentExpression_SameVariableNameReused_RoundTrips()
+    public void SetValueAndTryGetValue_CallerArgumentExpression_SameVariableNameReused_RoundTrips()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         string? userName = "Alice";
 
-        // Set using CallerArgumentExpression (key = "userName")
-        propertyBag.Set(userName);
+        // SetValue using CallerArgumentExpression (key = "userName")
+        propertyBag.SetValue(userName);
 
         // Reassign the variable (to prove we retrieve from the bag, not the variable)
         userName = string.Empty;
 
-        // TryGet with same variable name should find it (key = "userName")
-        var result = propertyBag.TryGet(out userName);
+        // TryGetValue with same variable name should find it (key = "userName")
+        var result = propertyBag.TryGetValue(out userName);
 
         Assert.True(result);
         Assert.Equal("Alice", userName);
     }
 
     [Fact]
-    public void SetAndTryGet_CallerArgumentExpression_IntType_RoundTrips()
+    public void SetValueAndTryGetValue_CallerArgumentExpression_IntType_RoundTrips()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         int counter = 42;
 
-        // Set using CallerArgumentExpression (key = "counter")
-        propertyBag.Set(counter);
+        // SetValue using CallerArgumentExpression (key = "counter")
+        propertyBag.SetValue(counter);
 
         // Reset to prove retrieval
         counter = 0;
 
-        // TryGet with same variable name (key = "counter")
-        var result = propertyBag.TryGet(out counter);
+        // TryGetValue with same variable name (key = "counter")
+        var result = propertyBag.TryGetValue(out counter);
 
         Assert.True(result);
         Assert.Equal(42, counter);
     }
 
     [Fact]
-    public void SetAndTryGet_CallerArgumentExpression_MultipleValues_RoundTrips()
+    public void SetValueAndTryGetValue_CallerArgumentExpression_MultipleValues_RoundTrips()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
         string? name = "Alice";
         int age = 30;
         bool isActive = true;
 
-        // Set all using CallerArgumentExpression
-        propertyBag.Set(name).Set(age).Set(isActive);
+        // SetValue all using CallerArgumentExpression
+        propertyBag.SetValue(name).SetValue(age).SetValue(isActive);
 
         // Reset all to prove retrieval
         name = string.Empty;
         age = 0;
         isActive = false;
 
-        // TryGet all using same variable names
-        Assert.True(propertyBag.TryGet(out name));
-        Assert.True(propertyBag.TryGet(out age));
-        Assert.True(propertyBag.TryGet(out isActive));
+        // TryGetValue all using same variable names
+        Assert.True(propertyBag.TryGetValue(out name));
+        Assert.True(propertyBag.TryGetValue(out age));
+        Assert.True(propertyBag.TryGetValue(out isActive));
 
         Assert.Equal("Alice", name);
         Assert.Equal(30, age);
@@ -472,25 +380,25 @@ public class PropertyBagExtensionsTests
     }
 
     [Fact]
-    public void SetThenTryGet_WithMatchingVariableNames_Works()
+    public void SetValueThenTryGetValue_WithMatchingVariableNames_Works()
     {
-        var propertyBag = new DefaultPropertyBag();
+        var propertyBag = new PropertyBagDictionary();
 
-        // Using variable with same name for both Set and TryGet
+        // Using variable with same name for both SetValue and TryGetValue
         string connectionString = "Server=localhost";
-        propertyBag.Set(connectionString);
+        propertyBag.SetValue(connectionString);
 
         // Clear the local variable to prove we're getting from the bag
         connectionString = string.Empty;
 
-        // TryGet with a variable with a DIFFERENT name won't find it
+        // TryGetValue with a variable with a DIFFERENT name won't find it
         string? differentName;
-        var result1 = propertyBag.TryGet(out differentName);
+        var result1 = propertyBag.TryGetValue(out differentName);
         Assert.False(result1);
 
-        // But TryGet with explicit name will find it
+        // But TryGetValue with explicit name will find it
         string? anyName;
-        var result2 = propertyBag.TryGet(out anyName, "connectionString");
+        var result2 = propertyBag.TryGetValue(out anyName, "connectionString");
         Assert.True(result2);
         Assert.Equal("Server=localhost", anyName);
     }

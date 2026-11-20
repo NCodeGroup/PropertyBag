@@ -1,7 +1,6 @@
 // Copyright © NCode Group
 // SPDX-License-Identifier: Apache-2.0
 
-using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
 
 namespace NCode.PropertyBag;
@@ -22,7 +21,7 @@ namespace NCode.PropertyBag;
 /// <example>
 /// <code>
 /// var key = new PropertyBagKey&lt;string&gt;("UserName");
-/// propertyBag.Set(key, "Alice");
+/// propertyBag.SetValue(key, "Alice");
 ///
 /// if (propertyBag.TryGetValue(key, out var userName))
 /// {
@@ -67,17 +66,12 @@ public interface IPropertyBag : IReadOnlyPropertyBag
     /// var optionalKey = new PropertyBagKey&lt;string?&gt;("Optional");
     ///
     /// propertyBag
-    ///     .Set(nameKey, "Alice")
-    ///     .Set(ageKey, 30)
-    ///     .Set(optionalKey, null); // Explicitly stores null
+    ///     .SetValue(nameKey, "Alice")
+    ///     .SetValue(ageKey, 30)
+    ///     .SetValue(optionalKey, null); // Explicitly stores null
     /// </code>
     /// </example>
-    [SuppressMessage(
-        "Naming",
-        "CA1716:Identifiers should not match keywords",
-        Justification = "Set is the published API name; renaming it would be a breaking change."
-    )]
-    IPropertyBag Set<T>(PropertyBagKey<T> key, T? value);
+    IPropertyBag SetValue<T>(PropertyBagKey<T> key, T? value);
 
     /// <summary>
     /// Removes the value associated with the specified <paramref name="key"/> from the property bag.
@@ -95,7 +89,7 @@ public interface IPropertyBag : IReadOnlyPropertyBag
     /// <example>
     /// <code>
     /// var key = new PropertyBagKey&lt;string&gt;("TempValue");
-    /// propertyBag.Set(key, "temporary");
+    /// propertyBag.SetValue(key, "temporary");
     ///
     /// // Later, remove the value
     /// propertyBag.Remove(key);
@@ -134,7 +128,7 @@ public interface IPropertyBag : IReadOnlyPropertyBag
     /// <example>
     /// <code>
     /// var cultureKey = new PropertyBagKey&lt;string?&gt;("Culture");
-    /// propertyBag.Set(cultureKey, "en-US");
+    /// propertyBag.SetValue(cultureKey, "en-US");
     ///
     /// using (propertyBag.Scope(cultureKey, "fr-FR"))
     /// {

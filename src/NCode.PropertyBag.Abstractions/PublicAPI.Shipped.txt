@@ -2,7 +2,7 @@
 NCode.PropertyBag.IPropertyBag
 NCode.PropertyBag.IPropertyBag.Remove(NCode.PropertyBag.PropertyBagKey key) -> NCode.PropertyBag.IPropertyBag!
 NCode.PropertyBag.IPropertyBag.Scope<T>(NCode.PropertyBag.PropertyBagKey<T> key, T? value) -> NCode.PropertyBag.IPropertyBagScope!
-NCode.PropertyBag.IPropertyBag.Set<T>(NCode.PropertyBag.PropertyBagKey<T> key, T? value) -> NCode.PropertyBag.IPropertyBag!
+NCode.PropertyBag.IPropertyBag.SetValue<T>(NCode.PropertyBag.PropertyBagKey<T> key, T? value) -> NCode.PropertyBag.IPropertyBag!
 NCode.PropertyBag.IPropertyBagScope
 NCode.PropertyBag.IPropertyBagScope.Key.get -> NCode.PropertyBag.PropertyBagKey
 NCode.PropertyBag.IPropertyBagScope.PropertyBag.get -> NCode.PropertyBag.IPropertyBag!
@@ -11,9 +11,7 @@ NCode.PropertyBag.IReadOnlyPropertyBag.Clone() -> NCode.PropertyBag.IPropertyBag
 NCode.PropertyBag.IReadOnlyPropertyBag.TryGetValue<T>(NCode.PropertyBag.PropertyBagKey<T> key, out T? value) -> bool
 NCode.PropertyBag.PropertyBagExtensions
 NCode.PropertyBag.PropertyBagExtensions.extension(NCode.PropertyBag.IPropertyBag!)
-NCode.PropertyBag.PropertyBagExtensions.extension(NCode.PropertyBag.IPropertyBag!).Set<T>(T? value, string? name = null) -> NCode.PropertyBag.IPropertyBag!
-NCode.PropertyBag.PropertyBagExtensions.extension(NCode.PropertyBag.IReadOnlyPropertyBag!)
-NCode.PropertyBag.PropertyBagExtensions.extension(NCode.PropertyBag.IReadOnlyPropertyBag!).TryGet<T>(out T? value, string? name = null) -> bool
+NCode.PropertyBag.PropertyBagExtensions.extension(NCode.PropertyBag.IPropertyBag!).SetValue<T>(T? value, string? name = null) -> NCode.PropertyBag.IPropertyBag!
 NCode.PropertyBag.PropertyBagKey
 NCode.PropertyBag.PropertyBagKey.Equals(NCode.PropertyBag.PropertyBagKey other) -> bool
 NCode.PropertyBag.PropertyBagKey.Name.get -> string!
@@ -26,14 +24,17 @@ NCode.PropertyBag.PropertyBagKey<T>.Name.get -> string!
 NCode.PropertyBag.PropertyBagKey<T>.PropertyBagKey() -> void
 NCode.PropertyBag.PropertyBagKey<T>.PropertyBagKey(string! name) -> void
 NCode.PropertyBag.PropertyBagKey<T>.Type.get -> System.Type!
+NCode.PropertyBag.ReadOnlyPropertyBagExtensions
+NCode.PropertyBag.ReadOnlyPropertyBagExtensions.extension(NCode.PropertyBag.IReadOnlyPropertyBag!)
+NCode.PropertyBag.ReadOnlyPropertyBagExtensions.extension(NCode.PropertyBag.IReadOnlyPropertyBag!).TryGetValue<T>(out T? value, string? name = null) -> bool
 override NCode.PropertyBag.PropertyBagKey.Equals(object? obj) -> bool
 override NCode.PropertyBag.PropertyBagKey.GetHashCode() -> int
 override NCode.PropertyBag.PropertyBagKey<T>.Equals(object? obj) -> bool
 override NCode.PropertyBag.PropertyBagKey<T>.GetHashCode() -> int
-static NCode.PropertyBag.PropertyBagExtensions.Set<T>(this NCode.PropertyBag.IPropertyBag! bag, T? value, string? name = null) -> NCode.PropertyBag.IPropertyBag!
-static NCode.PropertyBag.PropertyBagExtensions.TryGet<T>(this NCode.PropertyBag.IReadOnlyPropertyBag! bag, out T? value, string? name = null) -> bool
+static NCode.PropertyBag.PropertyBagExtensions.SetValue<T>(this NCode.PropertyBag.IPropertyBag! bag, T? value, string? name = null) -> NCode.PropertyBag.IPropertyBag!
 static NCode.PropertyBag.PropertyBagKey.operator !=(NCode.PropertyBag.PropertyBagKey left, NCode.PropertyBag.PropertyBagKey right) -> bool
 static NCode.PropertyBag.PropertyBagKey.operator ==(NCode.PropertyBag.PropertyBagKey left, NCode.PropertyBag.PropertyBagKey right) -> bool
 static NCode.PropertyBag.PropertyBagKey<T>.implicit operator NCode.PropertyBag.PropertyBagKey(NCode.PropertyBag.PropertyBagKey<T> key) -> NCode.PropertyBag.PropertyBagKey
 static NCode.PropertyBag.PropertyBagKey<T>.operator !=(NCode.PropertyBag.PropertyBagKey<T> left, NCode.PropertyBag.PropertyBagKey<T> right) -> bool
 static NCode.PropertyBag.PropertyBagKey<T>.operator ==(NCode.PropertyBag.PropertyBagKey<T> left, NCode.PropertyBag.PropertyBagKey<T> right) -> bool
+static NCode.PropertyBag.ReadOnlyPropertyBagExtensions.TryGetValue<T>(this NCode.PropertyBag.IReadOnlyPropertyBag! bag, out T? value, string? name = null) -> bool

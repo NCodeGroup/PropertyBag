@@ -60,7 +60,7 @@ public interface IReadOnlyPropertyBag
     ///
     /// // Modifications to the clone do not affect the original
     /// var key = new PropertyBagKey&lt;string&gt;("NewKey");
-    /// clone.Set(key, "NewValue");
+    /// clone.SetValue(key, "NewValue");
     /// </code>
     /// </example>
     IPropertyBag Clone();

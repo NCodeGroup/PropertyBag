@@ -63,10 +63,12 @@ override in `AGENTS.md`.
 | ADR | Decision | Status |
 | --- | --- | --- |
 | [1000](1000-disposing-a-scope-restores-the-previous-value.md) | Disposing a scope restores the previous value | Accepted |
-| [1001](1001-public-names-that-trip-naming-analyzers-keep-their-suppressions-until-the-next-major-version.md) | Public names that trip naming analyzers keep their suppressions until the next major version | Accepted |
-| [1002](1002-readme-samples-are-compiled-tests-that-markdownsnippets-copies-into-the-readme.md) | README samples are compiled tests that MarkdownSnippets copies into the README | Accepted |
-| [1003](1003-the-documentation-site-is-narrative-guides-built-by-a-shared-toolchain-outside-this-repository.md) | The documentation site is narrative guides, built by a shared toolchain outside this repository | Accepted |
-| [1004](1004-site-samples-are-compiled-tests-in-a-project-of-their-own-included-by-key-when-the-site-is-built.md) | Site samples are compiled tests in a project of their own, included by key when the site is built | Accepted |
-| [1005](1005-ncodegroup-docs-releases-are-taken-without-a-cooldown-during-the-build-out.md) | NCodeGroup/docs releases are taken without a cooldown during the build-out | Accepted |
-| [1006](1006-the-documentation-site-is-published-to-github-pages-from-the-default-branch.md) | The documentation site is published to GitHub Pages from the default branch | Accepted |
-| [1007](1007-the-documentation-site-is-served-at-propertybag-ncode-io.md) | The documentation site is served at propertybag.ncode.io | Accepted |
+| [1001](1001-public-names-that-trip-naming-analyzers-keep-their-suppressions-until-the-next-major-version.md) | Public names that trip naming analyzers keep their suppressions until the next major version | Superseded by 1004 |
+| [1002](1002-the-packages-target-only-supported-lts-dotnet-versions.md) | The packages target only supported LTS .NET versions | Accepted |
+| [1003](1003-readme-samples-are-compiled-tests-that-markdownsnippets-copies-into-the-readmes.md) | README samples are compiled tests that MarkdownSnippets copies into the READMEs | Accepted |
+| [1004](1004-public-names-pass-the-naming-analyzers-without-suppressions.md) | Public names pass the naming analyzers without suppressions (supersedes 1001) | Accepted |
+| [1005](1005-the-documentation-site-is-narrative-guides-built-by-a-shared-toolchain-outside-this-repository.md) | The documentation site is narrative guides, built by a shared toolchain outside this repository | Accepted |
+| [1006](1006-site-samples-are-compiled-tests-in-a-project-of-their-own-included-by-key-when-the-site-is-built.md) | Site samples are compiled tests in a project of their own, included by key when the site is built | Accepted |
+| [1007](1007-ncodegroup-docs-releases-are-taken-without-a-cooldown-during-the-build-out.md) | NCodeGroup/docs releases are taken without a cooldown during the build-out | Accepted |
+| [1008](1008-the-documentation-site-is-published-to-github-pages-from-the-default-branch.md) | The documentation site is published to GitHub Pages from the default branch | Accepted |
+| [1009](1009-the-documentation-site-is-served-at-propertybag-ncode-io.md) | The documentation site is served at propertybag.ncode.io | Accepted |
