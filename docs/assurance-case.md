@@ -22,8 +22,10 @@ user-facing summary.
 5. **R5 Registration never overrides.** `AddPropertyBag()` uses `TryAddSingleton`, so an `IPropertyBagFactory` the
    application registered first is kept.
 6. **R6 Traceable packages.** CI builds the packages from the tagged commit of a published GitHub release,
-   deterministically and with Source Link, refusing a tag that differs from `version.json`; nuget.org signs them, and
-   each release's packages carry a signed build-provenance attestation.
+   deterministically and with Source Link, refusing a tag that differs from `version.json`; a rebuild of a release's tag
+   gives the same packages, entry for entry
+   ([ADR-1010](decisions/1010-package-builds-are-reproducible-and-ci-compares-rebuilds-entry-by-entry.md)); nuget.org
+   signs them, and each release's packages carry a signed build-provenance attestation.
 
 Users must not rely on:
 
@@ -64,6 +66,29 @@ repository's reviewed code through CI to the packages on nuget.org.
 | Hostile code in the same process reads a bag or replaces the default factory | No: .NET has no isolation within a process | — |
 | A tampered or unreviewed package reaches consumers | Yes | R6, and the review and release evidence below |
 | A vulnerable dependency | Yes | One runtime dependency, `Microsoft.Extensions.DependencyInjection.Abstractions`, pinned centrally and updated by Dependabot; NuGet advisories fail CI |
+
+## Input Validation
+
+The packages take no untrusted input of their own (R2). Their only inputs are the arguments of their public API, from
+code in the same process, which the Threat Model trusts. Each public entry point and the check it makes:
+
+- **`PropertyBagKey(Type, string)` and `PropertyBagKey<T>(string)`** check nothing: a `null` type or name, like a
+  `default` key, compares and hashes without error, and a name is compared ordinally, never parsed.
+- **`SetValue<T>`, `Scope<T>`, `Remove` and `TryGetValue<T>` of `PropertyBagDictionary`** take a key that is a struct,
+  never `null`, store each value as an opaque object that is never parsed, formatted, serialized or run, and test a
+  stored value's type with `is T` on every read (R1).
+- **The extensions `SetValue<T>(value)` and `TryGetValue<T>(out value)`** throw `ArgumentNullException` for a `null`
+  bag (`ArgumentNullException.ThrowIfNull`), and their key name is the caller's argument expression, text fixed at
+  compile time, unless the caller passes `name`.
+- **`AddPropertyBag()`** throws `ArgumentNullException` for a `null` service collection.
+- **`DefaultPropertyBagScope`'s public constructor** checks nothing, and a `null` bag fails in `Dispose` with
+  `NullReferenceException` ([#47](https://github.com/NCodeGroup/PropertyBag/issues/47)).
+- **The setters of `PropertyBagFactory.DefaultFactory` and `DefaultPropertyBagFactory.Singleton`** check nothing: a
+  `null` `DefaultFactory` falls back to `DefaultPropertyBagFactory.Singleton`, and a `null` `Singleton` makes
+  `PropertyBagFactory.Create()` throw `NullReferenceException`.
+- **`Clone()`** runs the `Clone()` of each stored value that implements `ICloneable`, code the application stored.
+
+An application that stores untrusted data validates and bounds it before the call (see Bounded size above).
 
 ## Secure Design Principles Applied
 
