@@ -64,8 +64,10 @@ jobs:
         with:
           name: binaries
           path: |
-            ./*/bin/*
-            ./*/obj/*
+            src/*/bin/*
+            src/*/obj/*
+            tests/*/bin/*
+            tests/*/obj/*
           if-no-files-found: error
           retention-days: 5
 
@@ -98,7 +100,7 @@ jobs:
         if: success() || failure()
         with:
           name: test report
-          path: ./*/TestResults/*.trx
+          path: tests/*/TestResults/*.trx
           reporter: dotnet-trx
 
   publish:
