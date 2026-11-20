@@ -48,6 +48,40 @@ public class StoreAndReadValuesSamples
     }
 
     [Fact]
+    public void SiteStoreAndReadValuesFallbackSample_Runs()
+    {
+        // begin-snippet: SiteStoreAndReadValuesFallback
+        IPropertyBag bag = new PropertyBagDictionary();
+        PropertyBagKey<int> retriesKey = new("Retries");
+        PropertyBagKey<string> userKey = new("User");
+        bag.SetValue(userKey, "alice");
+
+        // The stored value, or the fallback when the key is missing
+        int retries = bag.GetValueOrDefault(retriesKey, 3);
+
+        // Tests for the key without reading its value
+        bool hasUser = bag.ContainsKey(userKey);
+
+        // Returns the stored value, and throws when the key is missing
+        string? user = bag.GetValue(userKey);
+        bool threw = false;
+        try
+        {
+            bag.GetValue(retriesKey);
+        }
+        catch (KeyNotFoundException)
+        {
+            threw = true;
+        }
+        // end-snippet
+
+        Assert.Equal(3, retries);
+        Assert.True(hasUser);
+        Assert.Equal("alice", user);
+        Assert.True(threw);
+    }
+
+    [Fact]
     public void SiteStoreAndReadValuesRemoveSample_Runs()
     {
         // begin-snippet: SiteStoreAndReadValuesRemove
@@ -66,6 +100,34 @@ public class StoreAndReadValuesSamples
 
         Assert.False(hasToken);
         Assert.Null(token);
+    }
+
+    [Fact]
+    public void SiteStoreAndReadValuesAddOnceSample_Runs()
+    {
+        // begin-snippet: SiteStoreAndReadValuesAddOnce
+        IPropertyBag bag = new PropertyBagDictionary();
+        PropertyBagKey<string> userKey = new("User");
+        PropertyBagKey<int> retriesKey = new("Retries");
+
+        // true: the key was missing, so the value is stored
+        bool added = bag.TryAdd(userKey, "alice");
+
+        // false: the key exists, so the stored value stays
+        bool addedAgain = bag.TryAdd(userKey, "bob");
+
+        // Returns the stored value, or stores and returns the one the factory makes
+        int retries = bag.GetOrAdd(retriesKey, _ => 3);
+
+        // true, and removed is "alice"
+        bool wasRemoved = bag.TryRemove(userKey, out string? removed);
+        // end-snippet
+
+        Assert.True(added);
+        Assert.False(addedAgain);
+        Assert.Equal(3, retries);
+        Assert.True(wasRemoved);
+        Assert.Equal("alice", removed);
     }
 
     [Fact]
