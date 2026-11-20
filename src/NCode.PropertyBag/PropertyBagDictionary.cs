@@ -40,6 +40,7 @@ namespace NCode.PropertyBag;
 /// <seealso cref="DefaultPropertyBagFactory"/>
 public sealed class PropertyBagDictionary
     : IPropertyBag,
+        IScopeRestorer,
         IReadOnlyDictionary<PropertyBagKey, object?>,
         ICloneable
 {
@@ -141,7 +142,7 @@ public sealed class PropertyBagDictionary
     /// <param name="previousValue">
     /// The value the key held before the scope set it, when <paramref name="hadValue"/> is <c>true</c>.
     /// </param>
-    internal void Restore(PropertyBagKey key, bool hadValue, object? previousValue)
+    void IScopeRestorer.Restore(PropertyBagKey key, bool hadValue, object? previousValue)
     {
         if (hadValue)
         {
@@ -161,19 +162,9 @@ public sealed class PropertyBagDictionary
     /// </remarks>
     public bool TryGetValue<T>(PropertyBagKey<T> key, out T? value)
     {
-        if (TryGetBase(key, out var baseValue))
+        if (TryGetBase(key, out var stored))
         {
-            if (baseValue is null)
-            {
-                value = default;
-                return true;
-            }
-
-            if (baseValue is T typedValue)
-            {
-                value = typedValue;
-                return true;
-            }
+            return PropertyBagValue.TryCast(stored, out value);
         }
 
         value = default;

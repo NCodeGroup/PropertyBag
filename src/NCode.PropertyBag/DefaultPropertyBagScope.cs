@@ -49,7 +49,7 @@ public sealed class DefaultPropertyBagScope(IPropertyBag propertyBag, PropertyBa
     /// Initializes a new scope whose <see cref="Dispose"/> hands the captured state back to the bag
     /// instead of removing the key.
     /// </summary>
-    /// <param name="propertyBag">The <see cref="PropertyBagDictionary"/> instance that contains the scoped value.</param>
+    /// <param name="propertyBag">The <see cref="IScopeRestorer"/> instance that contains the scoped value.</param>
     /// <param name="key">The <see cref="PropertyBagKey"/> that identifies the scoped value.</param>
     /// <param name="hadPreviousValue">
     /// <c>true</c> if the key held a value when the scope was created; otherwise, <c>false</c>.
@@ -58,7 +58,7 @@ public sealed class DefaultPropertyBagScope(IPropertyBag propertyBag, PropertyBa
     /// The value the key held when the scope was created, when <paramref name="hadPreviousValue"/> is <c>true</c>.
     /// </param>
     internal DefaultPropertyBagScope(
-        PropertyBagDictionary propertyBag,
+        IScopeRestorer propertyBag,
         PropertyBagKey key,
         bool hadPreviousValue,
         object? previousValue
@@ -84,7 +84,7 @@ public sealed class DefaultPropertyBagScope(IPropertyBag propertyBag, PropertyBa
     /// Gets the bag that <see cref="Dispose"/> hands the captured state back to,
     /// or <c>null</c> for a scope that removes its key.
     /// </summary>
-    private PropertyBagDictionary? RestoreTarget { get; }
+    private IScopeRestorer? RestoreTarget { get; }
 
     /// <summary>
     /// Gets a value that indicates whether the key held a value when the scope was created.
