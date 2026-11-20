@@ -113,7 +113,7 @@ public static class PropertyBagExtensions
         /// </para>
         /// <para>
         /// This method composes <see cref="IReadOnlyPropertyBag.TryGetValue{T}"/> and
-        /// <see cref="IPropertyBag.SetValue{T}"/>, so it is not atomic. <c>ConcurrentPropertyBag</c> has
+        /// <see cref="IPropertyBag.SetValue{T}"/>, so it is not atomic. <c>ConcurrentPropertyBagDictionary</c> has
         /// an atomic version.
         /// </para>
         /// </remarks>
@@ -155,7 +155,7 @@ public static class PropertyBagExtensions
         /// </para>
         /// <para>
         /// This method composes <see cref="IReadOnlyPropertyBag.TryGetValue{T}"/> and
-        /// <see cref="IPropertyBag.SetValue{T}"/>, so it is not atomic. <c>ConcurrentPropertyBag</c> has
+        /// <see cref="IPropertyBag.SetValue{T}"/>, so it is not atomic. <c>ConcurrentPropertyBagDictionary</c> has
         /// an atomic version.
         /// </para>
         /// </remarks>
@@ -196,7 +196,7 @@ public static class PropertyBagExtensions
         /// <exception cref="ArgumentNullException">The property bag is <c>null</c>.</exception>
         /// <remarks>
         /// This method composes <see cref="IReadOnlyPropertyBag.TryGetValue{T}"/> and
-        /// <see cref="IPropertyBag.Remove"/>, so it is not atomic. <c>ConcurrentPropertyBag</c> has
+        /// <see cref="IPropertyBag.Remove"/>, so it is not atomic. <c>ConcurrentPropertyBagDictionary</c> has
         /// an atomic version.
         /// </remarks>
         /// <example>

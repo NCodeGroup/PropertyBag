@@ -3,14 +3,14 @@
 
 namespace NCode.PropertyBag.Tests;
 
-public class ConcurrentPropertyBagTests
+public class ConcurrentPropertyBagDictionaryTests
 {
     #region SetValue Tests
 
     [Fact]
     public void SetValue_WithStringValue_StoresValue()
     {
-        var propertyBag = new ConcurrentPropertyBag();
+        var propertyBag = new ConcurrentPropertyBagDictionary();
         var key = new PropertyBagKey<string>("TestKey");
 
         propertyBag.SetValue(key, "TestValue");
@@ -22,7 +22,7 @@ public class ConcurrentPropertyBagTests
     [Fact]
     public void SetValue_WithNullValue_StoresNull()
     {
-        var propertyBag = new ConcurrentPropertyBag();
+        var propertyBag = new ConcurrentPropertyBagDictionary();
         var key = new PropertyBagKey<string?>("TestKey");
 
         propertyBag.SetValue(key, null);
@@ -34,7 +34,7 @@ public class ConcurrentPropertyBagTests
     [Fact]
     public void SetValue_OverwritesExistingValue()
     {
-        var propertyBag = new ConcurrentPropertyBag();
+        var propertyBag = new ConcurrentPropertyBagDictionary();
         var key = new PropertyBagKey<string>("TestKey");
         propertyBag.SetValue(key, "OriginalValue");
 
@@ -47,7 +47,7 @@ public class ConcurrentPropertyBagTests
     [Fact]
     public void SetValue_ReturnsSameInstance_ForMethodChaining()
     {
-        var propertyBag = new ConcurrentPropertyBag();
+        var propertyBag = new ConcurrentPropertyBagDictionary();
         var key = new PropertyBagKey<string>("TestKey");
 
         var result = propertyBag.SetValue(key, "TestValue");
@@ -58,7 +58,7 @@ public class ConcurrentPropertyBagTests
     [Fact]
     public void SetValue_FromManyThreads_StoresEveryValue()
     {
-        var propertyBag = new ConcurrentPropertyBag();
+        var propertyBag = new ConcurrentPropertyBagDictionary();
 
         Parallel.For(0, 1000, i => propertyBag.SetValue(new PropertyBagKey<int>($"k{i}"), i));
 
@@ -76,7 +76,7 @@ public class ConcurrentPropertyBagTests
     [Fact]
     public void TryGetValue_WhenKeyDoesNotExist_ReturnsFalseAndDefault()
     {
-        var propertyBag = new ConcurrentPropertyBag();
+        var propertyBag = new ConcurrentPropertyBagDictionary();
         var key = new PropertyBagKey<string>("NonExistentKey");
 
         var result = propertyBag.TryGetValue(key, out var value);
@@ -88,7 +88,7 @@ public class ConcurrentPropertyBagTests
     [Fact]
     public void TryGetValue_WithSameNameButDifferentType_ReturnsFalse()
     {
-        var propertyBag = new ConcurrentPropertyBag();
+        var propertyBag = new ConcurrentPropertyBagDictionary();
         var stringKey = new PropertyBagKey<string>("Key");
         var intKey = new PropertyBagKey<int>("Key");
         propertyBag.SetValue(stringKey, "StringValue");
@@ -101,7 +101,7 @@ public class ConcurrentPropertyBagTests
     [Fact]
     public void TryGetValue_WhenStoredValueIsNotOfRequestedType_ReturnsFalse()
     {
-        var propertyBag = new ConcurrentPropertyBag();
+        var propertyBag = new ConcurrentPropertyBagDictionary();
         var key = new PropertyBagKey<WrongTypeClone>("TestKey");
         propertyBag.SetValue(key, new WrongTypeClone());
 
@@ -119,7 +119,7 @@ public class ConcurrentPropertyBagTests
     [Fact]
     public void Remove_WhenKeyExists_RemovesValue()
     {
-        var propertyBag = new ConcurrentPropertyBag();
+        var propertyBag = new ConcurrentPropertyBagDictionary();
         var key = new PropertyBagKey<string>("TestKey");
         propertyBag.SetValue(key, "TestValue");
 
@@ -131,7 +131,7 @@ public class ConcurrentPropertyBagTests
     [Fact]
     public void Remove_WhenKeyDoesNotExist_DoesNotThrow()
     {
-        var propertyBag = new ConcurrentPropertyBag();
+        var propertyBag = new ConcurrentPropertyBagDictionary();
         var key = new PropertyBagKey<string>("NonExistentKey");
 
         var exception = Record.Exception(() => propertyBag.Remove(key));
@@ -142,7 +142,7 @@ public class ConcurrentPropertyBagTests
     [Fact]
     public void Remove_ReturnsSameInstance_ForMethodChaining()
     {
-        var propertyBag = new ConcurrentPropertyBag();
+        var propertyBag = new ConcurrentPropertyBagDictionary();
         var key = new PropertyBagKey<string>("TestKey");
 
         var result = propertyBag.Remove(key);
@@ -153,7 +153,7 @@ public class ConcurrentPropertyBagTests
     [Fact]
     public void Remove_OnlyRemovesSpecifiedKey()
     {
-        var propertyBag = new ConcurrentPropertyBag();
+        var propertyBag = new ConcurrentPropertyBagDictionary();
         var key1 = new PropertyBagKey<string>("Key1");
         var key2 = new PropertyBagKey<string>("Key2");
         propertyBag.SetValue(key1, "Value1");
@@ -173,7 +173,7 @@ public class ConcurrentPropertyBagTests
     [Fact]
     public void Scope_SetsValue()
     {
-        var propertyBag = new ConcurrentPropertyBag();
+        var propertyBag = new ConcurrentPropertyBagDictionary();
         var key = new PropertyBagKey<string>("TestKey");
 
         using (propertyBag.Scope(key, "TestValue"))
@@ -186,7 +186,7 @@ public class ConcurrentPropertyBagTests
     [Fact]
     public void Scope_WhenKeyHadNoValue_RemovesValueOnDispose()
     {
-        var propertyBag = new ConcurrentPropertyBag();
+        var propertyBag = new ConcurrentPropertyBagDictionary();
         var key = new PropertyBagKey<string>("TestKey");
 
         using (propertyBag.Scope(key, "TestValue"))
@@ -200,7 +200,7 @@ public class ConcurrentPropertyBagTests
     [Fact]
     public void Scope_WhenKeyHadValue_RestoresPreviousValueOnDispose()
     {
-        var propertyBag = new ConcurrentPropertyBag();
+        var propertyBag = new ConcurrentPropertyBagDictionary();
         var key = new PropertyBagKey<string>("TestKey");
         propertyBag.SetValue(key, "Outer");
 
@@ -217,7 +217,7 @@ public class ConcurrentPropertyBagTests
     [Fact]
     public void Scope_WhenAnotherWriteHappensInside_RestoresCapturedValue()
     {
-        var propertyBag = new ConcurrentPropertyBag();
+        var propertyBag = new ConcurrentPropertyBagDictionary();
         var key = new PropertyBagKey<string>("TestKey");
         propertyBag.SetValue(key, "Outer");
 
@@ -233,7 +233,7 @@ public class ConcurrentPropertyBagTests
     [Fact]
     public void Scope_DisposedTwice_RestoresOnce()
     {
-        var propertyBag = new ConcurrentPropertyBag();
+        var propertyBag = new ConcurrentPropertyBagDictionary();
         var key = new PropertyBagKey<string>("TestKey");
         propertyBag.SetValue(key, "Outer");
         var scope = propertyBag.Scope(key, "Inner");
@@ -251,20 +251,20 @@ public class ConcurrentPropertyBagTests
     #region Clone Tests
 
     [Fact]
-    public void Clone_ReturnsNewConcurrentPropertyBag()
+    public void Clone_ReturnsNewConcurrentPropertyBagDictionary()
     {
-        var propertyBag = new ConcurrentPropertyBag();
+        var propertyBag = new ConcurrentPropertyBagDictionary();
 
         var clone = propertyBag.Clone();
 
         Assert.NotSame(propertyBag, clone);
-        Assert.IsType<ConcurrentPropertyBag>(clone);
+        Assert.IsType<ConcurrentPropertyBagDictionary>(clone);
     }
 
     [Fact]
     public void Clone_CopiesAllValues()
     {
-        var propertyBag = new ConcurrentPropertyBag();
+        var propertyBag = new ConcurrentPropertyBagDictionary();
         var key1 = new PropertyBagKey<string>("Key1");
         var key2 = new PropertyBagKey<int>("Key2");
         propertyBag.SetValue(key1, "Value1");
@@ -281,7 +281,7 @@ public class ConcurrentPropertyBagTests
     [Fact]
     public void Clone_IsIndependentFromOriginal()
     {
-        var propertyBag = new ConcurrentPropertyBag();
+        var propertyBag = new ConcurrentPropertyBagDictionary();
         var key = new PropertyBagKey<string>("TestKey");
         propertyBag.SetValue(key, "OriginalValue");
 
@@ -297,7 +297,7 @@ public class ConcurrentPropertyBagTests
     [Fact]
     public void Clone_DeepClonesCloneableValues()
     {
-        var propertyBag = new ConcurrentPropertyBag();
+        var propertyBag = new ConcurrentPropertyBagDictionary();
         var key = new PropertyBagKey<CloneableValue>("TestKey");
         var originalValue = new CloneableValue { Data = "Original" };
         propertyBag.SetValue(key, originalValue);
@@ -312,7 +312,7 @@ public class ConcurrentPropertyBagTests
     [Fact]
     public void Clone_ShallowCopiesNonCloneableValues()
     {
-        var propertyBag = new ConcurrentPropertyBag();
+        var propertyBag = new ConcurrentPropertyBagDictionary();
         var key = new PropertyBagKey<NonCloneableValue>("TestKey");
         var originalValue = new NonCloneableValue { Data = "Original" };
         propertyBag.SetValue(key, originalValue);
@@ -326,17 +326,156 @@ public class ConcurrentPropertyBagTests
     [Fact]
     public void ICloneable_Clone_ReturnsClone()
     {
-        var propertyBag = new ConcurrentPropertyBag();
+        var propertyBag = new ConcurrentPropertyBagDictionary();
         var key = new PropertyBagKey<string>("TestKey");
         propertyBag.SetValue(key, "TestValue");
         ICloneable cloneable = propertyBag;
 
         var clone = cloneable.Clone();
 
-        var concurrentClone = Assert.IsType<ConcurrentPropertyBag>(clone);
+        var concurrentClone = Assert.IsType<ConcurrentPropertyBagDictionary>(clone);
         Assert.NotSame(propertyBag, concurrentClone);
         Assert.True(concurrentClone.TryGetValue(key, out var value));
         Assert.Equal("TestValue", value);
+    }
+
+    #endregion
+
+    #region IReadOnlyDictionary Tests
+
+    private static ConcurrentPropertyBagDictionary CreateBag(
+        out PropertyBagKey<string> key1,
+        out PropertyBagKey<int> key2
+    )
+    {
+        key1 = new PropertyBagKey<string>("Key1");
+        key2 = new PropertyBagKey<int>("Key2");
+        var bag = new ConcurrentPropertyBagDictionary();
+        bag.SetValue(key1, "Value1");
+        bag.SetValue(key2, 42);
+        return bag;
+    }
+
+    [Fact]
+    public void Count_ReturnsNumberOfEntries()
+    {
+        var bag = CreateBag(out _, out _);
+        IReadOnlyDictionary<PropertyBagKey, object?> dict = bag;
+
+        Assert.Equal(2, dict.Count);
+    }
+
+    [Fact]
+    public void Keys_ReturnsAllKeys()
+    {
+        var bag = CreateBag(out var key1, out var key2);
+        IReadOnlyDictionary<PropertyBagKey, object?> dict = bag;
+
+        Assert.Equivalent(new PropertyBagKey[] { key1, key2 }, dict.Keys.ToArray());
+    }
+
+    [Fact]
+    public void Values_ReturnsAllValues()
+    {
+        var bag = CreateBag(out _, out _);
+        IReadOnlyDictionary<PropertyBagKey, object?> dict = bag;
+
+        Assert.Equivalent(new object?[] { "Value1", 42 }, dict.Values.ToArray());
+    }
+
+    [Fact]
+    public void Indexer_WithPresentKey_ReturnsValue()
+    {
+        var bag = CreateBag(out var key1, out _);
+        IReadOnlyDictionary<PropertyBagKey, object?> dict = bag;
+
+        Assert.Equal("Value1", dict[key1]);
+    }
+
+    [Fact]
+    public void Indexer_WithMissingKey_ReturnsNull()
+    {
+        var bag = CreateBag(out _, out _);
+        IReadOnlyDictionary<PropertyBagKey, object?> dict = bag;
+
+        Assert.Null(dict[new PropertyBagKey<string>("Missing")]);
+    }
+
+    [Fact]
+    public void ContainsKey_ReportsPresenceOfKey()
+    {
+        var bag = CreateBag(out var key1, out _);
+        IReadOnlyDictionary<PropertyBagKey, object?> dict = bag;
+
+        Assert.True(dict.ContainsKey(key1));
+        Assert.False(dict.ContainsKey(new PropertyBagKey<string>("Missing")));
+    }
+
+    [Fact]
+    public void DictionaryTryGetValue_ReportsPresenceOfKey()
+    {
+        var bag = CreateBag(out var key1, out _);
+        IReadOnlyDictionary<PropertyBagKey, object?> dict = bag;
+
+        Assert.True(dict.TryGetValue(key1, out var value));
+        Assert.Equal("Value1", value);
+        Assert.False(dict.TryGetValue(new PropertyBagKey<string>("Missing"), out var missing));
+        Assert.Null(missing);
+    }
+
+    [Fact]
+    public void GenericEnumerator_EnumeratesAllEntries()
+    {
+        var bag = CreateBag(out var key1, out var key2);
+        IReadOnlyDictionary<PropertyBagKey, object?> dict = bag;
+
+        var pairs = dict.ToDictionary(pair => pair.Key, pair => pair.Value);
+
+        Assert.Equal(2, pairs.Count);
+        Assert.Equal("Value1", pairs[key1]);
+        Assert.Equal(42, pairs[key2]);
+    }
+
+    [Fact]
+    public void NonGenericEnumerator_EnumeratesAllEntries()
+    {
+        var bag = CreateBag(out _, out _);
+        System.Collections.IEnumerable enumerable = bag;
+
+        var count = 0;
+        foreach (var _ in enumerable)
+        {
+            count++;
+        }
+
+        Assert.Equal(2, count);
+    }
+
+    [Fact]
+    public async Task Enumerate_WhileAnotherThreadSets_DoesNotThrow()
+    {
+        var bag = new ConcurrentPropertyBagDictionary();
+        IReadOnlyDictionary<PropertyBagKey, object?> dict = bag;
+
+        var writer = Task.Run(() =>
+        {
+            for (var i = 0; i < 1000; i++)
+            {
+                bag.SetValue(new PropertyBagKey<int>($"Key{i}"), i);
+            }
+        });
+
+        while (!writer.IsCompleted)
+        {
+            foreach (var pair in dict)
+            {
+                Assert.IsType<int>(pair.Value);
+            }
+        }
+
+        await writer;
+
+        Assert.Equal(1000, dict.Count);
     }
 
     #endregion

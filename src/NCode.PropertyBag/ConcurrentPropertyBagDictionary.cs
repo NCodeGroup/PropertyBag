@@ -1,6 +1,7 @@
 // Copyright © NCode Group
 // SPDX-License-Identifier: Apache-2.0
 
+using System.Collections;
 using JetBrains.Annotations;
 
 namespace NCode.PropertyBag;
@@ -22,13 +23,18 @@ namespace NCode.PropertyBag;
 /// as it is.
 /// </para>
 /// <para>
+/// The <see cref="IReadOnlyDictionary{TKey,TValue}"/> view takes its lock per call. Enumerating it, or
+/// reading its keys or values, walks a snapshot taken under the lock, so a write by another thread
+/// during the walk neither throws nor appears in it.
+/// </para>
+/// <para>
 /// When cloning, values that implement <see cref="ICloneable"/> are deep-cloned; otherwise, the reference
 /// is copied (shallow copy for reference types).
 /// </para>
 /// </remarks>
 /// <example>
 /// <code>
-/// var shared = new ConcurrentPropertyBag();
+/// var shared = new ConcurrentPropertyBagDictionary();
 /// var key = new PropertyBagKey&lt;string&gt;("UserName");
 ///
 /// Parallel.For(0, 10, _ => shared.SetValue(key, "Alice"));
@@ -42,21 +48,25 @@ namespace NCode.PropertyBag;
 /// <seealso cref="IPropertyBag"/>
 /// <seealso cref="PropertyBagDictionary"/>
 [PublicAPI]
-public sealed class ConcurrentPropertyBag : IPropertyBag, ICloneable, IScopeRestorer
+public sealed class ConcurrentPropertyBagDictionary
+    : IPropertyBag,
+        ICloneable,
+        IScopeRestorer,
+        IReadOnlyDictionary<PropertyBagKey, object?>
 {
     /// <summary>
-    /// Initializes a new, empty <see cref="ConcurrentPropertyBag"/>.
+    /// Initializes a new, empty <see cref="ConcurrentPropertyBagDictionary"/>.
     /// </summary>
-    public ConcurrentPropertyBag()
+    public ConcurrentPropertyBagDictionary()
     {
         Items = new Dictionary<PropertyBagKey, object?>();
     }
 
     /// <summary>
-    /// Initializes a new <see cref="ConcurrentPropertyBag"/> that owns the specified dictionary.
+    /// Initializes a new <see cref="ConcurrentPropertyBagDictionary"/> that owns the specified dictionary.
     /// </summary>
     /// <param name="items">The dictionary that holds the entries of the new bag.</param>
-    private ConcurrentPropertyBag(Dictionary<PropertyBagKey, object?> items)
+    private ConcurrentPropertyBagDictionary(Dictionary<PropertyBagKey, object?> items)
     {
         Items = items;
     }
@@ -173,7 +183,7 @@ public sealed class ConcurrentPropertyBag : IPropertyBag, ICloneable, IScopeRest
     /// <inheritdoc />
     /// <remarks>
     /// <para>
-    /// Creates a new <see cref="ConcurrentPropertyBag"/> instance containing copies of all key-value pairs.
+    /// Creates a new <see cref="ConcurrentPropertyBagDictionary"/> instance containing copies of all key-value pairs.
     /// The entries are copied under the lock, so the clone holds one consistent state of this bag.
     /// </para>
     /// <para>
@@ -197,7 +207,7 @@ public sealed class ConcurrentPropertyBag : IPropertyBag, ICloneable, IScopeRest
             newItems[key] = value is ICloneable cloneable ? cloneable.Clone() : value;
         }
 
-        return new ConcurrentPropertyBag(newItems);
+        return new ConcurrentPropertyBagDictionary(newItems);
     }
 
     /// <summary>
@@ -208,4 +218,126 @@ public sealed class ConcurrentPropertyBag : IPropertyBag, ICloneable, IScopeRest
     /// This explicit interface implementation calls <see cref="Clone"/> and returns the result as <see cref="object"/>.
     /// </remarks>
     object ICloneable.Clone() => Clone();
+
+    #region IReadOnlyDictionary Implementation
+
+    /// <summary>
+    /// Returns an enumerator over a snapshot of the key-value pairs, taken under the lock.
+    /// </summary>
+    /// <returns>An enumerator for the snapshot.</returns>
+    IEnumerator IEnumerable.GetEnumerator() => Snapshot().GetEnumerator();
+
+    /// <summary>
+    /// Returns an enumerator over a snapshot of the key-value pairs, taken under the lock.
+    /// </summary>
+    /// <returns>An enumerator for the snapshot.</returns>
+    IEnumerator<KeyValuePair<PropertyBagKey, object?>> IEnumerable<
+        KeyValuePair<PropertyBagKey, object?>
+    >.GetEnumerator() =>
+        ((IEnumerable<KeyValuePair<PropertyBagKey, object?>>)Snapshot()).GetEnumerator();
+
+    /// <summary>
+    /// Copies the key-value pairs under the lock.
+    /// </summary>
+    /// <returns>A snapshot of the entries.</returns>
+    private KeyValuePair<PropertyBagKey, object?>[] Snapshot()
+    {
+        lock (Gate)
+        {
+            return Items.ToArray();
+        }
+    }
+
+    /// <summary>
+    /// Gets the number of key-value pairs in the property bag.
+    /// </summary>
+    int IReadOnlyCollection<KeyValuePair<PropertyBagKey, object?>>.Count
+    {
+        get
+        {
+            lock (Gate)
+            {
+                return Items.Count;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets a snapshot of the keys in the property bag.
+    /// </summary>
+    IEnumerable<PropertyBagKey> IReadOnlyDictionary<PropertyBagKey, object?>.Keys
+    {
+        get
+        {
+            lock (Gate)
+            {
+                return Items.Keys.ToArray();
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets a snapshot of the values in the property bag.
+    /// </summary>
+    IEnumerable<object?> IReadOnlyDictionary<PropertyBagKey, object?>.Values
+    {
+        get
+        {
+            lock (Gate)
+            {
+                return Items.Values.ToArray();
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets the value associated with the specified key.
+    /// </summary>
+    /// <param name="key">The key of the value to get.</param>
+    /// <returns>The value associated with the specified key, or <c>null</c> if the key is not found.</returns>
+    object? IReadOnlyDictionary<PropertyBagKey, object?>.this[PropertyBagKey key]
+    {
+        get
+        {
+            lock (Gate)
+            {
+                return Items.GetValueOrDefault(key);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Determines whether the property bag contains an element with the specified key.
+    /// </summary>
+    /// <param name="key">The key to locate in the property bag.</param>
+    /// <returns><c>true</c> if the property bag contains an element with the key; otherwise, <c>false</c>.</returns>
+    bool IReadOnlyDictionary<PropertyBagKey, object?>.ContainsKey(PropertyBagKey key)
+    {
+        lock (Gate)
+        {
+            return Items.ContainsKey(key);
+        }
+    }
+
+    /// <summary>
+    /// Gets the value associated with the specified key.
+    /// </summary>
+    /// <param name="key">The key of the value to get.</param>
+    /// <param name="value">
+    /// When this method returns, contains the value associated with the specified key if the key is found;
+    /// otherwise, <c>null</c>.
+    /// </param>
+    /// <returns><c>true</c> if the property bag contains an element with the specified key; otherwise, <c>false</c>.</returns>
+    bool IReadOnlyDictionary<PropertyBagKey, object?>.TryGetValue(
+        PropertyBagKey key,
+        out object? value
+    )
+    {
+        lock (Gate)
+        {
+            return Items.TryGetValue(key, out value);
+        }
+    }
+
+    #endregion
 }
