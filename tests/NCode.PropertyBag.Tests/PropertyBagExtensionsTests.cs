@@ -171,11 +171,13 @@ public class PropertyBagExtensionsTests
 
         propertyBag.SetValue(key, "Alice");
 
-        Assert.True(propertyBag.TryGetValue(key, out var value));
+        var found = propertyBag.TryGetValue(key, out var value);
+        var wrongKey = new PropertyBagKey<PropertyBagKey<string>>("Alice");
+        var foundWrongKey = propertyBag.TryGetValue(wrongKey, out _);
+
+        Assert.True(found);
         Assert.Equal("Alice", value);
-        Assert.False(
-            propertyBag.TryGetValue(new PropertyBagKey<PropertyBagKey<string>>("Alice"), out _)
-        );
+        Assert.False(foundWrongKey);
     }
 
     #endregion
@@ -288,7 +290,7 @@ public class PropertyBagExtensionsTests
         var key = new PropertyBagKey<string>("storedKey");
         propertyBag.SetValue(key, "TestValue");
 
-        // TryGet infers "differentKey" which doesn't match "storedKey"
+        // TryGetValue infers "differentKey" which doesn't match "storedKey"
         string? differentKey;
         var result = propertyBag.TryGetValue(out differentKey);
 
@@ -302,10 +304,10 @@ public class PropertyBagExtensionsTests
         var propertyBag = new PropertyBagDictionary();
         const string sharedKeyName = "StoredValue";
 
-        // Set using CallerArgumentExpression (key = "sharedKeyName")
+        // SetValue using CallerArgumentExpression (key = "sharedKeyName")
         propertyBag.SetValue(sharedKeyName);
 
-        // TryGet with different variable name should fail (key = "sharedKeyName2")
+        // TryGetValue with different variable name should fail (key = "sharedKeyName2")
         string? sharedKeyName2;
         var result = propertyBag.TryGetValue(out sharedKeyName2);
 
@@ -319,13 +321,13 @@ public class PropertyBagExtensionsTests
         var propertyBag = new PropertyBagDictionary();
         string? userName = "Alice";
 
-        // Set using CallerArgumentExpression (key = "userName")
+        // SetValue using CallerArgumentExpression (key = "userName")
         propertyBag.SetValue(userName);
 
         // Reassign the variable (to prove we retrieve from the bag, not the variable)
         userName = string.Empty;
 
-        // TryGet with same variable name should find it (key = "userName")
+        // TryGetValue with same variable name should find it (key = "userName")
         var result = propertyBag.TryGetValue(out userName);
 
         Assert.True(result);
@@ -338,13 +340,13 @@ public class PropertyBagExtensionsTests
         var propertyBag = new PropertyBagDictionary();
         int counter = 42;
 
-        // Set using CallerArgumentExpression (key = "counter")
+        // SetValue using CallerArgumentExpression (key = "counter")
         propertyBag.SetValue(counter);
 
         // Reset to prove retrieval
         counter = 0;
 
-        // TryGet with same variable name (key = "counter")
+        // TryGetValue with same variable name (key = "counter")
         var result = propertyBag.TryGetValue(out counter);
 
         Assert.True(result);
@@ -359,7 +361,7 @@ public class PropertyBagExtensionsTests
         int age = 30;
         bool isActive = true;
 
-        // Set all using CallerArgumentExpression
+        // SetValue all using CallerArgumentExpression
         propertyBag.SetValue(name).SetValue(age).SetValue(isActive);
 
         // Reset all to prove retrieval
@@ -367,7 +369,7 @@ public class PropertyBagExtensionsTests
         age = 0;
         isActive = false;
 
-        // TryGet all using same variable names
+        // TryGetValue all using same variable names
         Assert.True(propertyBag.TryGetValue(out name));
         Assert.True(propertyBag.TryGetValue(out age));
         Assert.True(propertyBag.TryGetValue(out isActive));
@@ -378,23 +380,23 @@ public class PropertyBagExtensionsTests
     }
 
     [Fact]
-    public void SetThenTryGet_WithMatchingVariableNames_Works()
+    public void SetValueThenTryGetValue_WithMatchingVariableNames_Works()
     {
         var propertyBag = new PropertyBagDictionary();
 
-        // Using variable with same name for both Set and TryGet
+        // Using variable with same name for both SetValue and TryGetValue
         string connectionString = "Server=localhost";
         propertyBag.SetValue(connectionString);
 
         // Clear the local variable to prove we're getting from the bag
         connectionString = string.Empty;
 
-        // TryGet with a variable with a DIFFERENT name won't find it
+        // TryGetValue with a variable with a DIFFERENT name won't find it
         string? differentName;
         var result1 = propertyBag.TryGetValue(out differentName);
         Assert.False(result1);
 
-        // But TryGet with explicit name will find it
+        // But TryGetValue with explicit name will find it
         string? anyName;
         var result2 = propertyBag.TryGetValue(out anyName, "connectionString");
         Assert.True(result2);

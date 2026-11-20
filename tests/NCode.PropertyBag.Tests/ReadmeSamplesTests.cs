@@ -94,10 +94,12 @@ public class ReadmeSamplesTests
         var propertyBag = PropertyBagFactory.Create();
         ConnectionSettings.Save(propertyBag, "Server=localhost", TimeSpan.FromSeconds(30));
 
-        Assert.Equal("Server=localhost", ConnectionSettings.LoadConnectionString(propertyBag));
-        Assert.True(
-            propertyBag.TryGetValue(new PropertyBagKey<TimeSpan>("timeout"), out var timeout)
-        );
+        var connectionString = ConnectionSettings.LoadConnectionString(propertyBag);
+        var timeoutKey = new PropertyBagKey<TimeSpan>("timeout");
+        var found = propertyBag.TryGetValue(timeoutKey, out var timeout);
+
+        Assert.Equal("Server=localhost", connectionString);
+        Assert.True(found);
         Assert.Equal(TimeSpan.FromSeconds(30), timeout);
     }
 
@@ -151,7 +153,8 @@ public class ReadmeSamplesTests
         // end-snippet
 
         await using var provider = services.BuildServiceProvider();
-        var context = provider.GetRequiredService<RequestContextFactory>().CreateContext("Alice");
+        var contextFactory = provider.GetRequiredService<RequestContextFactory>();
+        var context = contextFactory.CreateContext("Alice");
 
         Assert.True(context.TryGetValue(UserKeys.UserName, out var userName));
         Assert.Equal("Alice", userName);

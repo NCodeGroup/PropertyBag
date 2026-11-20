@@ -76,7 +76,7 @@ public class DefaultPropertyBagFactoryTests
     }
 
     [Fact]
-    public void Create_ReturnsDefaultPropertyBag()
+    public void Create_ReturnsPropertyBagDictionary()
     {
         var factory = new DefaultPropertyBagFactory();
 
