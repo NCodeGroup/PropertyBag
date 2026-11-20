@@ -85,7 +85,7 @@ code in the same process, which the Threat Model trusts. Each public entry point
   `NullReferenceException` ([#47](https://github.com/NCodeGroup/PropertyBag/issues/47)).
 - **The setters of `PropertyBagFactory.DefaultFactory` and `DefaultPropertyBagFactory.Singleton`** check nothing: a
   `null` `DefaultFactory` falls back to `DefaultPropertyBagFactory.Singleton`, and a `null` `Singleton` makes
-  `PropertyBagFactory.Create()` throw `NullReferenceException`.
+  `PropertyBagFactory.Create()` throw `NullReferenceException` while `DefaultFactory` is unset or `null`.
 - **`Clone()`** runs the `Clone()` of each stored value that implements `ICloneable`, code the application stored.
 
 An application that stores untrusted data validates and bounds it before the call (see Bounded size above).
