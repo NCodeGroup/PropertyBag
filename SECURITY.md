@@ -6,8 +6,6 @@ Report a vulnerability in NCode.PropertyBag privately. Never put it in a public 
 
 On the repository's **Security** tab, choose **Report a vulnerability**. The report reaches the maintainers only, and the fix is discussed in a private security advisory until it is released. If the tab has no such button, open an issue that asks for a private contact, and leave out every detail of the vulnerability.
 
-[//]: # "Maintainers: the button appears once private vulnerability reporting is turned on in the repository's security settings."
-
 Include:
 
 - what is affected: the package and its version, and the file, endpoint or feature;
