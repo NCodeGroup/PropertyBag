@@ -45,7 +45,25 @@ Users must not rely on:
 
 [//]: # "Maintainers: add a table (Threat, In scope, Countered by) and state the trust boundary."
 
-Not written yet.
+The library has no trust boundary of its own: it runs in the application's process with the application's permissions,
+and every caller of its API is trusted code. Untrusted data reaches it only as values and key names the application
+chooses to store, after validating them. The trust boundary this project guards is the supply chain, from this
+repository's reviewed code through CI to the packages on nuget.org.
+
+| Threat | In scope | Countered by |
+| --- | --- | --- |
+| A value is read as a type other than the one stored (type confusion) | Yes | R1 |
+| Two components use one key name for different types and overwrite each other | Yes | R1: the key includes the type, so only the same name and type collide |
+| Keys chosen to collide slow the dictionary (hash flooding) | Yes | `PropertyBagKey.GetHashCode` combines `Type` and `Name` with `HashCode.Combine`, whose seed is random per process, over .NET's randomized string hash |
+| A missing or mistyped key throws in the caller | Yes | R1, R3 |
+| A change to a clone leaks into the original | Yes | R4 |
+| The library's registration replaces the application's own factory | Yes | R5 |
+| Untrusted data arrives through files, the network or deserialization | No: the packages have no such input | R2 |
+| Unbounded entries from untrusted input exhaust memory | No: the application bounds what it stores | — |
+| Concurrent writes corrupt a bag | No: a bag isn't thread-safe; the caller synchronizes | — |
+| Hostile code in the same process reads a bag or replaces the default factory | No: .NET has no isolation within a process | — |
+| A tampered or unreviewed package reaches consumers | Yes | R6, and the review and release evidence below |
+| A vulnerable dependency | Yes | One runtime dependency, `Microsoft.Extensions.DependencyInjection.Abstractions`, pinned centrally and updated by Dependabot; NuGet advisories fail CI |
 
 ## Secure Design Principles Applied
 
