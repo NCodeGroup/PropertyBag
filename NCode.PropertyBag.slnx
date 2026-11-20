@@ -3,5 +3,7 @@
     <Project Path="src/NCode.PropertyBag.Abstractions/NCode.PropertyBag.Abstractions.csproj" />
     <Project Path="src/NCode.PropertyBag/NCode.PropertyBag.csproj" />
   </Folder>
-  <Project Path="NCode.PropertyBag.Tests/NCode.PropertyBag.Tests.csproj" />
+  <Folder Name="/tests/">
+    <Project Path="tests/NCode.PropertyBag.Tests/NCode.PropertyBag.Tests.csproj" />
+  </Folder>
 </Solution>
