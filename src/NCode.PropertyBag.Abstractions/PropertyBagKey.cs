@@ -108,8 +108,8 @@ public readonly struct PropertyBagKey(Type type, string name) : IEquatable<Prope
 /// public static readonly PropertyBagKey&lt;int&gt; UserAgeKey = new("UserAge");
 ///
 /// // Use keys to store and retrieve values
-/// propertyBag.Set(UserNameKey, "Alice");
-/// propertyBag.Set(UserAgeKey, 30);
+/// propertyBag.SetValue(UserNameKey, "Alice");
+/// propertyBag.SetValue(UserAgeKey, 30);
 ///
 /// if (propertyBag.TryGetValue(UserNameKey, out var name))
 /// {

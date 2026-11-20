@@ -15,7 +15,7 @@ namespace NCode.PropertyBag;
 /// </para>
 /// <para>
 /// The default implementation is <see cref="DefaultPropertyBagFactory"/>, which creates
-/// <see cref="DefaultPropertyBag"/> instances.
+/// <see cref="PropertyBagDictionary"/> instances.
 /// </para>
 /// </remarks>
 /// <example>
@@ -128,7 +128,7 @@ public static class PropertyBagFactory
     /// <code>
     /// IPropertyBag bag = PropertyBagFactory.Create();
     /// var key = new PropertyBagKey&lt;string&gt;("UserName");
-    /// bag.Set(key, "Alice");
+    /// bag.SetValue(key, "Alice");
     /// </code>
     /// </example>
     public static IPropertyBag Create() => DefaultFactory.Create();

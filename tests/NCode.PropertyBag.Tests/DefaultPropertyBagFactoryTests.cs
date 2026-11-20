@@ -76,13 +76,13 @@ public class DefaultPropertyBagFactoryTests
     }
 
     [Fact]
-    public void Create_ReturnsDefaultPropertyBag()
+    public void Create_ReturnsPropertyBagDictionary()
     {
         var factory = new DefaultPropertyBagFactory();
 
         var propertyBag = factory.Create();
 
-        Assert.IsType<DefaultPropertyBag>(propertyBag);
+        Assert.IsType<PropertyBagDictionary>(propertyBag);
     }
 
     [Fact]
@@ -116,7 +116,7 @@ public class DefaultPropertyBagFactoryTests
         var propertyBag1 = factory.Create();
         var propertyBag2 = factory.Create();
 
-        propertyBag1.Set(key, "Value1");
+        propertyBag1.SetValue(key, "Value1");
 
         Assert.True(propertyBag1.TryGetValue(key, out var value1));
         Assert.Equal("Value1", value1);
@@ -143,7 +143,7 @@ public class DefaultPropertyBagFactoryTests
         var propertyBag = factory.Create();
 
         Assert.NotNull(propertyBag);
-        Assert.IsType<DefaultPropertyBag>(propertyBag);
+        Assert.IsType<PropertyBagDictionary>(propertyBag);
     }
 
     #endregion

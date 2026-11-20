@@ -65,7 +65,7 @@ public class PropertyBagFactoryTests
     [Fact]
     public void Create_WhenDefaultFactoryIsCustom_ReturnsTheCustomFactorysBag()
     {
-        var bag = new DefaultPropertyBag();
+        var bag = new PropertyBagDictionary();
 
         try
         {

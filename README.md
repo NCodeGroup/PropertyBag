@@ -5,7 +5,7 @@
 <h1 align="center">NCode.PropertyBag</h1>
 
 <p align="center">
-  A lightweight, strongly-typed property bag library for .NET that provides type-safe key-value storage with support for scoped values, cloning, and dependency injection.
+  Strongly typed property bags for .NET: store and read values by type-safe keys, override a value for a scope, clone a bag, and create bags through dependency injection.
 </p>
 
 <p align="center">
@@ -13,21 +13,21 @@
   <a href="https://www.nuget.org/packages/NCode.PropertyBag/"><img alt="NuGet downloads" src="https://img.shields.io/nuget/dt/NCode.PropertyBag?logo=nuget"></a>
   <a href="https://github.com/NCodeGroup/PropertyBag/actions/workflows/ci.yml?query=branch%3Amain"><img alt="CI" src="https://github.com/NCodeGroup/PropertyBag/actions/workflows/ci.yml/badge.svg?branch=main"></a>
   <a href="https://codecov.io/gh/NCodeGroup/PropertyBag"><img alt="Coverage" src="https://codecov.io/gh/NCodeGroup/PropertyBag/branch/main/graph/badge.svg"></a>
+  <a href="https://www.nuget.org/packages/NCode.PropertyBag#supportedframeworks-body-tab"><img alt="Target framework" src="https://img.shields.io/badge/dynamic/xml?url=https%3A%2F%2Fraw.githubusercontent.com%2FNCodeGroup%2FPropertyBag%2Fmain%2Fsrc%2FNCode.PropertyBag%2FNCode.PropertyBag.csproj&query=%2F%2FTargetFramework%20%7C%20%2F%2FTargetFrameworks&label=target&logo=dotnet&color=512BD4"></a>
   <a href="LICENSE.txt"><img alt="License" src="https://img.shields.io/github/license/NCodeGroup/PropertyBag"></a>
+  <a href="https://scorecard.dev/viewer/?uri=github.com/NCodeGroup/PropertyBag"><img alt="OpenSSF Scorecard" src="https://api.scorecard.dev/projects/github.com/NCodeGroup/PropertyBag/badge"></a>
 </p>
 
-## Features
+A property bag carries context, such as the current user, a culture or a correlation ID, through code that doesn't need to know every value it passes on. Each value is stored and read through a `PropertyBagKey<T>`, which names the value and fixes its type, so a read returns a `T` without a cast.
 
-- **Strongly-Typed Keys** - Type-safe `PropertyBagKey<T>` ensures compile-time type checking when storing and retrieving values
-- **Nullable Value Support** - Explicitly store and retrieve `null` values for reference types and nullable value types
-- **Read-Only Interface** - `IReadOnlyPropertyBag` for passing property bags to code that should only read values
-- **Fluent API** - Method chaining support for `Set` and `Remove` operations
-- **Scoped Values** - Temporarily override values with automatic cleanup using `IPropertyBagScope`
-- **Cloning Support** - Create independent copies with `Clone()`, supporting deep cloning for `ICloneable` values
-- **Lazy Initialization** - Empty property bags are lightweight with no memory allocated until first use
-- **Dictionary Access** - `DefaultPropertyBag` implements `IReadOnlyDictionary<PropertyBagKey, object?>` for enumeration
-- **Dependency Injection** - Built-in integration with `Microsoft.Extensions.DependencyInjection`
-- **Convenience Extensions** - Automatic key name inference using `CallerArgumentExpression`
+## Packages
+
+Both packages share the namespace `NCode.PropertyBag`.
+
+| Package | Reference it from |
+| --- | --- |
+| [NCode.PropertyBag](https://www.nuget.org/packages/NCode.PropertyBag/) | Applications: the bag, its factories and AddPropertyBag() |
+| [NCode.PropertyBag.Abstractions](https://www.nuget.org/packages/NCode.PropertyBag.Abstractions/) | Libraries that accept or read a bag |
 
 ## Installation
 
@@ -35,169 +35,204 @@
 dotnet add package NCode.PropertyBag
 ```
 
-Or for abstractions only:
+A library that only accepts or reads bags references the abstractions:
 
 ```shell
 dotnet add package NCode.PropertyBag.Abstractions
 ```
 
-## Quick Start
+The target frameworks are the ones each package's `.csproj` declares; they are listed on [nuget.org's Frameworks tab](https://www.nuget.org/packages/NCode.PropertyBag#supportedframeworks-body-tab) and shown by the badge above. [CHANGELOG.md](CHANGELOG.md) records when a framework is added or dropped and which release line to stay on.
 
-### Basic Usage
+## Quick start
 
-```csharp
-// Define keys (typically as static readonly fields)
-public static readonly PropertyBagKey<string> UserNameKey = new("UserName");
-public static readonly PropertyBagKey<int> UserAgeKey = new("UserAge");
+Define each key once, typically as a `static readonly` field:
 
-// Create and use a property bag
+<!-- snippet: DefineKeys -->
+```cs
+using NCode.PropertyBag;
+
+public static class UserKeys
+{
+    public static readonly PropertyBagKey<string> UserName = new("UserName");
+    public static readonly PropertyBagKey<int> UserAge = new("UserAge");
+}
+```
+<!-- endSnippet -->
+
+Then create a bag, store values and read them back:
+
+<!-- snippet: BasicUsage -->
+```cs
 var propertyBag = PropertyBagFactory.Create();
 
-propertyBag
-    .Set(UserNameKey, "Alice")
-    .Set(UserAgeKey, 30);
+propertyBag.SetValue(UserKeys.UserName, "Alice").SetValue(UserKeys.UserAge, 30);
 
-if (propertyBag.TryGetValue(UserNameKey, out var userName))
+if (propertyBag.TryGetValue(UserKeys.UserName, out var userName))
 {
-    Console.WriteLine($"User: {userName}"); // Output: User: Alice
+    Console.WriteLine($"User: {userName}"); // User: Alice
 }
 ```
+<!-- endSnippet -->
 
-### Scoped Values
+## Usage
 
-Temporarily override a value that automatically restores when disposed:
+### Scoped values
 
-```csharp
+`Scope` sets a value until the returned scope is disposed, then restores the value the key held before, or removes the key when it held none:
+
+<!-- snippet: ScopedValues -->
+```cs
 var cultureKey = new PropertyBagKey<string>("Culture");
-propertyBag.Set(cultureKey, "en-US");
+propertyBag.SetValue(cultureKey, "en-US");
 
+string? inScope;
 using (propertyBag.Scope(cultureKey, "fr-FR"))
 {
-    // Within this scope, Culture is "fr-FR"
-    propertyBag.TryGetValue(cultureKey, out var culture); // "fr-FR"
+    propertyBag.TryGetValue(cultureKey, out inScope); // "fr-FR"
 }
 
-// After disposal, Culture is restored to "en-US"
-propertyBag.TryGetValue(cultureKey, out var restored); // "en-US"
+propertyBag.TryGetValue(cultureKey, out var afterScope); // "en-US" again
 ```
+<!-- endSnippet -->
 
-### Dependency Injection
+### Null values
 
-Register services with the DI container:
+A bag stores null explicitly, and a stored null differs from a missing key:
 
-```csharp
-services.AddPropertyBag();
+<!-- snippet: NullValues -->
+```cs
+var middleNameKey = new PropertyBagKey<string?>("MiddleName");
+propertyBag.SetValue(middleNameKey, null);
+
+// True, with a null value: the key holds null.
+var found = propertyBag.TryGetValue(middleNameKey, out var middleName);
+
+// False: a missing key differs from a stored null.
+var nicknameKey = new PropertyBagKey<string?>("Nickname");
+var missing = propertyBag.TryGetValue(nicknameKey, out var nickname);
 ```
+<!-- endSnippet -->
 
-Then inject `IPropertyBagFactory` where needed:
+### Keys named after the variable
 
-```csharp
-public class MyService
+The `SetValue` and `TryGetValue` extensions name the key after the argument expression, through `[CallerArgumentExpression]`:
+
+<!-- snippet: InferredKeys -->
+```cs
+using NCode.PropertyBag;
+
+public static class ConnectionSettings
 {
-    private readonly IPropertyBagFactory _factory;
-
-    public MyService(IPropertyBagFactory factory)
+    public static void Save(IPropertyBag propertyBag, string connectionString, TimeSpan timeout)
     {
-        _factory = factory;
+        // The keys are named "connectionString" and "timeout", after the arguments.
+        propertyBag.SetValue(connectionString).SetValue(timeout);
     }
 
-    public IPropertyBag CreateContext() => _factory.Create();
+    public static string? LoadConnectionString(IReadOnlyPropertyBag propertyBag)
+    {
+        // Declare the variable first: an inline `out string? connectionString` would name
+        // the key "string? connectionString".
+        string? connectionString;
+        return propertyBag.TryGetValue(out connectionString) ? connectionString : null;
+    }
 }
 ```
+<!-- endSnippet -->
 
-### Convenience Extensions
+### Cloning
 
-Use automatic key name inference:
+`Clone` returns an independent bag: a value that implements `ICloneable` is copied through its own `Clone()`, and any other value is shared by reference:
 
-```csharp
-var connectionString = "Server=localhost;Database=test";
-var timeout = TimeSpan.FromSeconds(30);
+<!-- snippet: Clone -->
+```cs
+var copy = propertyBag.Clone();
+copy.SetValue(UserKeys.UserName, "Bob");
 
-// Keys are inferred as "connectionString" and "timeout"
-propertyBag
-    .Set(connectionString)
-    .Set(timeout);
+propertyBag.TryGetValue(UserKeys.UserName, out var original); // still "Alice"
+```
+<!-- endSnippet -->
 
-// Retrieve with inferred key name
-// Note: declare variable first - inline declaration (out string? x) won't infer the key name correctly
-string? connectionString;
-if (propertyBag.TryGet(out connectionString)) // Key inferred as "connectionString"
+### Enumerating entries
+
+`PropertyBagDictionary`, the default bag, is also an `IReadOnlyDictionary<PropertyBagKey, object?>`, keyed by each value's name and type:
+
+<!-- snippet: EnumerateEntries -->
+```cs
+var propertyBag = new PropertyBagDictionary();
+propertyBag.SetValue(UserKeys.UserName, "Alice").SetValue(UserKeys.UserAge, 30);
+
+IReadOnlyDictionary<PropertyBagKey, object?> entries = propertyBag;
+foreach (var (key, value) in entries)
 {
-    Console.WriteLine(connectionString);
+    lines.Add($"{key.Name} ({key.Type.Name}) = {value}");
 }
 ```
+<!-- endSnippet -->
 
-### Nullable Values
+### Dependency injection
 
-Null values can be explicitly stored and retrieved:
+`AddPropertyBag()` registers `IPropertyBagFactory` as a singleton, keeping one the application registered first:
 
-```csharp
-var optionalNameKey = new PropertyBagKey<string?>("OptionalName");
+<!-- snippet: RegisterServices -->
+```cs
+var services = new ServiceCollection();
+services.AddPropertyBag();
+services.AddSingleton<RequestContextFactory>();
+```
+<!-- endSnippet -->
 
-// Explicitly store null
-propertyBag.Set(optionalNameKey, null);
+Inject `IPropertyBagFactory` where a bag is needed:
 
-// TryGetValue returns true because the key exists (even though value is null)
-if (propertyBag.TryGetValue(optionalNameKey, out var name))
+<!-- snippet: InjectFactory -->
+```cs
+using NCode.PropertyBag;
+
+public sealed class RequestContextFactory(IPropertyBagFactory propertyBagFactory)
 {
-    // name is null here, but the key was found
-    Console.WriteLine(name ?? "(not set)");
-}
-
-// This is different from a missing key
-var missingKey = new PropertyBagKey<string?>("Missing");
-if (!propertyBag.TryGetValue(missingKey, out _))
-{
-    // Key does not exist
+    public IPropertyBag CreateContext(string userName) =>
+        propertyBagFactory.Create().SetValue(UserKeys.UserName, userName);
 }
 ```
+<!-- endSnippet -->
 
-## API Overview
+Without a container, `PropertyBagFactory.Create()` creates a bag through the settable `PropertyBagFactory.DefaultFactory`.
 
-### Abstractions (`NCode.PropertyBag.Abstractions`)
+## API overview
 
-| Type | Description |
-|------|-------------|
-| `PropertyBagKey` | Non-generic key with Type and Name properties |
-| `PropertyBagKey<T>` | Strongly-typed key for type-safe value access |
-| `IReadOnlyPropertyBag` | Read-only interface with `TryGetValue` and `Clone` |
-| `IPropertyBag` | Mutable interface adding `Set`, `Remove`, and `Scope` |
-| `IPropertyBagScope` | Disposable scope for temporary value overrides |
-| `IPropertyBagFactory` | Factory interface for creating property bags |
-| `PropertyBagExtensions` | Convenience methods with automatic key inference |
+### NCode.PropertyBag.Abstractions
 
-### Implementation (`NCode.PropertyBag`)
+| Type | Role |
+| --- | --- |
+| `PropertyBagKey<T>` | A value's name and type; converts to `PropertyBagKey` |
+| `PropertyBagKey` | The untyped key: a `Type` and a `Name` |
+| `IReadOnlyPropertyBag` | `TryGetValue` and `Clone` |
+| `IPropertyBag` | Adds `SetValue`, `Remove` and `Scope`, each chainable |
+| `IPropertyBagScope` | Restores its key when disposed |
+| `PropertyBagExtensions` | `SetValue(value)`, the key named after the argument |
+| `ReadOnlyPropertyBagExtensions` | `TryGetValue(out value)`, the key named after the argument |
 
-| Type | Description |
-|------|-------------|
-| `DefaultPropertyBag` | Dictionary-based implementation with lazy initialization |
-| `DefaultPropertyBagFactory` | Default factory with singleton support |
-| `DefaultPropertyBagScope` | Scope implementation that restores the previous value, or removes the key when it held none, on dispose |
-| `PropertyBagFactory` | Static convenience class for creating property bags |
-| `DefaultRegistration` | DI registration extension methods |
+### NCode.PropertyBag
 
-## License
+| Type | Role |
+| --- | --- |
+| `PropertyBagDictionary` | The default bag; allocates nothing until its first value |
+| `DefaultPropertyBagScope` | The scope `PropertyBagDictionary.Scope` returns |
+| `IPropertyBagFactory` | Creates bags |
+| `DefaultPropertyBagFactory` | Creates a `PropertyBagDictionary`; `Singleton` is settable |
+| `PropertyBagFactory` | Static `Create()` through the settable `DefaultFactory` |
+| `DefaultRegistration` | `AddPropertyBag()` for `IServiceCollection` |
 
-Licensed under the Apache License, Version 2.0. See [LICENSE.txt](LICENSE.txt) for details.
+## Thread safety
 
-## Target Frameworks
-
-- .NET 8.0
-- .NET 10.0
-
-## Release Notes
-* v1.0.0 - Initial release
-* v1.0.1 - Fix CI build
-* v1.1.0 - Added NET 8.0 build
-* v1.1.1 - Fixed TryGet documentation example to show correct variable declaration pattern
-* v1.2.0 - Added explicit support for nullable values; `TryGetValue` now returns `true` when a key exists with a `null` value
+A bag and its scopes hold no lock: synchronize concurrent use of one bag. [docs/assurance-case.md](docs/assurance-case.md) lists what the library guarantees and what it doesn't.
 
 ## Project
 
 - [CONTRIBUTING.md](CONTRIBUTING.md): how to set up, build, test and propose a change.
-- [SECURITY.md](SECURITY.md): how to report a vulnerability privately.
+- [SECURITY.md](SECURITY.md): report a vulnerability privately through the repository's Security tab, never in a public issue.
 - [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md), [GOVERNANCE.md](GOVERNANCE.md) and [ROADMAP.md](ROADMAP.md): how we work together, who decides, and where the project is going.
 - [docs/architecture.md](docs/architecture.md) and [docs/assurance-case.md](docs/assurance-case.md): how the project is built, and why it meets its security requirements.
 - [docs/decisions/](docs/decisions/README.md): the decisions behind the design, the project's and the template's.
-- [CHANGELOG.md](CHANGELOG.md): what changed in each release, in the Keep a Changelog format.
-- [LICENSE.txt](LICENSE.txt): the license.
+- [CHANGELOG.md](CHANGELOG.md): what changed in each release.
+- [LICENSE.txt](LICENSE.txt): Apache License 2.0, copyright NCode Group.

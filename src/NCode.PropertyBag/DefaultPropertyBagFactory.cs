@@ -7,11 +7,11 @@ namespace NCode.PropertyBag;
 
 /// <summary>
 /// Provides the default implementation of the <see cref="IPropertyBagFactory"/> interface
-/// that creates <see cref="DefaultPropertyBag"/> instances.
+/// that creates <see cref="PropertyBagDictionary"/> instances.
 /// </summary>
 /// <remarks>
 /// <para>
-/// This factory class provides a simple way to create new <see cref="DefaultPropertyBag"/> instances.
+/// This factory class provides a simple way to create new <see cref="PropertyBagDictionary"/> instances.
 /// It follows the factory pattern to allow for dependency injection and testability.
 /// </para>
 /// <para>
@@ -30,10 +30,10 @@ namespace NCode.PropertyBag;
 /// </code>
 /// </example>
 /// <seealso cref="IPropertyBagFactory"/>
-/// <seealso cref="DefaultPropertyBag"/>
+/// <seealso cref="PropertyBagDictionary"/>
 /// <seealso cref="PropertyBagFactory"/>
 [PublicAPI]
-public class DefaultPropertyBagFactory : IPropertyBagFactory
+public sealed class DefaultPropertyBagFactory : IPropertyBagFactory
 {
     /// <summary>
     /// Gets or sets the singleton instance of the <see cref="DefaultPropertyBagFactory"/> class.
@@ -54,6 +54,6 @@ public class DefaultPropertyBagFactory : IPropertyBagFactory
     public static IPropertyBagFactory Singleton { get; set; } = new DefaultPropertyBagFactory();
 
     /// <inheritdoc />
-    /// <returns>A new <see cref="DefaultPropertyBag"/> instance with no initial values.</returns>
-    public IPropertyBag Create() => new DefaultPropertyBag();
+    /// <returns>A new <see cref="PropertyBagDictionary"/> instance with no initial values.</returns>
+    public IPropertyBag Create() => new PropertyBagDictionary();
 }

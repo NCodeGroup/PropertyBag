@@ -1,6 +1,6 @@
 # 1001. Public names that trip naming analyzers keep their suppressions until the next major version
 
-- **Status:** Accepted
+- **Status:** Superseded by 1004
 - **Date:** 2026-11-20
 - **Deciders:** NCode Group
 
