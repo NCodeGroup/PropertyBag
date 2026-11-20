@@ -7,23 +7,22 @@ namespace NCode.PropertyBag.Tests;
 
 public class PropertyBagExtensionsPropertyTests
 {
-    private const string Seed = "20261120,12345";
-
     #region SetValue Tests
 
-    [Property(Replay = Seed)]
+    [Property(Replay = PropertyTestSettings.Seed)]
     public bool SetValue_WhenReadBackUnderTheSameName_ReturnsTheValueUnderTheNamedKey(
         string? name,
         int value
     )
     {
+        var namedKey = new PropertyBagKey<int>(name ?? string.Empty);
         IPropertyBag bag = new PropertyBagDictionary();
 
         bag.SetValue(value, name);
 
         return bag.TryGetValue<int>(out var byName, name)
             && byName == value
-            && bag.TryGetValue(new PropertyBagKey<int>(name ?? string.Empty), out var byKey)
+            && bag.TryGetValue(namedKey, out var byKey)
             && byKey == value;
     }
 

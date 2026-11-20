@@ -8,15 +8,15 @@ namespace NCode.PropertyBag.Tests;
 
 public class PropertyBagKeyPropertyTests
 {
-    private const string Seed = "20261120,12345";
-
     #region Equals Tests
 
-    [Property(Replay = Seed)]
+    [Property(Replay = PropertyTestSettings.Seed)]
     public bool Equals_WhenTypeAndNameMatch_KeysAreEqualWithEqualHashCodes(NonNull<string> name)
     {
+        var nameChars = name.Get.AsSpan();
+        var sameName = new string(nameChars);
         var left = new PropertyBagKey(typeof(int), name.Get);
-        var right = new PropertyBagKey(typeof(int), new string(name.Get.AsSpan()));
+        var right = new PropertyBagKey(typeof(int), sameName);
 
         return left == right
             && !(left != right)
@@ -24,7 +24,7 @@ public class PropertyBagKeyPropertyTests
             && left.GetHashCode() == right.GetHashCode();
     }
 
-    [Property(Replay = Seed)]
+    [Property(Replay = PropertyTestSettings.Seed)]
     public bool Equals_ForAnyTwoNames_KeysAreEqualOnlyWhenTheNamesAreOrdinallyEqual(
         NonNull<string> first,
         NonNull<string> second
@@ -40,7 +40,7 @@ public class PropertyBagKeyPropertyTests
             && left != right == !namesEqual;
     }
 
-    [Property(Replay = Seed)]
+    [Property(Replay = PropertyTestSettings.Seed)]
     public bool Equals_WhenOnlyTheTypeDiffers_KeysDiffer(NonNull<string> name)
     {
         var left = new PropertyBagKey(typeof(int), name.Get);

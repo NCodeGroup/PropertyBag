@@ -8,11 +8,9 @@ namespace NCode.PropertyBag.Tests;
 
 public class PropertyBagKeyGenericPropertyTests
 {
-    private const string Seed = "20261120,12345";
-
     #region Equals Tests
 
-    [Property(Replay = Seed)]
+    [Property(Replay = PropertyTestSettings.Seed)]
     public bool Equals_ForAnyTwoNames_KeysAreEqualOnlyWhenTheNamesAreOrdinallyEqual(
         NonNull<string> first,
         NonNull<string> second
@@ -30,7 +28,7 @@ public class PropertyBagKeyGenericPropertyTests
             && (!namesEqual || left.GetHashCode() == right.GetHashCode());
     }
 
-    [Property(Replay = Seed)]
+    [Property(Replay = PropertyTestSettings.Seed)]
     public bool Equals_WhenTheTypeArgumentsDiffer_KeysDiffer(NonNull<string> name)
     {
         var intKey = new PropertyBagKey<int>(name.Get);
@@ -43,21 +41,22 @@ public class PropertyBagKeyGenericPropertyTests
 
     #region Implicit Conversion Tests
 
-    [Property(Replay = Seed)]
+    [Property(Replay = PropertyTestSettings.Seed)]
     public bool ImplicitConversion_ForAnyName_KeepsTheTypeTheNameAndTheHashCode(
         NonNull<string> name
     )
     {
         var key = new PropertyBagKey<int>(name.Get);
+        var expected = new PropertyBagKey(typeof(int), name.Get);
 
         PropertyBagKey converted = key;
 
-        return converted == new PropertyBagKey(typeof(int), name.Get)
+        return converted == expected
             && converted.Name == key.Name
             && converted.GetHashCode() == key.GetHashCode();
     }
 
-    [Property(Replay = Seed)]
+    [Property(Replay = PropertyTestSettings.Seed)]
     public bool ImplicitConversion_WhenTheTypeArgumentsDiffer_ConvertedKeysDiffer(
         NonNull<string> name
     )
