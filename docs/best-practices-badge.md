@@ -29,7 +29,7 @@ The silver criteria that need a document point to these:
 | `documentation_roadmap` | [ROADMAP.md](../ROADMAP.md) |
 | `documentation_architecture` | [architecture.md](architecture.md) |
 | `documentation_security`, `assurance_case`, `implement_secure_design` | [assurance-case.md](assurance-case.md) |
-| `signed_releases` | Not met yet: releases carry no provenance, since `release-provenance.yml` runs only from the template's `publish.yml`, which this project doesn't use; [SECURITY.md](../SECURITY.md#verify-a-package) says how to check nuget.org's package signature |
+| `signed_releases` | Met for each release from the next one on: the `provenance` job of `.github/workflows/main.yml` signs a build-provenance attestation for the packages and attaches it to the GitHub release as `<tag>.intoto.jsonl` ([ADR-0139](decisions/project-template/0139-releases-carry-build-provenance.md)); releases up to v1.2.0 carry none. [SECURITY.md](../SECURITY.md#verify-a-package) says how to verify a package |
 | Vulnerability response and credit | [SECURITY.md](../SECURITY.md) |
 | Coding standards and their enforcement | [CONTRIBUTING.md](../CONTRIBUTING.md), `.editorconfig` and the analyzers in `./build/dod.ps1` |
 | Test policy (`test_policy_mandated`) | [CONTRIBUTING.md](../CONTRIBUTING.md), Make a Change, item 3 |
