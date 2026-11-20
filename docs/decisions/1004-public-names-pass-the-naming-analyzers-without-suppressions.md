@@ -3,6 +3,7 @@
 - **Status:** Accepted
 - **Date:** 2026-11-20
 - **Deciders:** NCode Group
+- **Supersedes:** ADR-1001
 
 ## Context
 
