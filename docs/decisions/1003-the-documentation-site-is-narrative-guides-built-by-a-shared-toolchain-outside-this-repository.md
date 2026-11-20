@@ -36,7 +36,7 @@ only.**
    package manifest and its lockfile, and the reusable workflow that builds and publishes a library's site. Its
    `CONTRACT.md` defines what a library holds and what stops a build.
 4. This repository holds `docs/site/`: the pages, as `.mdx` files, `site.config.json`, and the site's own components
-   and images in `_components/` and `_assets/`. The samples the pages show are compiled tests
+   in `_components/`; an image, when a page needs one, goes in `_assets/`. The samples the pages show are compiled tests
    ([ADR-1004](1004-site-samples-are-compiled-tests-in-a-project-of-their-own-included-by-key-when-the-site-is-built.md)).
 5. This repository has no `package.json`, no lockfile, no Node.js code and no Astro or Starlight configuration. A page
    needs nothing the toolchain does not provide; a need for more is a change to the toolchain.

@@ -33,21 +33,21 @@ sites built with them are built out. The pin is v0.15.2.
    this record.
 2. `.github/dependabot.yml` excludes NCodeGroup/docs from the github-actions cooldown, so Dependabot offers a release in
    its next weekly update.
-3. Every other dependency keeps ADR-0009's three days. NCode Review (NCodeGroup/code-review) is among them: it receives
-   the organization's keys, and `.github/workflows/code-review-auto-merge.yml` merges its pin without a person
-   (project-template ADR-0006's exception), so a release adopted the day it appears would reach those keys unreviewed.
+3. Every other dependency keeps project-template ADR-0009's three days. NCode Review (NCodeGroup/code-review) is among
+   them: it receives the organization's keys, and `.github/workflows/code-review-auto-merge.yml` merges its pin without
+   a person (project-template ADR-0006's exception), so a release adopted the day it appears would reach those keys unreviewed.
    NCodeGroup/brand reaches this repository only through the toolchain's vendored copy, which the toolchain verifies
    against the release's attestation.
 4. The exception ends with the first stable release of NCodeGroup/docs, 1.0.0, or earlier when the maintainers declare
    the build-out done. The change that ends it removes the cooldown exclusion and the comment in `docs.yml`, marks this
-   record Deprecated, and ADR-0009 applies to NCodeGroup/docs again.
+   record Deprecated, and project-template ADR-0009 applies to NCodeGroup/docs again.
 
 ## Options considered
 
-- Wait three days for every release, as ADR-0009 says. Rejected: it holds the site behind the toolchain through the
-  build-out, when the two change together.
-- A commented exception per release, as ADR-0009's third rule allows. Rejected: with several releases a day, an
-  exception written and removed for each one is churn that says nothing a single record does not.
+- Wait three days for every release, as project-template ADR-0009 says. Rejected: it holds the site behind the toolchain
+  through the build-out, when the two change together.
+- A commented exception per release, as project-template ADR-0009's third rule allows. Rejected: with several releases a
+  day, an exception written and removed for each one is churn that says nothing a single record does not.
 - Exclude every NCodeGroup dependency. Rejected: NCode Review handles the organization's keys and merges without a
   person, and is not part of the build-out.
 - Exclude NCodeGroup/docs alone, until its first stable release (chosen).
@@ -57,8 +57,8 @@ sites built with them are built out. The pin is v0.15.2.
 - The site follows the toolchain's contract the day a release ships, and a gap the site finds reaches the toolchain
   sooner.
 - A compromised or broken toolchain release can reach this repository's documentation build up to three days sooner than
-  ADR-0009 allows. That build runs the toolchain's workflow with the permissions `docs.yml` grants it, `pages: write`
-  and `id-token: write` included. The pin is a full SHA, so the toolchain moves only through a pull request a person
+  project-template ADR-0009 allows. That build runs the toolchain's workflow with the permissions `docs.yml` grants it,
+  `pages: write` and `id-token: write` included. The pin is a full SHA, so the toolchain moves only through a pull request a person
   reviews and merges (project-template ADR-0006).
 - A Dependabot pull request can move the pin to a release that asks something of the site, such as a renamed token; the
   documentation site workflow fails it when a page or component breaks the release's checks, and its reviewer reads the
