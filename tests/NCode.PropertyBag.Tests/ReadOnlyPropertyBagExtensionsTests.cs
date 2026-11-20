@@ -197,7 +197,10 @@ public class ReadOnlyPropertyBagExtensionsTests
 
         var exception = Assert.Throws<KeyNotFoundException>(() => propertyBag.GetValue(key));
 
-        Assert.Contains("Missing (System.String)", exception.Message);
+        Assert.Equal(
+            "The property bag holds no value for the key 'Missing (System.String)'.",
+            exception.Message
+        );
     }
 
     #endregion

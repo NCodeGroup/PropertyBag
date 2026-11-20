@@ -10,7 +10,17 @@ public class ReadOnlyPropertyBagTests
     [Fact]
     public void Constructor_WithNullBag_Throws()
     {
-        Assert.Throws<ArgumentNullException>(() => new ReadOnlyPropertyBag(null!));
+        var exception = Assert.Throws<ArgumentNullException>(() => new ReadOnlyPropertyBag(null!));
+
+        Assert.Equal("propertyBag", exception.ParamName);
+    }
+
+    [Fact]
+    public void Constructor_WithBag_CreatesViewNotAssignableToPropertyBag()
+    {
+        var view = new ReadOnlyPropertyBag(new PropertyBagDictionary());
+
+        Assert.IsNotAssignableFrom<IPropertyBag>(view);
     }
 
     #endregion
@@ -50,18 +60,6 @@ public class ReadOnlyPropertyBagTests
 
         Assert.True(view.TryGetValue(key, out var value));
         Assert.Equal("Later", value);
-    }
-
-    #endregion
-
-    #region Type Tests
-
-    [Fact]
-    public void View_IsNotAssignableToPropertyBag()
-    {
-        var view = new ReadOnlyPropertyBag(new PropertyBagDictionary());
-
-        Assert.IsNotAssignableFrom<IPropertyBag>(view);
     }
 
     #endregion

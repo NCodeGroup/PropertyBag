@@ -12,7 +12,9 @@ public class PropertyBagViewExtensionsTests
     {
         IReadOnlyPropertyBag propertyBag = null!;
 
-        Assert.Throws<ArgumentNullException>(() => propertyBag.CreateChild());
+        var exception = Assert.Throws<ArgumentNullException>(() => propertyBag.CreateChild());
+
+        Assert.Equal("propertyBag", exception.ParamName);
     }
 
     [Fact]
@@ -35,7 +37,9 @@ public class PropertyBagViewExtensionsTests
     {
         IReadOnlyPropertyBag propertyBag = null!;
 
-        Assert.Throws<ArgumentNullException>(() => propertyBag.AsReadOnly());
+        var exception = Assert.Throws<ArgumentNullException>(() => propertyBag.AsReadOnly());
+
+        Assert.Equal("propertyBag", exception.ParamName);
     }
 
     [Fact]
