@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.
 
 ## [Unreleased]
 
+## [1.2.1] - 2026-11-20
+
 ### Added
 
 - Public API tracking with `PublicAPI.Shipped.txt` and `PublicAPI.Unshipped.txt` in each packable project. The recorded surface equals that of v1.2.0; the public API is unchanged.
@@ -17,6 +19,9 @@ The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.
 - Code coverage: `./build/Test-Coverage.ps1` fails below 98% line or branch coverage and CI runs it on every pull request, and `.github/workflows/coverage.yml` publishes the report to Codecov from every push to `main`. The tests cover `PropertyBagFactory`, `DefaultRegistration`, scopes over a key that held a value, and an empty bag's enumeration and count.
 - `./build/gate.ps1` checks the formatting with CSharpier, pinned in `.config/dotnet-tools.json`, before the Definition of Done; CI and the local gate run it.
 - Each release's tag is signed with gitsign, and `SECURITY.md` says how to verify it ([#24](https://github.com/NCodeGroup/PropertyBag/issues/24)).
+- A documentation site at https://propertybag.ncode.io/, built from `docs/site/` by the shared NCodeGroup/docs toolchain: a quick start, a guide for each task, the concepts behind keys and the default bag, and an API map of every public member, which the gate checks against both `PublicAPI.Shipped.txt` files. `.github/workflows/docs.yml` builds it on every pull request and publishes it from `main` ([#37](https://github.com/NCodeGroup/PropertyBag/issues/37), [ADR-1003](docs/decisions/1003-the-documentation-site-is-narrative-guides-built-by-a-shared-toolchain-outside-this-repository.md), [ADR-1006](docs/decisions/1006-the-documentation-site-is-published-to-github-pages-from-the-default-branch.md), [ADR-1007](docs/decisions/1007-the-documentation-site-is-served-at-propertybag-ncode-io.md)).
+- Every C# sample on the site is a compiled test in `tests/NCode.PropertyBag.Site.Tests` that uses only the public API, and the gate checks every sample's marker and key ([#37](https://github.com/NCodeGroup/PropertyBag/issues/37), [ADR-1004](docs/decisions/1004-site-samples-are-compiled-tests-in-a-project-of-their-own-included-by-key-when-the-site-is-built.md)).
+- The C# samples in `README.md` are compiled tests that `dotnet mdsnippets` copies into it, and the gate fails when the README and the tests differ ([#37](https://github.com/NCodeGroup/PropertyBag/issues/37), [ADR-1002](docs/decisions/1002-readme-samples-are-compiled-tests-that-markdownsnippets-copies-into-the-readme.md)).
 
 ### Changed
 
@@ -30,6 +35,8 @@ The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.
 - Every C# file starts with `// Copyright © NCode Group` and `// SPDX-License-Identifier: Apache-2.0` in place of the Apache license preamble, and CSharpier formats the code.
 - `PropertyBagKey<T>` compares two keys by name, since both always have the type `T`; the result of `Equals` does not change.
 - The project's icon is the NCode brand icon the other NCode packages carry.
+- Each package's project website on nuget.org is the documentation site, https://propertybag.ncode.io/, instead of the repository ([#37](https://github.com/NCodeGroup/PropertyBag/issues/37), [ADR-1007](docs/decisions/1007-the-documentation-site-is-served-at-propertybag-ncode-io.md)).
+- `README.md` links to the documentation site, lists `IPropertyBagFactory` under `NCode.PropertyBag`, the package that holds it, and leaves the release history to this changelog; its convenience-extensions sample compiles, where it declared `connectionString` twice ([#37](https://github.com/NCodeGroup/PropertyBag/issues/37)).
 
 ### Fixed
 
@@ -71,7 +78,8 @@ The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.
 - `NCode.PropertyBag`: `DefaultPropertyBag`, with lazy storage, scoped values and cloning, `DefaultPropertyBagScope`, the factories `IPropertyBagFactory`, `DefaultPropertyBagFactory` and `PropertyBagFactory`, and `AddPropertyBag()` for `Microsoft.Extensions.DependencyInjection`.
 - Both packages target .NET 10.0.
 
-[unreleased]: https://github.com/NCodeGroup/PropertyBag/compare/v1.2.0...HEAD
+[unreleased]: https://github.com/NCodeGroup/PropertyBag/compare/v1.2.1...HEAD
+[1.2.1]: https://github.com/NCodeGroup/PropertyBag/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/NCodeGroup/PropertyBag/compare/v1.1.1...v1.2.0
 [1.1.1]: https://github.com/NCodeGroup/PropertyBag/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/NCodeGroup/PropertyBag/compare/v1.0.1...v1.1.0
