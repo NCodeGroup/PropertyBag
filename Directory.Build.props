@@ -6,6 +6,6 @@
   <PropertyGroup>
     <!-- No clock in what a build puts out: build/ProjectTemplate.props stamps the build's year into Copyright, so a rebuild in a later year would differ (ADR-1010, NCodeGroup/project-template#454). -->
     <Copyright>Copyright © NCode Group</Copyright>
-    <PackageValidationBaselineVersion>2.0.1</PackageValidationBaselineVersion>
+    <PackageValidationBaselineVersion>2.0.2</PackageValidationBaselineVersion>
   </PropertyGroup>
 </Project>
