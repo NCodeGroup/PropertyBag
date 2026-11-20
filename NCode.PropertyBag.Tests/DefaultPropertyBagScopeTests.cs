@@ -134,7 +134,8 @@ public class DefaultPropertyBagScopeTests
         propertyBag.Set(key, 3);
         scope.Dispose();
 
-        Assert.True(propertyBag.TryGetValue(key, out var value));
+        var found = propertyBag.TryGetValue(key, out var value);
+        Assert.True(found);
         Assert.Equal(3, value);
     }
 
@@ -150,7 +151,8 @@ public class DefaultPropertyBagScopeTests
         propertyBag.Set(key, "Second");
         scope.Dispose();
 
-        Assert.True(propertyBag.TryGetValue(key, out var value));
+        var found = propertyBag.TryGetValue(key, out var value);
+        Assert.True(found);
         Assert.Equal("Second", value);
     }
 
@@ -201,11 +203,13 @@ public class DefaultPropertyBagScopeTests
 
         using (propertyBag.Scope(key, "fr-FR"))
         {
-            Assert.True(propertyBag.TryGetValue(key, out var value));
+            var foundInScope = propertyBag.TryGetValue(key, out var value);
+            Assert.True(foundInScope);
             Assert.Equal("fr-FR", value);
         }
 
-        Assert.True(propertyBag.TryGetValue(key, out var restored));
+        var foundAfterScope = propertyBag.TryGetValue(key, out var restored);
+        Assert.True(foundAfterScope);
         Assert.Equal("en-US", restored);
     }
 
@@ -244,20 +248,24 @@ public class DefaultPropertyBagScopeTests
 
         using (propertyBag.Scope(key, 2))
         {
-            Assert.True(propertyBag.TryGetValue(key, out var value1));
+            var foundInOuter = propertyBag.TryGetValue(key, out var value1);
+            Assert.True(foundInOuter);
             Assert.Equal(2, value1);
 
             using (propertyBag.Scope(key, 3))
             {
-                Assert.True(propertyBag.TryGetValue(key, out var value2));
+                var foundInInner = propertyBag.TryGetValue(key, out var value2);
+                Assert.True(foundInInner);
                 Assert.Equal(3, value2);
             }
 
-            Assert.True(propertyBag.TryGetValue(key, out var value3));
+            var foundAfterInner = propertyBag.TryGetValue(key, out var value3);
+            Assert.True(foundAfterInner);
             Assert.Equal(2, value3);
         }
 
-        Assert.True(propertyBag.TryGetValue(key, out var value4));
+        var foundAfterOuter = propertyBag.TryGetValue(key, out var value4);
+        Assert.True(foundAfterOuter);
         Assert.Equal(1, value4);
     }
 
@@ -292,13 +300,16 @@ public class DefaultPropertyBagScopeTests
 
         using (propertyBag.Scope(key, "temp"))
         {
-            Assert.True(propertyBag.TryGetValue(key, out var value));
+            var foundInScope = propertyBag.TryGetValue(key, out var value);
+            Assert.True(foundInScope);
             Assert.Equal("temp", value);
         }
 
         var dictionary = (IReadOnlyDictionary<PropertyBagKey, object?>)propertyBag;
-        Assert.True(dictionary.ContainsKey(key));
-        Assert.True(dictionary.TryGetValue(key, out var restored));
+        var containsKey = dictionary.ContainsKey(key);
+        var foundAfterScope = dictionary.TryGetValue(key, out var restored);
+        Assert.True(containsKey);
+        Assert.True(foundAfterScope);
         Assert.Null(restored);
     }
 
