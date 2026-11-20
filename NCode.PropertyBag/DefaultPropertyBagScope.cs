@@ -51,7 +51,9 @@ namespace NCode.PropertyBag;
 /// </code>
 /// </example>
 /// <param name="propertyBag">The <see cref="IPropertyBag"/> instance that contains the scoped value.</param>
-/// <param name="key">The <see cref="PropertyBagKey"/> that identifies the scoped value that disposal restores or removes.</param>
+/// <param name="key">
+/// The <see cref="PropertyBagKey"/> that identifies the scoped value that disposal restores or removes.
+/// </param>
 /// <seealso cref="IPropertyBagScope"/>
 /// <seealso cref="IPropertyBag.Scope{T}"/>
 /// <seealso cref="DefaultPropertyBag"/>
@@ -86,7 +88,9 @@ public class DefaultPropertyBagScope(IPropertyBag propertyBag, PropertyBagKey ke
     public IPropertyBag PropertyBag { get; } = propertyBag;
 
     /// <inheritdoc />
-    /// <value>The key that was passed to the constructor, identifying the value that disposal restores or removes.</value>
+    /// <value>
+    /// The key that was passed to the constructor, identifying the value that disposal restores or removes.
+    /// </value>
     public PropertyBagKey Key { get; } = key;
 
     /// <summary>
