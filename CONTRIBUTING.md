@@ -63,7 +63,7 @@ Commits record the people who wrote them, so avoid AI agent attribution: don't a
 
 ## Documentation Site
 
-The site's content is in `docs/site/`. The shared toolchain in [NCodeGroup/docs](https://github.com/NCodeGroup/docs) builds it, and this repository holds no `package.json`, no lockfile and no Node.js code ([ADR-1003](docs/decisions/1003-the-documentation-site-is-narrative-guides-built-by-a-shared-toolchain-outside-this-repository.md)). The toolchain's `CONTRACT.md` is the reference for pages, links, components and images. `.github/workflows/docs.yml` builds the site on every pull request, with the toolchain pinned by commit, and keeps the build for a week as the run's `github-pages` artifact. Each push to `main` also publishes it to GitHub Pages, at <https://propertybag.ncode.io/> ([ADR-1006](docs/decisions/1006-the-documentation-site-is-published-to-github-pages-from-the-default-branch.md), [ADR-1007](docs/decisions/1007-the-documentation-site-is-served-at-propertybag-ncode-io.md)); a pull request only builds it.
+The site's content is in `docs/site/`. The shared toolchain in [NCodeGroup/docs](https://github.com/NCodeGroup/docs) builds it, and this repository holds no `package.json`, no lockfile and no Node.js code ([ADR-1005](docs/decisions/1005-the-documentation-site-is-narrative-guides-built-by-a-shared-toolchain-outside-this-repository.md)). The toolchain's `CONTRACT.md` is the reference for pages, links, components and images. `.github/workflows/docs.yml` builds the site on every pull request, with the toolchain pinned by commit, and keeps the build for a week as the run's `github-pages` artifact. Each push to `main` also publishes it to GitHub Pages, at <https://propertybag.ncode.io/> ([ADR-1008](docs/decisions/1008-the-documentation-site-is-published-to-github-pages-from-the-default-branch.md), [ADR-1009](docs/decisions/1009-the-documentation-site-is-served-at-propertybag-ncode-io.md)); a pull request only builds it.
 
 To write a page:
 
@@ -86,7 +86,7 @@ To write a page:
 
 6. Give a guide a `## Pitfalls` section, which the `requiredHeadings` rule of `docs/site/site.config.json` requires.
 
-To write a sample ([ADR-1004](docs/decisions/1004-site-samples-are-compiled-tests-in-a-project-of-their-own-included-by-key-when-the-site-is-built.md)):
+To write a sample ([ADR-1006](docs/decisions/1006-site-samples-are-compiled-tests-in-a-project-of-their-own-included-by-key-when-the-site-is-built.md)):
 
 1. Add a fact to the page's class in `tests/NCode.PropertyBag.Site.Tests`, a test project that cannot see the library's internal members, so a sample is code a user of the package can write. The class is named for the page's file, in a folder named for the page's folder: `docs/site/guides/scope-a-value.mdx` has `Guides/ScopeAValueSamples.cs`, class `ScopeAValueSamples` in namespace `SiteSamples.Guides`. That file shows the form.
 2. Put the sample between `// begin-snippet: <Key>` and `// end-snippet`, each alone on its line, name the fact `<Key>Sample_Runs`, and assert after the region what the sample's comments claim.

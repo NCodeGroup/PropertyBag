@@ -1,4 +1,4 @@
-# 1007. The documentation site is served at propertybag.ncode.io
+# 1009. The documentation site is served at propertybag.ncode.io
 
 - **Status:** Accepted
 - **Date:** 2026-11-20
@@ -6,7 +6,7 @@
 
 ## Context
 
-[ADR-1006](1006-the-documentation-site-is-published-to-github-pages-from-the-default-branch.md) publishes the site to
+[ADR-1008](1008-the-documentation-site-is-published-to-github-pages-from-the-default-branch.md) publishes the site to
 GitHub Pages from the default branch. Without a custom domain, GitHub serves it under its own domain,
 `https://ncodegroup.github.io/PropertyBag/`. NCode Group owns `ncode.io` and gives it to documentation alone: every
 NCodeGroup documentation site is served under it, and products and marketing use other domains. The domain's DNS is
@@ -53,7 +53,7 @@ path.**
 
 ## References
 
-- [ADR-1006](1006-the-documentation-site-is-published-to-github-pages-from-the-default-branch.md)
+- [ADR-1008](1008-the-documentation-site-is-published-to-github-pages-from-the-default-branch.md)
 - [project-template ADR-0152](project-template/0152-a-packages-project-page-is-its-documentation-site.md)
 - `.github/workflows/docs.yml`, `docs/site/site.config.json`
 - [#37](https://github.com/NCodeGroup/PropertyBag/issues/37)

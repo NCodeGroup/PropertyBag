@@ -1,4 +1,4 @@
-# 1003. The documentation site is narrative guides, built by a shared toolchain outside this repository
+# 1005. The documentation site is narrative guides, built by a shared toolchain outside this repository
 
 - **Status:** Accepted
 - **Date:** 2026-11-20
@@ -37,7 +37,7 @@ only.**
    `CONTRACT.md` defines what a library holds and what stops a build.
 4. This repository holds `docs/site/`: the pages, as `.mdx` files, `site.config.json`, and the site's own components
    in `_components/`; an image, when a page needs one, goes in `_assets/`. The samples the pages show are compiled tests
-   ([ADR-1004](1004-site-samples-are-compiled-tests-in-a-project-of-their-own-included-by-key-when-the-site-is-built.md)).
+   ([ADR-1006](1006-site-samples-are-compiled-tests-in-a-project-of-their-own-included-by-key-when-the-site-is-built.md)).
 5. This repository has no `package.json`, no lockfile, no Node.js code and no Astro or Starlight configuration. A page
    needs nothing the toolchain does not provide; a need for more is a change to the toolchain.
 6. The site is built from a checkout of the toolchain beside this repository, which writes nothing here.
@@ -69,7 +69,7 @@ only.**
   library needs neither.
 - `.github/workflows/docs.yml` calls the toolchain's reusable workflow at a pinned commit and builds the site on every
   pull request and push to the default branch. Publishing it is
-  [ADR-1006](1006-the-documentation-site-is-published-to-github-pages-from-the-default-branch.md).
+  [ADR-1008](1008-the-documentation-site-is-published-to-github-pages-from-the-default-branch.md).
 - A change that ships a public member adds its entry to the API map, which the gate checks.
 
 ## References

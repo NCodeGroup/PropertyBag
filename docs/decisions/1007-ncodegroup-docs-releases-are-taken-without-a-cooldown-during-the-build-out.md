@@ -1,4 +1,4 @@
-# 1005. NCodeGroup/docs releases are taken without a cooldown during the build-out
+# 1007. NCodeGroup/docs releases are taken without a cooldown during the build-out
 
 - **Status:** Accepted
 - **Date:** 2026-11-20
@@ -9,7 +9,7 @@
 ## Context
 
 The documentation site in `docs/site/` is built by the shared toolchain in NCodeGroup/docs
-([ADR-1003](1003-the-documentation-site-is-narrative-guides-built-by-a-shared-toolchain-outside-this-repository.md)),
+([ADR-1005](1005-the-documentation-site-is-narrative-guides-built-by-a-shared-toolchain-outside-this-repository.md)),
 which `.github/workflows/docs.yml` calls at a pinned commit
 ([#37](https://github.com/NCodeGroup/PropertyBag/issues/37)). The toolchain, the NCode brand it vendors
 (NCodeGroup/brand) and the first sites built with them, this one among them, are built out together by the same
@@ -70,7 +70,7 @@ sites built with them are built out. The pin is v0.15.2.
 
 - [Project-template ADR-0009](project-template/0009-new-dependency-versions-wait-a-cooldown.md)
 - [Project-template ADR-0006](project-template/0006-a-person-merges-every-pull-request.md)
-- [ADR-1003](1003-the-documentation-site-is-narrative-guides-built-by-a-shared-toolchain-outside-this-repository.md)
+- [ADR-1005](1005-the-documentation-site-is-narrative-guides-built-by-a-shared-toolchain-outside-this-repository.md)
 - `.github/workflows/docs.yml`, `.github/dependabot.yml`
 - [NCodeGroup/docs releases](https://github.com/NCodeGroup/docs/releases)
 - [#37](https://github.com/NCodeGroup/PropertyBag/issues/37)

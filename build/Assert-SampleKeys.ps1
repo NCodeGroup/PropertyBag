@@ -2,7 +2,7 @@
 <#
 .SYNOPSIS
     Checks the markers and keys of the C# samples: both tools read each marker alike, each key is PascalCase letters
-    and digits and is defined once, and only a site sample's key starts with Site (ADR-1004).
+    and digits and is defined once, and only a site sample's key starts with Site (ADR-1006).
 .DESCRIPTION
     The README and the site's pages take their samples by key from every C# file, so a key is PascalCase letters and
     digits and is defined once, keys that differ only in letter case counting as one, and only a site sample's key, in

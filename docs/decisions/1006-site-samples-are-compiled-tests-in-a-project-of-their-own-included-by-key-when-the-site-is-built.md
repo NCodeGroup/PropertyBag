@@ -1,4 +1,4 @@
-# 1004. Site samples are compiled tests in a project of their own, included by key when the site is built
+# 1006. Site samples are compiled tests in a project of their own, included by key when the site is built
 
 - **Status:** Accepted
 - **Date:** 2026-11-20
@@ -7,9 +7,9 @@
 ## Context
 
 The documentation site's pages show C#
-([ADR-1003](1003-the-documentation-site-is-narrative-guides-built-by-a-shared-toolchain-outside-this-repository.md)),
+([ADR-1005](1005-the-documentation-site-is-narrative-guides-built-by-a-shared-toolchain-outside-this-repository.md)),
 and a sample typed into a page drifts from the API as a README sample does
-([ADR-1002](1002-readme-samples-are-compiled-tests-that-markdownsnippets-copies-into-the-readme.md)). Three facts shape
+([ADR-1003](1003-readme-samples-are-compiled-tests-that-markdownsnippets-copies-into-the-readmes.md)). Three facts shape
 how the pages get compiled samples:
 
 - MarkdownSnippets cannot write into a page. It processes `.mdx` files and puts `<!-- snippet: Key -->` comments around
@@ -46,7 +46,7 @@ and the site's build includes it in the page by its key. The README keeps Markdo
    `SiteSamples.Guides`, and samples of `docs/site/index.mdx` would be in `IndexSamples.cs`. Each sample is one fact
    named `<Key>Sample_Runs`, with the sample between `// begin-snippet: <Key>` and `// end-snippet`, asserting what the
    sample's comments claim. These names replace the test conventions' `Method_State_Expected` and mirrored types, as
-   ADR-1002's do.
+   ADR-1003's do.
 3. A key is PascalCase letters and digits, and is defined once in the repository; keys that differ only in letter case
    count as one key. The key of a site sample starts with `Site`, and no other key does. A page may also include a
    README sample by its key; the missing prefix shows that a change to that sample changes the README.
@@ -94,9 +94,9 @@ and the site's build includes it in the page by its key. The README keeps Markdo
 
 - `tests/NCode.PropertyBag.Site.Tests/`, `docs/site/`, `mdsnippets.json`, `build/gate.ps1`,
   `build/Assert-SampleKeys.ps1`, `build/Test-AssertSampleKeys.ps1`, `build/Test-Coverage.ps1`
-- [ADR-1002](1002-readme-samples-are-compiled-tests-that-markdownsnippets-copies-into-the-readme.md): the README
+- [ADR-1003](1003-readme-samples-are-compiled-tests-that-markdownsnippets-copies-into-the-readmes.md): the README
   samples.
-- [ADR-1003](1003-the-documentation-site-is-narrative-guides-built-by-a-shared-toolchain-outside-this-repository.md):
+- [ADR-1005](1005-the-documentation-site-is-narrative-guides-built-by-a-shared-toolchain-outside-this-repository.md):
   the site and its toolchain, whose `CONTRACT.md` defines the include and the marker lines.
 - [#37](https://github.com/NCodeGroup/PropertyBag/issues/37)
 - [MarkdownSnippets](https://github.com/SimonCropp/MarkdownSnippets)

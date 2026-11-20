@@ -6,7 +6,7 @@ using NCode.PropertyBag;
 namespace SiteSamples.Guides;
 
 // The samples of docs/site/guides/define-keys.mdx. The site's build includes each begin-snippet
-// region in the page by its key (ADR-1004).
+// region in the page by its key (ADR-1006).
 public class DefineKeysSamples
 {
     // begin-snippet: SiteDefineKeysDeclare

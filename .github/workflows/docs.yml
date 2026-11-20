@@ -1,10 +1,10 @@
 name: Documentation site
 
-# Builds the documentation site from docs/site/ with the shared toolchain in NCodeGroup/docs (ADR-1003), on every pull
+# Builds the documentation site from docs/site/ with the shared toolchain in NCodeGroup/docs (ADR-1005), on every pull
 # request and every push to the default branch, so a page that names a sample key no test defines, links to a page that
 # does not exist, or has an element that leaves its content column at 1440, 1280, 1024 or 390 px, fails here. The build
 # is kept for a week as the github-pages artifact, which a reviewer can download and browse. A run on the default
-# branch also publishes it to GitHub Pages, at https://propertybag.ncode.io/ (ADR-1006, ADR-1007): the repository's
+# branch also publishes it to GitHub Pages, at https://propertybag.ncode.io/ (ADR-1008, ADR-1009): the repository's
 # Pages source is GitHub Actions, and the github-pages environment takes deployments from the default branch only.
 # The toolchain is pinned by commit, which selects its workflow, packages and theme together.
 on:
@@ -30,7 +30,7 @@ jobs:
       contents: read # checks out this repository
       pages: write # reads the site's URL, and creates the deployment
       id-token: write # proves to GitHub Pages where the deployment comes from
-    # Taken the day it is released, not after ADR-0009's cooldown, while the toolchain is built out (ADR-1005).
+    # Taken the day it is released, not after ADR-0009's cooldown, while the toolchain is built out (ADR-1007).
     uses: NCodeGroup/docs/.github/workflows/site.yml@2e215958266cc54f0a96fc21c194bbe4c1078ff9 # v0.15.2
     with:
       content-path: docs/site

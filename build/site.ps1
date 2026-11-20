@@ -1,7 +1,7 @@
 #requires -version 7
 <#
 .SYNOPSIS
-    Builds, checks, serves or previews the site in docs/site/ with the NCodeGroup/docs toolchain (ADR-1003), from the
+    Builds, checks, serves or previews the site in docs/site/ with the NCodeGroup/docs toolchain (ADR-1005), from the
     main checkout and from a plan's worktree under .claude/worktrees/ alike.
 .DESCRIPTION
     Runs node <toolchain>/scripts/site.mjs <Command> <this checkout> and exits with node's exit code. It runs node

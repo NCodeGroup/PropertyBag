@@ -97,5 +97,5 @@ the release
 
 `docs.yml` builds the documentation site with NCodeGroup/docs, pinned by commit, on every pull request and publishes it
 to GitHub Pages at https://propertybag.ncode.io/ from every push to `main`
-([ADR-1006](decisions/1006-the-documentation-site-is-published-to-github-pages-from-the-default-branch.md),
-[ADR-1007](decisions/1007-the-documentation-site-is-served-at-propertybag-ncode-io.md)).
+([ADR-1008](decisions/1008-the-documentation-site-is-published-to-github-pages-from-the-default-branch.md),
+[ADR-1009](decisions/1009-the-documentation-site-is-served-at-propertybag-ncode-io.md)).

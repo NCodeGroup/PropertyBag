@@ -9,7 +9,7 @@
     and files it must not; and each rule it enforces: a key that is not PascalCase letters and digits, a key defined
     twice, also in another letter case, a site sample's key without the Site prefix, any other key with it, and no key
     at all. How each tool reads each fixture's marker lines was tested with MarkdownSnippets 29.0.0 and the site's
-    build (ADR-1004). Each failing fixture breaks one rule, and each case checks the exit code and every line the check
+    build (ADR-1006). Each failing fixture breaks one rule, and each case checks the exit code and every line the check
     prints. Exits 1 on the first failed check. build/gate.ps1 runs it before the check.
 #>
 $ErrorActionPreference = 'Stop'

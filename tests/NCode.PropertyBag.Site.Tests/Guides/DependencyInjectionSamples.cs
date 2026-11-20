@@ -7,7 +7,7 @@ using NCode.PropertyBag;
 namespace SiteSamples.Guides;
 
 // The samples of docs/site/guides/dependency-injection.mdx. The site's build includes each begin-snippet region in the
-// page by its key (ADR-1004).
+// page by its key (ADR-1006).
 // The Static sample replaces PropertyBagFactory.DefaultFactory, which is process-wide, so the class runs alone, after
 // the parallel test classes, and no other test creates a bag through the static factory while it runs.
 [CollectionDefinition(nameof(DependencyInjectionSamples), DisableParallelization = true)]

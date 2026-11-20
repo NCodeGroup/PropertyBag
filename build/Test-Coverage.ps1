@@ -7,7 +7,7 @@ Runs the NCode.PropertyBag.Tests project with the coverlet 'XPlat Code Coverage'
 prints every source line that no test runs, and prints the line and branch coverage. The script exits with 1 when the
 line coverage or the branch coverage is below its minimum, and with 0 otherwise. With -ReportDirectory, it also keeps
 a copy of each report. It does not run the documentation site's samples in NCode.PropertyBag.Site.Tests: a line that
-only a sample runs counts as not covered (ADR-1004).
+only a sample runs counts as not covered (ADR-1006).
 
 .PARAMETER MinimumLineRate
 The lowest accepted line coverage, from 0.0 to 1.0. The default is 0.98.

@@ -6,7 +6,7 @@ using NCode.PropertyBag;
 namespace SiteSamples.Guides;
 
 // The samples of docs/site/guides/store-and-read-values.mdx. The site's build includes each begin-snippet region in
-// the page by its key (ADR-1004).
+// the page by its key (ADR-1006).
 public class StoreAndReadValuesSamples
 {
     [Fact]

@@ -6,7 +6,7 @@ using NCode.PropertyBag;
 namespace SiteSamples.Concepts;
 
 // The samples of docs/site/concepts/how-the-default-bag-works.mdx. The site's build includes each begin-snippet
-// region in the page by its key (ADR-1004).
+// region in the page by its key (ADR-1006).
 public class HowTheDefaultBagWorksSamples
 {
     [Fact]
