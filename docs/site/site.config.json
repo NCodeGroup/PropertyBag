@@ -1,0 +1,42 @@
+{
+  "$schema": "https://raw.githubusercontent.com/NCodeGroup/docs/main/schema/site.config.schema.json",
+  "title": "NCode.PropertyBag",
+  "description": "A strongly typed property bag for .NET: values stored and read by typed keys, scoped values that restore the previous one, clones and dependency injection.",
+  "product": "PropertyBag",
+  "mark": "ncode",
+  "repository": {
+    "url": "https://github.com/NCodeGroup/PropertyBag",
+    "branch": "main"
+  },
+  "site": {
+    "url": "https://propertybag.ncode.io"
+  },
+  "sidebar": [
+    {
+      "label": "Start",
+      "items": [{ "slug": "index", "label": "Overview" }, "start/quick-start"]
+    },
+    {
+      "label": "Guides",
+      "items": [
+        "guides/define-keys",
+        "guides/store-and-read-values",
+        "guides/scope-a-value",
+        "guides/infer-key-names",
+        "guides/share-a-bag",
+        "guides/dependency-injection"
+      ]
+    },
+    {
+      "label": "Concepts",
+      "items": ["concepts/key-identity", "concepts/how-the-default-bag-works"]
+    },
+    { "label": "Reference", "items": ["reference/api-map"] }
+  ],
+  "social": [
+    { "label": "GitHub", "href": "https://github.com/NCodeGroup/PropertyBag" },
+    { "label": "NuGet", "href": "https://www.nuget.org/packages/NCode.PropertyBag/" }
+  ],
+  "samples": ["tests/**/*.cs"],
+  "requiredHeadings": [{ "pages": ["guides/*"], "headings": ["## Pitfalls"] }]
+}
