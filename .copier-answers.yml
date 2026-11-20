@@ -2,6 +2,7 @@
 _commit: v0.108.0
 _src_path: https://github.com/NCodeGroup/project-template.git
 author_name: NCode Group
+best_practices_project: '16954'
 build_command: dotnet build
 code_review: true
 conduct_contact: ''
