@@ -37,6 +37,7 @@ The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.
 - The project's icon is the NCode brand icon the other NCode packages carry.
 - Each package's project website on nuget.org is the documentation site, https://propertybag.ncode.io/, instead of the repository ([#37](https://github.com/NCodeGroup/PropertyBag/issues/37), [ADR-1007](docs/decisions/1007-the-documentation-site-is-served-at-propertybag-ncode-io.md)).
 - `README.md` links to the documentation site, lists `IPropertyBagFactory` under `NCode.PropertyBag`, the package that holds it, and leaves the release history to this changelog; its convenience-extensions sample compiles, where it declared `connectionString` twice ([#37](https://github.com/NCodeGroup/PropertyBag/issues/37)).
+- The XML documentation of `IReadOnlyPropertyBag.Clone` says that how values are copied is up to the implementation, and that the default implementation clones each `ICloneable` value, as the README and the documentation site say; it described every copy as shallow.
 
 ### Fixed
 

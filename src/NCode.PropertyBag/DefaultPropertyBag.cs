@@ -94,7 +94,7 @@ public class DefaultPropertyBag
     }
 
     /// <summary>
-    /// Creates a shallow copy of this property bag.
+    /// Creates a copy of this property bag, as <see cref="Clone"/> does.
     /// </summary>
     /// <returns>A new object that is a copy of this instance.</returns>
     /// <remarks>
