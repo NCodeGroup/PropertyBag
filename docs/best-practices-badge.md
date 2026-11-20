@@ -6,14 +6,14 @@ the evidence this repository holds, so registering is answering, not researching
 [best-practices-criteria.md](best-practices-criteria.md), which the template keeps current, maps every criterion of the
 three levels to the answer to expect and its evidence, and holds the prompt that registers the project.
 
-[//]: # "Maintainers: once registered, name the project's number here and in the badge below, in place of PROJECT_ID."
-
 ## The Badge
 
 ```html
-<a href="https://www.bestpractices.dev/projects/PROJECT_ID"><img alt="OpenSSF Best Practices"
-  src="https://www.bestpractices.dev/projects/PROJECT_ID/badge"></a>
+<a href="https://www.bestpractices.dev/projects/16954"><img alt="OpenSSF Best Practices"
+  src="https://www.bestpractices.dev/projects/16954/badge"></a>
 ```
+
+The root [README.md](../README.md) shows it; the package READMEs don't, because it describes the repository rather than a package.
 
 OpenSSF Scorecard's CII-Best-Practices check scores the badge level: in progress 2, passing 5, silver 7, gold 10
 ([ADR-0020](decisions/project-template/0020-github-projects-are-scored-by-openssf-scorecard.md)).
@@ -34,12 +34,16 @@ The silver criteria that need a document point to these:
 | Coding standards and their enforcement | [CONTRIBUTING.md](../CONTRIBUTING.md), `.editorconfig`, CSharpier and the analyzers, in the gate |
 | Test coverage and policy | `./build/Test-Coverage.ps1` (98% line and branch) and [CONTRIBUTING.md](../CONTRIBUTING.md) |
 | Test policy (`test_policy_mandated`) | [CONTRIBUTING.md](../CONTRIBUTING.md), Make a Change, item 3 |
+| `dynamic_analysis_enable_assertions`, `input_validation`, `regression_tests_added50`, `security_review` | [assurance-case.md](assurance-case.md): Evidence, Input Validation and Security Reviews |
+| `build_repeatable`, `build_reproducible` | `.github/workflows/reproducible-build.yml` and [ADR-1010](decisions/1010-package-builds-are-reproducible-and-ci-compares-rebuilds-entry-by-entry.md) |
+| `internationalization` | [architecture.md](architecture.md#components): the packages show people no text |
+| `small_tasks` | Issues labeled `good first issue`, such as [#47](https://github.com/NCodeGroup/PropertyBag/issues/47) |
 
 ## Where It Stands
 
 [//]: # "Maintainers: once registered, say which level the site shows and what keeps the next one from being earned, naming the criteria, not a percentage."
 
-Not registered yet. With one maintainer, silver stops below 100%: `access_continuity` is a MUST that only a second owner meets.
+Registered as [project 16954](https://www.bestpractices.dev/en/projects/16954). On 2026-11-20 the site showed the passing level in progress, with `dynamic_analysis_enable_assertions` its one unanswered criterion. Silver stops at `access_continuity`, which only a second owner meets. Gold also needs a second maintainer (`bus_factor`, `two_person_review`), two significant contributors from different organizations (`contributors_unassociated`), and an owner's confirmation of the organization's two-factor settings (`require_2FA`, `secure_2FA`).
 
 ## Needs a Person
 
@@ -49,9 +53,8 @@ Not registered yet. With one maintainer, silver stops below 100%: `access_contin
 - `two_person_review` (gold MUST): a second maintainer.
 - `contributors_unassociated` (gold MUST): two significant contributors from different organizations.
 - `require_2FA` (gold MUST) and `secure_2FA` (gold SHOULD): the GitHub organization requires two-factor authentication, with
-  secure methods only, which only an owner can set and confirm.
-- `security_review` (gold MUST): a security review in the last five years, recorded in
-  [assurance-case.md](assurance-case.md#security-reviews).
+  secure methods only, which only an owner can set and confirm. GitHub's API reported the requirement enabled on 2026-11-20; an owner confirms that only secure methods are allowed.
+- `security_review` (gold MUST): the review of 2026-11-20 in [assurance-case.md](assurance-case.md#security-reviews) meets it until 2031-11-20; record the next one there before then.
 - `dco` (silver SHOULD): unmet. The project doesn't ask for `Signed-off-by`
   ([ADR-0023](decisions/project-template/0023-a-project-ships-the-documents-the-best-practices-silver-level-asks-for.md)).
 
