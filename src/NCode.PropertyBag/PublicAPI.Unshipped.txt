@@ -17,7 +17,13 @@ NCode.PropertyBag.LayeredPropertyBag.Remove(NCode.PropertyBag.PropertyBagKey key
 NCode.PropertyBag.LayeredPropertyBag.Scope<T>(NCode.PropertyBag.PropertyBagKey<T> key, T? value) -> NCode.PropertyBag.IPropertyBagScope!
 NCode.PropertyBag.LayeredPropertyBag.SetValue<T>(NCode.PropertyBag.PropertyBagKey<T> key, T? value) -> NCode.PropertyBag.IPropertyBag!
 NCode.PropertyBag.LayeredPropertyBag.TryGetValue<T>(NCode.PropertyBag.PropertyBagKey<T> key, out T? value) -> bool
+NCode.PropertyBag.PropertyBagViewExtensions
+NCode.PropertyBag.PropertyBagViewExtensions.extension(NCode.PropertyBag.IReadOnlyPropertyBag!)
+NCode.PropertyBag.PropertyBagViewExtensions.extension(NCode.PropertyBag.IReadOnlyPropertyBag!).AsReadOnly() -> NCode.PropertyBag.IReadOnlyPropertyBag!
+NCode.PropertyBag.PropertyBagViewExtensions.extension(NCode.PropertyBag.IReadOnlyPropertyBag!).CreateChild() -> NCode.PropertyBag.IPropertyBag!
 NCode.PropertyBag.ReadOnlyPropertyBag
 NCode.PropertyBag.ReadOnlyPropertyBag.Clone() -> NCode.PropertyBag.IPropertyBag!
 NCode.PropertyBag.ReadOnlyPropertyBag.ReadOnlyPropertyBag(NCode.PropertyBag.IReadOnlyPropertyBag! propertyBag) -> void
 NCode.PropertyBag.ReadOnlyPropertyBag.TryGetValue<T>(NCode.PropertyBag.PropertyBagKey<T> key, out T? value) -> bool
+static NCode.PropertyBag.PropertyBagViewExtensions.AsReadOnly(this NCode.PropertyBag.IReadOnlyPropertyBag! propertyBag) -> NCode.PropertyBag.IReadOnlyPropertyBag!
+static NCode.PropertyBag.PropertyBagViewExtensions.CreateChild(this NCode.PropertyBag.IReadOnlyPropertyBag! propertyBag) -> NCode.PropertyBag.IPropertyBag!
