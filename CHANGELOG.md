@@ -18,7 +18,7 @@ The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.
 - After each stable release, CI opens a draft pull request that raises the package validation baseline to the released version ([#30](https://github.com/NCodeGroup/PropertyBag/issues/30)).
 - `docs/assurance-case.md` states the security requirements, the threat model, the secure design principles applied and the weaknesses countered, and `docs/architecture.md` describes the components ([#31](https://github.com/NCodeGroup/PropertyBag/issues/31)).
 - Code coverage: `./build/Test-Coverage.ps1` fails below 98% line or branch coverage and CI runs it on every pull request, and `.github/workflows/coverage.yml` publishes the report to Codecov from every push to `main`. The tests cover `PropertyBagFactory`, `DefaultRegistration`, scopes over a key that held a value, and an empty bag's enumeration and count.
-- `./build/gate.ps1` checks the formatting with CSharpier, pinned in `.config/dotnet-tools.json`, before the Definition of Done; CI and the local gate run it.
+- `./build/gate.ps1` checks that the READMEs' samples match the tests, then runs the Definition of Done, whose Format stage checks the formatting with CSharpier, pinned in `.config/dotnet-tools.json`; CI and the local gate run it.
 - Each release's tag is signed with gitsign, and `SECURITY.md` says how to verify it ([#24](https://github.com/NCodeGroup/PropertyBag/issues/24)).
 
 ### Changed
