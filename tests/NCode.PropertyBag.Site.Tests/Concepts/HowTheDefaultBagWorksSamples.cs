@@ -5,7 +5,8 @@ using NCode.PropertyBag;
 
 namespace SiteSamples.Concepts;
 
-// The samples of docs/site/concepts/how-the-default-bag-works.mdx. The site's build includes each begin-snippet region in the page by its key (ADR-1004).
+// The samples of docs/site/concepts/how-the-default-bag-works.mdx. The site's build includes each begin-snippet
+// region in the page by its key (ADR-1004).
 public class HowTheDefaultBagWorksSamples
 {
     [Fact]
@@ -59,7 +60,9 @@ public class HowTheDefaultBagWorksSamples
         scope.Dispose();
         // end-snippet
 
-        Assert.False(bag.TryGetValue(key, out string? value));
+        bool found = bag.TryGetValue(key, out string? value);
+
+        Assert.False(found);
         Assert.Null(value);
     }
 }

@@ -5,7 +5,8 @@ using NCode.PropertyBag;
 
 namespace SiteSamples.Guides;
 
-// The samples of docs/site/guides/define-keys.mdx. The site's build includes each begin-snippet region in the page by its key (ADR-1004).
+// The samples of docs/site/guides/define-keys.mdx. The site's build includes each begin-snippet
+// region in the page by its key (ADR-1004).
 public class DefineKeysSamples
 {
     // begin-snippet: SiteDefineKeysDeclare
@@ -24,9 +25,15 @@ public class DefineKeysSamples
 
         bag.Set(RequestKeys.RequestId, "abc-123").Set(RequestKeys.Attempt, 2);
 
-        Assert.True(bag.TryGetValue(RequestKeys.RequestId, out string? requestId));
+        bool foundRequestId = bag.TryGetValue(
+            RequestKeys.RequestId,
+            out string? requestId
+        );
+        bool foundAttempt = bag.TryGetValue(RequestKeys.Attempt, out int attempt);
+
+        Assert.True(foundRequestId);
         Assert.Equal("abc-123", requestId);
-        Assert.True(bag.TryGetValue(RequestKeys.Attempt, out int attempt));
+        Assert.True(foundAttempt);
         Assert.Equal(2, attempt);
     }
 
@@ -42,9 +49,12 @@ public class DefineKeysSamples
         bag.Set(textKey, "order-17").Set(numberKey, 17);
         // end-snippet
 
-        Assert.True(bag.TryGetValue(textKey, out string? text));
+        bool foundText = bag.TryGetValue(textKey, out string? text);
+        bool foundNumber = bag.TryGetValue(numberKey, out int number);
+
+        Assert.True(foundText);
         Assert.Equal("order-17", text);
-        Assert.True(bag.TryGetValue(numberKey, out int number));
+        Assert.True(foundNumber);
         Assert.Equal(17, number);
     }
 
