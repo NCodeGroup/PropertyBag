@@ -28,8 +28,8 @@ namespace NCode.PropertyBag;
 /// <remarks>
 /// <para>
 /// This interface extends <see cref="IReadOnlyPropertyBag"/> with methods to modify the property bag,
-/// including setting values, removing values, and creating scoped values that are automatically
-/// removed when the scope is disposed.
+/// including setting values, removing values, and creating scoped values whose previous state is
+/// restored, or whose key is removed when it held no value, when the scope is disposed.
 /// </para>
 /// <para>
 /// All mutating methods return the <see cref="IPropertyBag"/> instance to support fluent method chaining.
