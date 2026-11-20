@@ -1,6 +1,3 @@
-# Copyright © NCode Group
-# SPDX-License-Identifier: Apache-2.0
-
 <#
 .SYNOPSIS
     Names the .NET runtimes the test projects target besides the SDK's own.

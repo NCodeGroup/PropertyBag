@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.
 ### Changed
 
 - Package validation compares each package with the published 2.0.1 package.
+- Updated the project from project-template v0.104.0 to v0.108.0 (workflow commands, release rules and documentation); the update itself changes no behavior of the library.
 
 ## [2.0.1] - 2026-11-20
 
