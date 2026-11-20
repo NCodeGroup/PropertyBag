@@ -23,12 +23,13 @@ Once in each clone, run `git config core.hooksPath .githooks`. It turns on `.git
 | Copy the README samples from the tests | `dotnet mdsnippets` |
 | Serve the documentation site | `./build/site.ps1 dev` |
 | Build the documentation site, then check its layout | `./build/site.ps1 build -Out <folder>`, then `./build/site.ps1 check -Out <folder> -Browser <path>` |
+| Compare two folders of packages entry by entry, as CI's reproducible build does | `./build/Compare-Packages.ps1 -Expected <folder> -Actual <folder>` |
 | The full gate | `./build/gate.ps1` |
 | The local gate before a push | `./build/gate.ps1 -Fast` |
 | Only the tests a filter matches | `./build/gate.ps1 -Fast -Filter 'FullyQualifiedName~OrderStore'` |
 | Code coverage: lists every line no test runs, and fails below 98% line or branch coverage, as CI does; `-ReportDirectory artifacts/coverage` also keeps the Cobertura report | `./build/Test-Coverage.ps1` |
 
-The gate checks the sample keys, that the READMEs' C# samples match the tests they are copied from, that the API map covers the public API, and that every example in the XML documentation compiles, and tests the site script offline, then runs the Definition of Done, `./build/dod.ps1`, which checks the decision index, builds in Release with warnings as errors, runs the tests, packs, checks the formatting with CSharpier, validates each package against the last release and ends with `Definition of Done: PASSED`. CI runs `./build/gate.ps1` and `./build/Test-Coverage.ps1` on every pull request. Every C# file starts with the two lines `// Copyright © NCode Group` and `// SPDX-License-Identifier: Apache-2.0`.
+The gate checks the sample keys, that the READMEs' C# samples match the tests they are copied from, that the API map covers the public API, and that every example in the XML documentation compiles, and tests the site script and the package comparison offline, then runs the Definition of Done, `./build/dod.ps1`, which checks the decision index, builds in Release with warnings as errors, runs the tests, packs, checks the formatting with CSharpier, validates each package against the last release and ends with `Definition of Done: PASSED`. CI runs `./build/gate.ps1` and `./build/Test-Coverage.ps1` on every pull request. Every C# file starts with the two lines `// Copyright © NCode Group` and `// SPDX-License-Identifier: Apache-2.0`.
 
 ## Make a Change
 

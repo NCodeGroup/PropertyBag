@@ -1,0 +1,121 @@
+# Shows that building a commit again gives the same packages (ADR-1010).
+#
+# Two jobs:
+#   - repeatable runs on every pull request and push to main. It checks the commit out twice into folders of different
+#     names, packs each in Release and compares the two sets of packages with build/Compare-Packages.ps1;
+#   - reproducible runs every Monday and on demand. It rebuilds a release's tag as publish.yml packs it and compares the
+#     result with the packages attached to that release.
+#
+# A .nupkg is a zip whose entries carry the time they were packed, so the packages' bytes always differ; the comparison
+# looks at each entry's name and bytes only. No job holds a write permission or a secret; the reproducible job reads
+# the release with the read-only github.token.
+name: Reproducible build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    types: [opened, synchronize, reopened]
+  schedule:
+    - cron: '17 6 * * 1'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: The release tag to rebuild, such as v2.0.1; empty rebuilds the newest release
+        required: false
+        type: string
+
+permissions: {}
+
+concurrency:
+  group: reproducible-build-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  repeatable:
+    name: Build twice and compare
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      # Two checkouts of one commit in folders of different names: the build must not depend on where it runs.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: first
+          # Nerdbank.GitVersioning reads the history to compute the version.
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: second-checkout
+          # Nerdbank.GitVersioning reads the history to compute the version.
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6.1.0
+        with:
+          global-json-file: first/global.json
+      - name: Pack the first checkout
+        working-directory: first
+        run: dotnet pack --configuration Release --output ../packages/first --nologo
+      - name: Pack the second checkout
+        working-directory: second-checkout
+        run: dotnet pack --configuration Release --output ../packages/second --nologo
+      - name: Compare the packages
+        run: ./first/build/Compare-Packages.ps1 -Expected packages/first -Actual packages/second
+
+  reproducible:
+    name: Rebuild a release and compare
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - name: Choose the release
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          TAG: ${{ inputs.tag }}
+        run: |
+          $tag = if ($env:TAG) { $env:TAG } else { gh release view --json tagName --jq .tagName }
+          if ($LASTEXITCODE) { throw "gh release view failed with exit code $LASTEXITCODE." }
+          if ($tag -notmatch '^v\d+\.\d+\.\d+(-[0-9A-Za-z.-]+)?$') { throw "The release tag '$tag' isn't a version such as v1.2.3." }
+          "tag=$tag" >> $env:GITHUB_OUTPUT
+      # This workflow's own commit holds the comparison script, which an older tag doesn't have.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: current
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: refs/tags/${{ steps.release.outputs.tag }}
+          path: rebuild
+          # Nerdbank.GitVersioning reads the history to compute the version.
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6.1.0
+        with:
+          global-json-file: rebuild/global.json
+      - name: Download the release's packages
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          TAG: ${{ steps.release.outputs.tag }}
+        run: |
+          gh release download $env:TAG --pattern '*.nupkg' --pattern '*.snupkg' --dir packages/released
+          if ($LASTEXITCODE) { throw "gh release download failed with exit code $LASTEXITCODE." }
+      # PublicRelease drops the -g<commit> suffix, as publish.yml packs a release.
+      - name: Rebuild the tagged commit as publish.yml packs it
+        working-directory: rebuild
+        run: dotnet pack --configuration Release --output ../packages/rebuilt --nologo -p:PublicRelease=true
+      - name: Compare the packages
+        run: ./current/build/Compare-Packages.ps1 -Expected packages/released -Actual packages/rebuilt

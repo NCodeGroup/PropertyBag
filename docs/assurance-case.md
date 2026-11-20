@@ -22,8 +22,10 @@ user-facing summary.
 5. **R5 Registration never overrides.** `AddPropertyBag()` uses `TryAddSingleton`, so an `IPropertyBagFactory` the
    application registered first is kept.
 6. **R6 Traceable packages.** CI builds the packages from the tagged commit of a published GitHub release,
-   deterministically and with Source Link, refusing a tag that differs from `version.json`; nuget.org signs them, and
-   each release's packages carry a signed build-provenance attestation.
+   deterministically and with Source Link, refusing a tag that differs from `version.json`; a rebuild of a release's tag
+   gives the same packages, entry for entry
+   ([ADR-1010](decisions/1010-package-builds-are-reproducible-and-ci-compares-rebuilds-entry-by-entry.md)); nuget.org
+   signs them, and each release's packages carry a signed build-provenance attestation.
 
 Users must not rely on:
 
@@ -64,6 +66,29 @@ repository's reviewed code through CI to the packages on nuget.org.
 | Hostile code in the same process reads a bag or replaces the default factory | No: .NET has no isolation within a process | — |
 | A tampered or unreviewed package reaches consumers | Yes | R6, and the review and release evidence below |
 | A vulnerable dependency | Yes | One runtime dependency, `Microsoft.Extensions.DependencyInjection.Abstractions`, pinned centrally and updated by Dependabot; NuGet advisories fail CI |
+
+## Input Validation
+
+The packages take no untrusted input of their own (R2). Their only inputs are the arguments of their public API, from
+code in the same process, which the Threat Model trusts. Each public entry point and the check it makes:
+
+- **`PropertyBagKey(Type, string)` and `PropertyBagKey<T>(string)`** check nothing: a `null` type or name, like a
+  `default` key, compares and hashes without error, and a name is compared ordinally, never parsed.
+- **`SetValue<T>`, `Scope<T>`, `Remove` and `TryGetValue<T>` of `PropertyBagDictionary`** take a key that is a struct,
+  never `null`, store each value as an opaque object that is never parsed, formatted, serialized or run, and test a
+  stored value's type with `is T` on every read (R1).
+- **The extensions `SetValue<T>(value)` and `TryGetValue<T>(out value)`** throw `ArgumentNullException` for a `null`
+  bag (`ArgumentNullException.ThrowIfNull`), and their key name is the caller's argument expression, text fixed at
+  compile time, unless the caller passes `name`.
+- **`AddPropertyBag()`** throws `ArgumentNullException` for a `null` service collection.
+- **`DefaultPropertyBagScope`'s public constructor** checks nothing, and a `null` bag fails in `Dispose` with
+  `NullReferenceException` ([#47](https://github.com/NCodeGroup/PropertyBag/issues/47)).
+- **The setters of `PropertyBagFactory.DefaultFactory` and `DefaultPropertyBagFactory.Singleton`** check nothing: a
+  `null` `DefaultFactory` falls back to `DefaultPropertyBagFactory.Singleton`, and a `null` `Singleton` makes
+  `PropertyBagFactory.Create()` throw `NullReferenceException` while `DefaultFactory` is unset or `null`.
+- **`Clone()`** runs the `Clone()` of each stored value that implements `ICloneable`, code the application stored.
+
+An application that stores untrusted data validates and bounds it before the call (see Bounded size above).
 
 ## Secure Design Principles Applied
 
@@ -129,10 +154,27 @@ privilege and open design."
   read back only under its key's type (R1), the default bag matches a dictionary model under any mix of sets and
   removes, nested scopes restore each enclosing value as they are disposed, and a clone and its original stay
   independent. They replay one fixed seed, `20261120,12345`, so every run checks the same generated cases.
+- **Assertions while testing:** the library has no `Debug.Assert` or other check that a Release build removes: its
+  checks are `ArgumentNullException.ThrowIfNull` guards that run in every build, so the tests run every check the code
+  has. The tests' own assertions (xUnit, and the FsCheck properties) check every result. CI runs the tests twice: in
+  Release in the gate, and in Debug, the `dotnet test` default, in `./build/Test-Coverage.ps1`, where `DEBUG` is
+  defined.
+- **Regression tests:** the fix that makes disposing a scope restore the previous value
+  ([ADR-1000](decisions/1000-disposing-a-scope-restores-the-previous-value.md), pull request
+  [#39](https://github.com/NCodeGroup/PropertyBag/pull/39)) added `Dispose_FromScopeMethod_CalledTwice_RestoresOnce`
+  and `Scope_WhenKeyHeldNull_RestoresNull` and turned the nested-scope test into `NestedScopes_RestoreInReverseOrder`,
+  in `tests/NCode.PropertyBag.Tests/DefaultPropertyBagScopeTests.cs`; each fails without the fix.
 - **Static analysis:** with CodeQL's default setup configured and analyzing at least one language, the repository
   ruleset blocks a pull request that adds a CodeQL alert at warning level or above, or a security alert of any severity
   ([ADR-0005](decisions/project-template/0005-the-default-branch-accepts-changes-only-through-pull-requests.md),
   [ADR-0030](decisions/project-template/0030-the-code-scanning-rule-is-added-only-where-codeql-analyzes-a-language.md)).
+- **Dismissed alerts:** CodeQL alerts #4 and #5 (`actions/untrusted-checkout/high` and
+  `actions/untrusted-checkout-toctou/high`, `code-review.yml` lines 58 to 66 when raised) flagged a step that checked
+  the pull request's head out into `pr/` in a `pull_request_target` and `issue_comment` workflow; that step was removed
+  in commit dede4be on 2026-10-30, and CodeQL's analysis of `main` no longer reports it. The workflow checks out only
+  the default branch, runs only for pull requests from this repository's branches, and the NCode Review action fetches
+  the pull request to read it, building and running nothing from it, as `code-review.yml`'s header says. The alerts
+  stay dismissed as won't fix.
 - **Review:** every change reaches the default branch through a pull request with passing CI and every conversation
   resolved, and the ruleset refuses force pushes and deletion
   ([ADR-0005](decisions/project-template/0005-the-default-branch-accepts-changes-only-through-pull-requests.md),
@@ -153,10 +195,44 @@ privilege and open design."
   ([ADR-0139](decisions/project-template/0139-releases-carry-build-provenance.md)); nuget.org signs each package it
   accepts.
   [SECURITY.md](../SECURITY.md#verify-a-package) says how to verify a package.
+- **Reproducible builds:** `.github/workflows/reproducible-build.yml` packs every pull request and push to `main` twice,
+  from checkouts in different folders, and every Monday rebuilds the newest release's tag and compares the packages with
+  the ones attached to its GitHub release, each with `build/Compare-Packages.ps1`, entry by entry
+  ([ADR-1010](decisions/1010-package-builds-are-reproducible-and-ci-compares-rebuilds-entry-by-entry.md)). On
+  2026-11-20 a rebuild of `v2.0.1` in a Linux container matched its released packages entry for entry.
 - **Response:** [SECURITY.md](../SECURITY.md) defines private reporting, coordinated disclosure and credit.
 
 ## Security Reviews
 
 [//]: # "Maintainers: record each security review, newest first: its date, who did it, what it covered (the security requirements and the trust boundary above) and what it found. The OpenSSF Best Practices gold level asks for one in the last five years."
 
-None recorded yet.
+### 2026-11-20: the library and its release workflows
+
+- **Who:** [@polewskm](https://github.com/polewskm), the maintainer, with an agent-assisted review: GitHub Copilot read
+  the code and wrote these findings while planning [#46](https://github.com/NCodeGroup/PropertyBag/issues/46), and the
+  maintainer accepts them by merging the pull request that records them.
+- **Scope:** the security requirements R1 to R6 and the trust boundary above: every C# file in `src/` at commit
+  f4f264d, the twelve workflows in `.github/workflows/` and `.github/actions/install-dotnet`, and a rebuild of
+  `v2.0.1`. The NCode Review action's own code, in NCodeGroup/code-review, is outside it.
+- **Method:** each public entry point read against R1 to R5 and the tests that check them; each workflow's triggers,
+  permissions, action pins, secrets and the places pull request or issue content reaches a step listed; the `v2.0.1`
+  tag rebuilt in `mcr.microsoft.com/dotnet/sdk:10.0.404` and its packages compared with the release's.
+- **Findings:**
+  1. No vulnerability in the library; R1 to R5 hold as stated.
+  2. Low, robustness: `DefaultPropertyBagScope`'s public constructor takes a `null` bag and fails only in `Dispose`;
+     every caller is trusted code, so it is no vulnerability;
+     [#47](https://github.com/NCodeGroup/PropertyBag/issues/47) tracks the fix.
+  3. Workflows: every action from outside the repository is pinned to a full commit SHA; each workflow's top-level
+     permissions are `{}` or `contents: read`, with write permissions granted per job; no `run:` script expands an
+     expression from an event or an input, values reach scripts through `env:`; the two `pull_request_target`
+     workflows run only for pull requests from this repository's branches, which only people with write access push,
+     and check out no pull request code (see Dismissed alerts). Accepted risk: a pull request's text reaches NCode
+     Review's model, which its author could try to steer into approving; an approval never merges by itself, a
+     maintainer merges.
+  4. Branch protection: the `main` ruleset requires pull requests, the `build-and-test` check, resolved conversations
+     and CodeQL, but no approving review and no approval of the last push (OpenSSF Scorecard alert #8); recommended:
+     one approval and approval of the last push.
+  5. Release integrity: the rebuilt `v2.0.1` packages match the released ones entry for entry; `Copyright` held the
+     build's year, which `Directory.Build.props` removes
+     ([ADR-1010](decisions/1010-package-builds-are-reproducible-and-ci-compares-rebuilds-entry-by-entry.md),
+     [NCodeGroup/project-template#454](https://github.com/NCodeGroup/project-template/issues/454)).
