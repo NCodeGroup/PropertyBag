@@ -76,7 +76,8 @@ public sealed class DefaultPropertyBagScope(IPropertyBag propertyBag, PropertyBa
 
     /// <inheritdoc />
     /// <value>The property bag instance that was passed to the constructor.</value>
-    public IPropertyBag PropertyBag { get; } = propertyBag ?? throw new ArgumentNullException(nameof(propertyBag));
+    public IPropertyBag PropertyBag { get; } =
+        propertyBag ?? throw new ArgumentNullException(nameof(propertyBag));
 
     /// <inheritdoc />
     /// <value>

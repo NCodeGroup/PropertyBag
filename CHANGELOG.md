@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.
 
 ## [Unreleased]
 
+## [2.1.1] - 2026-11-21
+
 ### Changed
 
 - Package validation compares each package with the published 2.1.0 package.
@@ -13,6 +15,7 @@ The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.
 - NCode Review approves a clean pull request as the NCode Review Approver, whose approval meets the `main` ruleset's required approval ([project-template ADR-0036](docs/decisions/project-template/0036-a-required-approval-is-met-by-ncode-reviews-approver-app.md)).
 - The `reproducible-build` job of `.github/workflows/ci.yml` packs every pull request and push to `main` twice with `.template/Test-ReproducibleBuild.ps1`, `.github/workflows/reproducible-build.yml` only rebuilds the newest release every Monday, and the packages' copyright, `Copyright © NCode Group` as before, comes from the template's `build/ProjectTemplate.props` ([ADR-1012](docs/decisions/1012-the-template-ci-job-builds-each-commit-twice-and-the-project-workflow-rebuilds-releases.md)).
 - After each stable release, `raise-baseline.yml` pushes the branch that raises the package validation baseline and opens an issue whose link opens its pull request, instead of opening a draft pull request ([project-template ADR-0036](docs/decisions/project-template/0036-a-required-approval-is-met-by-ncode-reviews-approver-app.md)).
+- The public constructor of `DefaultPropertyBagScope` throws `ArgumentNullException` for a `null` property bag, instead of failing later in `Dispose` ([#47](https://github.com/NCodeGroup/PropertyBag/issues/47)).
 
 ## [2.1.0] - 2026-11-20
 
@@ -139,7 +142,8 @@ The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.
 - `NCode.PropertyBag`: `DefaultPropertyBag`, with lazy storage, scoped values and cloning, `DefaultPropertyBagScope`, the factories `IPropertyBagFactory`, `DefaultPropertyBagFactory` and `PropertyBagFactory`, and `AddPropertyBag()` for `Microsoft.Extensions.DependencyInjection`.
 - Both packages target .NET 10.0.
 
-[unreleased]: https://github.com/NCodeGroup/PropertyBag/compare/v2.1.0...HEAD
+[unreleased]: https://github.com/NCodeGroup/PropertyBag/compare/v2.1.1...HEAD
+[2.1.1]: https://github.com/NCodeGroup/PropertyBag/compare/v2.1.0...v2.1.1
 [2.1.0]: https://github.com/NCodeGroup/PropertyBag/compare/v2.0.2...v2.1.0
 [2.0.2]: https://github.com/NCodeGroup/PropertyBag/compare/v2.0.1...v2.0.2
 [2.0.1]: https://github.com/NCodeGroup/PropertyBag/compare/v2.0.0...v2.0.1
