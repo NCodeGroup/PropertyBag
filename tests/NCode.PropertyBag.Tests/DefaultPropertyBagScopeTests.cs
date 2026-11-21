@@ -20,6 +20,17 @@ public class DefaultPropertyBagScopeTests
     }
 
     [Fact]
+    public void Constructor_WithNullPropertyBag_ThrowsArgumentNullException()
+    {
+        const string expectedParamName = "propertyBag";
+        var key = new PropertyBagKey<string>("TestKey");
+
+        var exception = Assert.Throws<ArgumentNullException>(() => new DefaultPropertyBagScope(null!, key));
+
+        Assert.Equal(expectedParamName, exception.ParamName);
+    }
+
+    [Fact]
     public void Constructor_WithDifferentKeyTypes_SetsCorrectKey()
     {
         var propertyBag = new PropertyBagDictionary();
