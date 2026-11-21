@@ -1,6 +1,6 @@
 # 1010. Package builds are reproducible, and CI compares rebuilds entry by entry
 
-- **Status:** Accepted
+- **Status:** Accepted (amended by 1012)
 - **Date:** 2026-11-20
 - **Deciders:** NCode.PropertyBag maintainers
 

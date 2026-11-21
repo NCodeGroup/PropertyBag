@@ -197,10 +197,12 @@ privilege and open design."
   ([ADR-0139](decisions/project-template/0139-releases-carry-build-provenance.md)); nuget.org signs each package it
   accepts.
   [SECURITY.md](../SECURITY.md#verify-a-package) says how to verify a package.
-- **Reproducible builds:** `.github/workflows/reproducible-build.yml` packs every pull request and push to `main` twice,
-  from checkouts in different folders, and every Monday rebuilds the newest release's tag and compares the packages with
-  the ones attached to its GitHub release, each with `build/Compare-Packages.ps1`, entry by entry
-  ([ADR-1010](decisions/1010-package-builds-are-reproducible-and-ci-compares-rebuilds-entry-by-entry.md)). On
+- **Reproducible builds:** the `reproducible-build` job of `.github/workflows/ci.yml` packs every pull request and push
+  to `main` twice with `.template/Test-ReproducibleBuild.ps1`, and every Monday `.github/workflows/reproducible-build.yml`
+  rebuilds the newest release's tag and compares the packages with the ones attached to its GitHub release with
+  `build/Compare-Packages.ps1`, each entry by entry
+  ([ADR-1010](decisions/1010-package-builds-are-reproducible-and-ci-compares-rebuilds-entry-by-entry.md),
+  [ADR-1012](decisions/1012-the-template-ci-job-builds-each-commit-twice-and-the-project-workflow-rebuilds-releases.md)). On
   2026-11-20 a rebuild of `v2.0.1` in a Linux container matched its released packages entry for entry.
 - **Response:** [SECURITY.md](../SECURITY.md) defines private reporting, coordinated disclosure and credit.
 
@@ -237,6 +239,7 @@ privilege and open design."
      approval toward a required approval, and approval of the last push asks for someone other than the pusher, so
      either setting blocks every merge. Both are turned on once a second collaborator with write access exists.
   5. Release integrity: the rebuilt `v2.0.1` packages match the released ones entry for entry; `Copyright` held the
-     build's year, which `Directory.Build.props` removes
-     ([ADR-1010](decisions/1010-package-builds-are-reproducible-and-ci-compares-rebuilds-entry-by-entry.md),
+     build's year, which the template's `build/ProjectTemplate.props` removes
+     ([ADR-1012](decisions/1012-the-template-ci-job-builds-each-commit-twice-and-the-project-workflow-rebuilds-releases.md),
+     [ADR-1010](decisions/1010-package-builds-are-reproducible-and-ci-compares-rebuilds-entry-by-entry.md),
      [NCodeGroup/project-template#454](https://github.com/NCodeGroup/project-template/issues/454)).

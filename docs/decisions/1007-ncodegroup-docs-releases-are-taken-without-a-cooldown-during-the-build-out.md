@@ -1,6 +1,6 @@
 # 1007. NCodeGroup/docs releases are taken without a cooldown during the build-out
 
-- **Status:** Accepted
+- **Status:** Accepted (amended by 1013)
 - **Date:** 2026-11-20
 - **Deciders:** NCode.PropertyBag maintainers
 - **Supersedes:** project-template ADR-0009, for releases of NCodeGroup/docs only, until the build-out this record

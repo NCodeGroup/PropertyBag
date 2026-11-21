@@ -36,7 +36,7 @@ The silver criteria that need a document point to these:
 | Test coverage and policy | `./build/Test-Coverage.ps1` (98% line and branch) and [CONTRIBUTING.md](../CONTRIBUTING.md) |
 | Test policy (`test_policy_mandated`) | [CONTRIBUTING.md](../CONTRIBUTING.md), Make a Change, item 3 |
 | `dynamic_analysis_enable_assertions`, `input_validation`, `regression_tests_added50`, `security_review` | [assurance-case.md](assurance-case.md): Evidence, Input Validation and Security Reviews |
-| `build_repeatable`, `build_reproducible` | `.github/workflows/reproducible-build.yml` and [ADR-1010](decisions/1010-package-builds-are-reproducible-and-ci-compares-rebuilds-entry-by-entry.md) |
+| `build_repeatable`, `build_reproducible` | The `reproducible-build` job of `.github/workflows/ci.yml`, `.github/workflows/reproducible-build.yml`, [ADR-1010](decisions/1010-package-builds-are-reproducible-and-ci-compares-rebuilds-entry-by-entry.md) and [ADR-1012](decisions/1012-the-template-ci-job-builds-each-commit-twice-and-the-project-workflow-rebuilds-releases.md) |
 | `internationalization` | [architecture.md](architecture.md#components): the packages show people no text |
 | `small_tasks` | Issues labeled `good first issue`, such as [#47](https://github.com/NCodeGroup/PropertyBag/issues/47) |
 

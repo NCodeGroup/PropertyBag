@@ -11,7 +11,7 @@ what and how decisions are made.
 | --- | --- | --- |
 | Maintainer | [@polewskm](https://github.com/polewskm) | Sets direction, triages issues, reviews and merges pull requests, approves each publication in the `nuget` environment, answers vulnerability reports, owns the repository's settings and the nuget.org packages |
 | Contributor | Anyone | Opens issues and pull requests, under [CONTRIBUTING.md](CONTRIBUTING.md) and the [Code of Conduct](CODE_OF_CONDUCT.md) |
-| Automation | `ncode-review[bot]`, Dependabot, GitHub Actions | Reviews and approves a clean pull request, proposes dependency updates, runs CI, tags and publishes releases; never merges a pull request except the pin bump `code-review-auto-merge.yml` merges once a maintainer approves it |
+| Automation | `ncode-review[bot]`, `ncode-review-approver[bot]`, Dependabot, GitHub Actions | Reviews a pull request and approves a clean one, proposes dependency updates, runs CI, tags and publishes releases; never merges a pull request except the pin bump `code-review-auto-merge.yml` merges once the required checks pass and, where the ruleset requires an approval, a maintainer approves it |
 
 Only a maintainer has write access. A contributor who keeps contributing reviewed, merged work can be invited to become
 a maintainer; the existing maintainers decide, and the change is recorded in this file.
@@ -29,9 +29,9 @@ a maintainer; the existing maintainers decide, and the change is recorded in thi
 Versions follow Semantic Versioning. A release is tagged and published when its pull request merges, which
 sets `version.json` to the release's version, and its packages reach nuget.org only after a maintainer approves the
 `nuget` environment. `.github/workflows/publish.yml` then attaches the packages, a signed build-provenance file and an
-SBOM to the release, and for a stable version opens the draft pull request that raises the package validation
-baseline, which a maintainer merges once CI passes. [SECURITY.md](SECURITY.md) says how to verify a
-package.
+SBOM to the release, and for a stable version pushes the branch that raises the package validation baseline and
+opens an issue whose link opens its pull request, which a maintainer merges once CI passes.
+[SECURITY.md](SECURITY.md) says how to verify a package.
 
 ## Continuity
 

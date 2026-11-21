@@ -69,8 +69,10 @@ override in `AGENTS.md`.
 | [1004](1004-public-names-pass-the-naming-analyzers-without-suppressions.md) | Public names pass the naming analyzers without suppressions (supersedes 1001) | Accepted |
 | [1005](1005-the-documentation-site-is-narrative-guides-built-by-a-shared-toolchain-outside-this-repository.md) | The documentation site is narrative guides, built by a shared toolchain outside this repository | Accepted |
 | [1006](1006-site-samples-are-compiled-tests-in-a-project-of-their-own-included-by-key-when-the-site-is-built.md) | Site samples are compiled tests in a project of their own, included by key when the site is built | Accepted |
-| [1007](1007-ncodegroup-docs-releases-are-taken-without-a-cooldown-during-the-build-out.md) | NCodeGroup/docs releases are taken without a cooldown during the build-out | Accepted |
+| [1007](1007-ncodegroup-docs-releases-are-taken-without-a-cooldown-during-the-build-out.md) | NCodeGroup/docs releases are taken without a cooldown during the build-out | Accepted (amended by 1013) |
 | [1008](1008-the-documentation-site-is-published-to-github-pages-from-the-default-branch.md) | The documentation site is published to GitHub Pages from the default branch | Accepted |
 | [1009](1009-the-documentation-site-is-served-at-propertybag-ncode-io.md) | The documentation site is served at propertybag.ncode.io | Accepted |
-| [1010](1010-package-builds-are-reproducible-and-ci-compares-rebuilds-entry-by-entry.md) | Package builds are reproducible, and CI compares rebuilds entry by entry | Accepted |
+| [1010](1010-package-builds-are-reproducible-and-ci-compares-rebuilds-entry-by-entry.md) | Package builds are reproducible, and CI compares rebuilds entry by entry | Accepted (amended by 1012) |
 | [1011](1011-new-capabilities-are-extension-members-and-new-types-and-the-interfaces-stay-unchanged-within-a-major-version.md) | New capabilities are extension members and new types, and the interfaces stay unchanged within a major version | Accepted |
+| [1012](1012-the-template-ci-job-builds-each-commit-twice-and-the-project-workflow-rebuilds-releases.md) | The template's CI job builds each commit twice, and the project's workflow rebuilds releases (amends 1010) | Accepted |
+| [1013](1013-ncode-review-v1-5-0-is-adopted-inside-the-cooldown-for-the-approver.md) | NCode Review v1.5.0 is adopted inside the cooldown for the approver (amends 1007) | Accepted |
