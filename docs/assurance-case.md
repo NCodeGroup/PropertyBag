@@ -239,6 +239,7 @@ privilege and open design."
      approval toward a required approval, and approval of the last push asks for someone other than the pusher, so
      either setting blocks every merge. Both are turned on once a second collaborator with write access exists.
   5. Release integrity: the rebuilt `v2.0.1` packages match the released ones entry for entry; `Copyright` held the
-     build's year, which `Directory.Build.props` removes
-     ([ADR-1010](decisions/1010-package-builds-are-reproducible-and-ci-compares-rebuilds-entry-by-entry.md),
+     build's year, which the template's `build/ProjectTemplate.props` removes
+     ([ADR-1012](decisions/1012-the-template-ci-job-builds-each-commit-twice-and-the-project-workflow-rebuilds-releases.md),
+     [ADR-1010](decisions/1010-package-builds-are-reproducible-and-ci-compares-rebuilds-entry-by-entry.md),
      [NCodeGroup/project-template#454](https://github.com/NCodeGroup/project-template/issues/454)).

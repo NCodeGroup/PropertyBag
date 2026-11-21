@@ -85,14 +85,16 @@ jobs:
           persist-credentials: false
 
       - name: Review
-        # v1.5.0 was published on 2026-11-21, inside the 3-day dependency cooldown: adopted at the maintainer's request for the approver.
+        # v1.5.0 was published on 2026-11-21, inside the 3-day dependency cooldown: adopted at the maintainer's request
+        # for the approver (ADR-1013).
         uses: NCodeGroup/code-review@a4cdf65d2450e4e1b2b92ed53430ceb8026d4f97 # v1.5.0
         with:
           app-private-key: ${{ secrets.NCODE_REVIEW_APP_PRIVATE_KEY }}
           bedrock-api-key: ${{ secrets.AWS_BEARER_TOKEN_BEDROCK }}
           # A review that leaves no blocker or should-fix finding open approves the pull request.
           approve: true
-          # The NCode Review Approver submits the approval, so it meets the ruleset's required approval; the key is a secret of the code-review environment, which only the default branch can deploy to.
+          # The NCode Review Approver submits the approval, so it meets the ruleset's required approval; the key is a
+          # secret of the code-review environment, which only the default branch can deploy to.
           approver-private-key: ${{ secrets.NCODE_REVIEW_APPROVER_PRIVATE_KEY }}
 
   outcomes:
@@ -114,7 +116,8 @@ jobs:
       pull-requests: read
     steps:
       - name: Record the outcomes
-        # v1.5.0 was published on 2026-11-21, inside the 3-day dependency cooldown: adopted at the maintainer's request for the approver.
+        # v1.5.0 was published on 2026-11-21, inside the 3-day dependency cooldown: adopted at the maintainer's request
+        # for the approver (ADR-1013).
         uses: NCodeGroup/code-review@a4cdf65d2450e4e1b2b92ed53430ceb8026d4f97 # v1.5.0
         with:
           app-private-key: ${{ secrets.NCODE_REVIEW_APP_PRIVATE_KEY }}

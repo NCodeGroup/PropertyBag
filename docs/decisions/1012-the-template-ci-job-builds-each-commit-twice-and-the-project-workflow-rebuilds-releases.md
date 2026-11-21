@@ -8,10 +8,10 @@
 ## Context
 
 ADR-1010 has `Directory.Build.props` set `Copyright` without the year, and `.github/workflows/reproducible-build.yml`
-pack every pull request and push to `main` twice and rebuild the newest release every week.
+packs every pull request and push to `main` twice and rebuilds the newest release every week.
 
-The project template does the first two itself (its ADR-0154): `build/ProjectTemplate.props` sets `Copyright` to
-`Copyright © NCode Group`, and the `reproducible-build` job of `.github/workflows/ci.yml` runs
+The project template does the first two itself (project-template ADR-0154): `build/ProjectTemplate.props` sets
+`Copyright` to `Copyright © NCode Group`, and the `reproducible-build` job of `.github/workflows/ci.yml` runs
 `.template/Test-ReproducibleBuild.ps1`, which packs twice from clean `bin` and `obj` folders and compares the packages
 entry by entry, on every pull request and push to `main`, and before `tag-release.yml` tags a release. The template
 rebuilds no release.

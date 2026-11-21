@@ -87,8 +87,8 @@ jobs:
           retention-days: 14
           if-no-files-found: ignore
 
-  # Proves a release's tag rebuilds to the same packages (ADR-0154). It holds no permission beyond the workflow's
-  # contents: read.
+  # Packs the commit twice and compares the packages entry by entry (ADR-0154). It holds no permission beyond the
+  # workflow's contents: read.
   reproducible-build:
     runs-on: ubuntu-latest
     timeout-minutes: 30
