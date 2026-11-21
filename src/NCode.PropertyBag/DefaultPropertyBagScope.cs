@@ -42,6 +42,7 @@ namespace NCode.PropertyBag;
 /// <param name="key">
 /// The <see cref="PropertyBagKey"/> that identifies the scoped value that disposal restores or removes.
 /// </param>
+/// <exception cref="ArgumentNullException"><paramref name="propertyBag"/> is <c>null</c>.</exception>
 /// <seealso cref="IPropertyBagScope"/>
 /// <seealso cref="IPropertyBag.Scope{T}"/>
 /// <seealso cref="PropertyBagDictionary"/>
@@ -75,7 +76,8 @@ public sealed class DefaultPropertyBagScope(IPropertyBag propertyBag, PropertyBa
 
     /// <inheritdoc />
     /// <value>The property bag instance that was passed to the constructor.</value>
-    public IPropertyBag PropertyBag { get; } = propertyBag;
+    public IPropertyBag PropertyBag { get; } =
+        propertyBag ?? throw new ArgumentNullException(nameof(propertyBag));
 
     /// <inheritdoc />
     /// <value>
