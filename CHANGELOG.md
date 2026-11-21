@@ -9,6 +9,10 @@ The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.
 ### Changed
 
 - Package validation compares each package with the published 2.1.0 package.
+- Updated the project from project-template v0.108.0 to v0.111.0 (workflow commands, the baseline workflow, decision records and documentation); the update changes no behavior of the library.
+- NCode Review approves a clean pull request as the NCode Review Approver, whose approval meets the `main` ruleset's required approval ([ADR-0036](docs/decisions/project-template/0036-a-required-approval-is-met-by-ncode-reviews-approver-app.md)).
+- The `reproducible-build` job of `.github/workflows/ci.yml` packs every pull request and push to `main` twice with `.template/Test-ReproducibleBuild.ps1`, `.github/workflows/reproducible-build.yml` only rebuilds the newest release every Monday, and the packages' copyright comes from the template's `build/ProjectTemplate.props` ([ADR-1012](docs/decisions/1012-the-template-ci-job-builds-each-commit-twice-and-the-project-workflow-rebuilds-releases.md)).
+- After each stable release, `raise-baseline.yml` pushes the branch that raises the package validation baseline and opens an issue whose link opens its pull request, instead of opening a draft pull request ([ADR-0036](docs/decisions/project-template/0036-a-required-approval-is-met-by-ncode-reviews-approver-app.md)).
 
 ## [2.1.0] - 2026-11-20
 
