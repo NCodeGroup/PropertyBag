@@ -110,13 +110,17 @@ and packs the tagged commit and pushes to nuget.org through trusted publishing a
 calls `release-provenance.yml`, which attests the packages and attaches them, a signed provenance file and an SBOM to
 the release
 ([ADR-0139](decisions/project-template/0139-releases-carry-build-provenance.md)), and for a stable version
-`raise-baseline.yml`, which opens the pull request that raises the package validation baseline
-([ADR-0150](decisions/project-template/0150-a-workflow-raises-the-package-validation-baseline-after-each-release.md),
+`raise-baseline.yml`, which pushes the branch that raises the package validation baseline and opens an issue whose link opens its pull request
+([ADR-0036](decisions/project-template/0036-a-required-approval-is-met-by-ncode-reviews-approver-app.md),
+[ADR-0150](decisions/project-template/0150-a-workflow-raises-the-package-validation-baseline-after-each-release.md),
 [ADR-0151](decisions/project-template/0151-release-follow-ups-are-jobs-publish-calls.md)).
-`reproducible-build.yml` packs every pull request and push to `main` twice, from checkouts in different folders, and
-every Monday rebuilds the newest release's tag, and compares the packages entry by entry with
-`build/Compare-Packages.ps1`
-([ADR-1010](decisions/1010-package-builds-are-reproducible-and-ci-compares-rebuilds-entry-by-entry.md)).
+The `reproducible-build` job of `ci.yml` packs every pull request and push to `main` twice and compares the packages
+entry by entry with `.template/Test-ReproducibleBuild.ps1`
+([ADR-0154](decisions/project-template/0154-a-library-build-takes-nothing-from-the-clock-and-ci-builds-it-twice.md)),
+and `reproducible-build.yml` rebuilds the newest release's tag every Monday and compares it with the release's
+packages with `build/Compare-Packages.ps1`
+([ADR-1010](decisions/1010-package-builds-are-reproducible-and-ci-compares-rebuilds-entry-by-entry.md),
+[ADR-1012](decisions/1012-the-template-ci-job-builds-each-commit-twice-and-the-project-workflow-rebuilds-releases.md)).
 
 `docs.yml` builds the documentation site with NCodeGroup/docs, pinned by commit, on every pull request and publishes it
 to GitHub Pages at https://propertybag.ncode.io/ from every push to `main`

@@ -197,10 +197,12 @@ privilege and open design."
   ([ADR-0139](decisions/project-template/0139-releases-carry-build-provenance.md)); nuget.org signs each package it
   accepts.
   [SECURITY.md](../SECURITY.md#verify-a-package) says how to verify a package.
-- **Reproducible builds:** `.github/workflows/reproducible-build.yml` packs every pull request and push to `main` twice,
-  from checkouts in different folders, and every Monday rebuilds the newest release's tag and compares the packages with
-  the ones attached to its GitHub release, each with `build/Compare-Packages.ps1`, entry by entry
-  ([ADR-1010](decisions/1010-package-builds-are-reproducible-and-ci-compares-rebuilds-entry-by-entry.md)). On
+- **Reproducible builds:** the `reproducible-build` job of `.github/workflows/ci.yml` packs every pull request and push
+  to `main` twice with `.template/Test-ReproducibleBuild.ps1`, and every Monday `.github/workflows/reproducible-build.yml`
+  rebuilds the newest release's tag and compares the packages with the ones attached to its GitHub release with
+  `build/Compare-Packages.ps1`, each entry by entry
+  ([ADR-1010](decisions/1010-package-builds-are-reproducible-and-ci-compares-rebuilds-entry-by-entry.md),
+  [ADR-1012](decisions/1012-the-template-ci-job-builds-each-commit-twice-and-the-project-workflow-rebuilds-releases.md)). On
   2026-11-20 a rebuild of `v2.0.1` in a Linux container matched its released packages entry for entry.
 - **Response:** [SECURITY.md](../SECURITY.md) defines private reporting, coordinated disclosure and credit.
 
