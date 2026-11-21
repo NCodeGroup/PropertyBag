@@ -11,8 +11,8 @@
     (SHA-256). A package file is a zip archive whose entries carry the time they were packed, so the check compares
     entry names and the hash of each entry's bytes, never the package's own bytes or an entry's timestamp. Prints each
     problem on its own line after 'Packages differ:' and exits 1; exits 0 when every package and entry matches. Exits 1
-    when the expected folder holds no package. A rebuild of a release is compared with the release's packages by
-    .github/workflows/reproducible-build.yml, and two builds of one commit with each other.
+    when the expected folder holds no package. .github/workflows/reproducible-build.yml compares
+    a rebuild of a release with the release's packages.
 .PARAMETER Expected
     The folder that holds the packages to compare against, such as the packages of a release.
 .PARAMETER Actual

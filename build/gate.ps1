@@ -48,8 +48,9 @@ try {
     # rules are tested offline, with a fake toolchain and a fake node, though the gate does not build the site.
     ./build/Test-Site.ps1
     if ($LASTEXITCODE) { exit $LASTEXITCODE }
-    # build/Compare-Packages.ps1 compares two builds' packages entry by entry in reproducible-build.yml
-    # (ADR-1010); its rules are tested offline here, so a rule broken in the comparison fails before CI relies on it.
+    # build/Compare-Packages.ps1 compares a release's rebuild with the release's packages, entry by entry, in
+    # reproducible-build.yml (ADR-1010, ADR-1012); its rules are tested offline here, so a rule broken in the comparison
+    # fails before CI relies on it.
     ./build/Test-ComparePackages.ps1
     if ($LASTEXITCODE) { exit $LASTEXITCODE }
     $dod = @{}
