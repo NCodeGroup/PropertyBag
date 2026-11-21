@@ -23,7 +23,8 @@ Once in each clone, run `git config core.hooksPath .githooks`. It turns on `.git
 | Copy the README samples from the tests | `dotnet mdsnippets` |
 | Serve the documentation site | `./build/site.ps1 dev` |
 | Build the documentation site, then check its layout | `./build/site.ps1 build -Out <folder>`, then `./build/site.ps1 check -Out <folder> -Browser <path>` |
-| Compare two folders of packages entry by entry, as CI's reproducible build does | `./build/Compare-Packages.ps1 -Expected <folder> -Actual <folder>` |
+| Compare two folders of packages entry by entry, as CI's weekly rebuild of a release does | `./build/Compare-Packages.ps1 -Expected <folder> -Actual <folder>` |
+| Build the packages twice and compare them entry by entry, as CI's `reproducible-build` job does | `./.template/Test-ReproducibleBuild.ps1` |
 | The full gate | `./build/gate.ps1` |
 | The local gate before a push | `./build/gate.ps1 -Fast` |
 | Only the tests a filter matches | `./build/gate.ps1 -Fast -Filter 'FullyQualifiedName~OrderStore'` |
@@ -38,7 +39,7 @@ The gate checks the sample keys, that the READMEs' C# samples match the tests th
 3. Work on a short-lived branch from the default branch. A change that adds or changes behavior adds or updates the automated tests that cover it.
 4. Add an entry for each change consumers can see to `CHANGELOG.md`, under `## [Unreleased]`, in the [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.1.0/) format: grouped under `### Added`, `### Changed`, `### Deprecated`, `### Removed`, `### Fixed` or `### Security`. The first such change creates the file. A release moves the entries into its version's section.
 5. Before you push, format the code with `dotnet csharpier format .` and pass the gate: `./build/gate.ps1 -Fast`.
-6. Open a pull request into the default branch whose description ends with a `Closes #<issue>` line. The default branch takes changes only through pull requests: a maintainer merges yours once CI passes, NCode Review has approved it and every conversation is resolved. Open it as a draft and mark it ready once you have reviewed it yourself: NCode Review reviews a draft too, and its approval is what lets the pull request merge ([the decision](docs/decisions/project-template/0022-ncode-reviews-approval-gates-the-merge.md)). A push dismisses the approval and starts no review, so someone with write access comments `/review` after one. NCode Review skips a pull request from a fork or one a bot opened, such as Dependabot's: a maintainer approves it.
+6. Open a pull request into the default branch whose description ends with a `Closes #<issue>` line. The default branch takes changes only through pull requests: a maintainer merges yours once CI passes, NCode Review has approved it and every conversation is resolved. Open it as a draft and mark it ready once you have reviewed it yourself: NCode Review reviews a draft too, and its approval, which the NCode Review Approver submits, meets the one approval the ruleset requires ([the decision](docs/decisions/project-template/0022-ncode-reviews-approval-gates-the-merge.md), [the approver](docs/decisions/project-template/0036-a-required-approval-is-met-by-ncode-reviews-approver-app.md)). A push dismisses the approval and starts no review, so someone with write access comments `/review` after one. NCode Review skips a pull request from a fork or one a bot opened, such as Dependabot's: a maintainer approves it.
 
 ## Review Requirements
 
