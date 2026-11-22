@@ -1,6 +1,10 @@
 # Contributing to NCode.PropertyBag
 
-Issues and pull requests are welcome. [README.md](README.md) explains the project, and [AGENTS.md](AGENTS.md) holds the rules every change follows, for people and coding agents alike. Report a vulnerability privately instead, as [SECURITY.md](SECURITY.md) says. Everyone taking part follows the [Code of Conduct](CODE_OF_CONDUCT.md); [GOVERNANCE.md](GOVERNANCE.md) says who decides what, and [ROADMAP.md](ROADMAP.md) where the project is going. Issues labeled `good first issue` are small, self-contained tasks for a first contribution.
+Issues and pull requests are welcome. [README.md](README.md) explains the project, and [AGENTS.md](AGENTS.md) holds the rules every change follows, for people and coding agents alike. Report a vulnerability privately instead, as [SECURITY.md](SECURITY.md) says. Everyone taking part follows the [Code of Conduct](CODE_OF_CONDUCT.md); [GOVERNANCE.md](GOVERNANCE.md) says who decides what, and [ROADMAP.md](ROADMAP.md) where the project is going.
+
+## Pick Up an Issue
+
+Issues labeled [`help wanted`](https://github.com/NCodeGroup/PropertyBag/issues?q=is%3Aissue%20is%3Aopen%20label%3A%22help%20wanted%22) are open to contributors outside the maintainers. To take one, comment on the issue to claim it, and a maintainer assigns it to you; an issue that already has an assignee is taken. An issue also labeled [`good first issue`](https://github.com/NCodeGroup/PropertyBag/issues?q=is%3Aissue%20is%3Aopen%20label%3A%22good%20first%20issue%22) is a small, self-contained task for a first contribution, which needs no prior knowledge of the code. Then make the change as [Make a Change](#make-a-change) says.
 
 ## Prerequisites
 
