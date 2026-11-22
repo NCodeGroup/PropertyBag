@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.
 ### Changed
 
 - Package validation compares each package with the published 2.1.2 package.
+- Updated the project from project-template v0.111.3 to v0.112.2 (the Scorecard workflow, which runs Scorecard v5.7.0 and scores immutable releases, the `/best-practices` command, decision records ADR-0020, ADR-0028 and ADR-0139, and the template's update scripts), and the OpenSSF Best Practices pages cite the statements of `CONTRIBUTING.md` they rely on instead of its item numbers; the update changes no behavior of the library.
 
 ## [2.1.2] - 2026-11-22
 
