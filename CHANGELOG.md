@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.
 - The project keeps one owner and aims for the OpenSSF Best Practices passing level: `GOVERNANCE.md`, `ROADMAP.md` and `docs/best-practices-badge.md` say so, and the silver and gold criteria that ask for a second owner or the owner's confirmation of the organization's two-factor methods stay unmet ([#50](https://github.com/NCodeGroup/PropertyBag/issues/50), [ADR-1014](docs/decisions/1014-the-project-keeps-one-owner-and-aims-for-the-openssf-best-practices-passing-level.md)).
 - Updated the project from project-template v0.111.0 to v0.111.3 (the `/best-practices` command, whose Branch-Protection row says the NCode Review Approver's approval meets the ruleset's required approval, and the template's update script); the update changes no behavior of the library ([#61](https://github.com/NCodeGroup/PropertyBag/issues/61)).
 - `docs/best-practices-badge.md` cites the open issues labeled `good first issue` as the evidence for the OpenSSF Best Practices `small_tasks` criterion, in place of a closed one ([#63](https://github.com/NCodeGroup/PropertyBag/issues/63)).
+- `CONTRIBUTING.md` says how to pick up an issue: one labeled `help wanted` is open to contributors outside the maintainers, who claim it with a comment, and one also labeled `good first issue` is a small task for a first contribution.
 
 ## [2.1.1] - 2026-11-21
 
