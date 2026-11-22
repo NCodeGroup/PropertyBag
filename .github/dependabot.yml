@@ -40,6 +40,11 @@ updates:
       nuget-security:
         applies-to: security-updates
         patterns: ["*"]
+    ignore:
+      # The Microsoft.Extensions packages stay on the target framework's band, so their major moves with the target
+      # framework, as one planned migration (ADR-1015).
+      - dependency-name: "Microsoft.Extensions.*"
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: dotnet-sdk
     directory: /
     schedule:

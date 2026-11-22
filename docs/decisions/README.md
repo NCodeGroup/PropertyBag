@@ -64,7 +64,7 @@ override in `AGENTS.md`.
 | --- | --- | --- |
 | [1000](1000-disposing-a-scope-restores-the-previous-value.md) | Disposing a scope restores the previous value | Accepted |
 | [1001](1001-public-names-that-trip-naming-analyzers-keep-their-suppressions-until-the-next-major-version.md) | Public names that trip naming analyzers keep their suppressions until the next major version | Superseded by 1004 |
-| [1002](1002-the-packages-target-only-supported-lts-dotnet-versions.md) | The packages target only supported LTS .NET versions | Accepted |
+| [1002](1002-the-packages-target-only-supported-lts-dotnet-versions.md) | The packages target only supported LTS .NET versions | Accepted (amended by 1015) |
 | [1003](1003-readme-samples-are-compiled-tests-that-markdownsnippets-copies-into-the-readmes.md) | README samples are compiled tests that MarkdownSnippets copies into the READMEs | Accepted |
 | [1004](1004-public-names-pass-the-naming-analyzers-without-suppressions.md) | Public names pass the naming analyzers without suppressions (supersedes 1001) | Accepted |
 | [1005](1005-the-documentation-site-is-narrative-guides-built-by-a-shared-toolchain-outside-this-repository.md) | The documentation site is narrative guides, built by a shared toolchain outside this repository | Accepted |
@@ -77,3 +77,4 @@ override in `AGENTS.md`.
 | [1012](1012-the-template-ci-job-builds-each-commit-twice-and-the-project-workflow-rebuilds-releases.md) | The template's CI job builds each commit twice, and the project's workflow rebuilds releases (amends 1010) | Accepted |
 | [1013](1013-ncode-review-v1-5-0-is-adopted-inside-the-cooldown-for-the-approver.md) | NCode Review v1.5.0 is adopted inside the cooldown for the approver (amends 1007) | Accepted |
 | [1014](1014-the-project-keeps-one-owner-and-aims-for-the-openssf-best-practices-passing-level.md) | The project keeps one owner and aims for the OpenSSF Best Practices passing level | Accepted |
+| [1015](1015-the-packages-depend-on-their-target-frameworks-release-band.md) | The packages depend on their target framework's release band (amends 1002) | Accepted |

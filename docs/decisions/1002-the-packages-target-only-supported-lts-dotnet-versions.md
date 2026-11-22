@@ -1,6 +1,6 @@
 # 1002. The packages target only supported LTS .NET versions
 
-- **Status:** Accepted
+- **Status:** Accepted (amended by 1015)
 - **Date:** 2026-11-20
 - **Deciders:** NCode Group
 

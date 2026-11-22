@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.
 
 ## [Unreleased]
 
+## [2.1.2] - 2026-11-22
+
 ### Changed
 
 - Package validation compares each package with the published 2.1.1 package.
@@ -13,6 +15,11 @@ The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.
 - Updated the project from project-template v0.111.0 to v0.111.3 (the `/best-practices` command, whose Branch-Protection row says the NCode Review Approver's approval meets the ruleset's required approval, and the template's update script); the update changes no behavior of the library ([#61](https://github.com/NCodeGroup/PropertyBag/issues/61)).
 - `docs/best-practices-badge.md` cites the open issues labeled `good first issue` as the evidence for the OpenSSF Best Practices `small_tasks` criterion, in place of a closed one ([#63](https://github.com/NCodeGroup/PropertyBag/issues/63)).
 - `CONTRIBUTING.md` says how to pick up an issue: one labeled `help wanted` is open to contributors outside the maintainers, who claim it with a comment, and one also labeled `good first issue` is a small task for a first contribution.
+- Dependabot proposes no major update of the `Microsoft.Extensions.*` packages: their major moves with the target framework ([#70](https://github.com/NCodeGroup/PropertyBag/issues/70), [ADR-1015](docs/decisions/1015-the-packages-depend-on-their-target-frameworks-release-band.md)).
+
+### Fixed
+
+- The `net10.0` target of NCode.PropertyBag depends on `Microsoft.Extensions.DependencyInjection.Abstractions` 10.0.15, the band of its target framework, instead of 11.0.0, so an ASP.NET Core 10 application resolves the dependency-injection abstractions of its own shared framework ([#70](https://github.com/NCodeGroup/PropertyBag/issues/70), [ADR-1015](docs/decisions/1015-the-packages-depend-on-their-target-frameworks-release-band.md)).
 
 ## [2.1.1] - 2026-11-21
 
@@ -150,7 +157,8 @@ The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.
 - `NCode.PropertyBag`: `DefaultPropertyBag`, with lazy storage, scoped values and cloning, `DefaultPropertyBagScope`, the factories `IPropertyBagFactory`, `DefaultPropertyBagFactory` and `PropertyBagFactory`, and `AddPropertyBag()` for `Microsoft.Extensions.DependencyInjection`.
 - Both packages target .NET 10.0.
 
-[unreleased]: https://github.com/NCodeGroup/PropertyBag/compare/v2.1.1...HEAD
+[unreleased]: https://github.com/NCodeGroup/PropertyBag/compare/v2.1.2...HEAD
+[2.1.2]: https://github.com/NCodeGroup/PropertyBag/compare/v2.1.1...v2.1.2
 [2.1.1]: https://github.com/NCodeGroup/PropertyBag/compare/v2.1.0...v2.1.1
 [2.1.0]: https://github.com/NCodeGroup/PropertyBag/compare/v2.0.2...v2.1.0
 [2.0.2]: https://github.com/NCodeGroup/PropertyBag/compare/v2.0.1...v2.0.2
