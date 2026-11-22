@@ -82,8 +82,8 @@ code in the same process, which the Threat Model trusts. Each public entry point
   bag (`ArgumentNullException.ThrowIfNull`), and their key name is the caller's argument expression, text fixed at
   compile time, unless the caller passes `name`.
 - **`AddPropertyBag()`** throws `ArgumentNullException` for a `null` service collection.
-- **`DefaultPropertyBagScope`'s public constructor** checks nothing, and a `null` bag fails in `Dispose` with
-  `NullReferenceException` ([#47](https://github.com/NCodeGroup/PropertyBag/issues/47)).
+- **`DefaultPropertyBagScope`'s public constructor** throws `ArgumentNullException` for a `null` bag
+  ([#47](https://github.com/NCodeGroup/PropertyBag/issues/47)).
 - **The setters of `PropertyBagFactory.DefaultFactory` and `DefaultPropertyBagFactory.Singleton`** check nothing: a
   `null` `DefaultFactory` falls back to `DefaultPropertyBagFactory.Singleton`, and a `null` `Singleton` makes
   `PropertyBagFactory.Create()` throw `NullReferenceException` while `DefaultFactory` is unset or `null`.
@@ -224,8 +224,9 @@ privilege and open design."
 - **Findings:**
   1. No vulnerability in the library; R1 to R5 hold as stated.
   2. Low, robustness: `DefaultPropertyBagScope`'s public constructor takes a `null` bag and fails only in `Dispose`;
-     every caller is trusted code, so it is no vulnerability;
-     [#47](https://github.com/NCodeGroup/PropertyBag/issues/47) tracks the fix.
+     every caller is trusted code, so it is no vulnerability. Fixed in 2.1.1
+     ([#47](https://github.com/NCodeGroup/PropertyBag/issues/47),
+     [#55](https://github.com/NCodeGroup/PropertyBag/pull/55)): the constructor throws `ArgumentNullException`.
   3. Workflows: every action from outside the repository is pinned to a full commit SHA; each workflow's top-level
      permissions are `{}` or `contents: read`, with write permissions granted per job; no `run:` script expands an
      expression from an event or an input, values reach scripts through `env:`; the two `pull_request_target`
@@ -238,6 +239,9 @@ privilege and open design."
      maintainer is the only person with write access, it has to stay that way: GitHub doesn't count NCode Review's
      approval toward a required approval, and approval of the last push asks for someone other than the pusher, so
      either setting blocks every merge. Both are turned on once a second collaborator with write access exists.
+     Resolved after the review: the NCode Review Approver's approval meets a required approval
+     ([project-template ADR-0036](decisions/project-template/0036-a-required-approval-is-met-by-ncode-reviews-approver-app.md)),
+     so the ruleset requires one approving review of the last push.
   5. Release integrity: the rebuilt `v2.0.1` packages match the released ones entry for entry; `Copyright` held the
      build's year, which the template's `build/ProjectTemplate.props` removes
      ([ADR-1012](decisions/1012-the-template-ci-job-builds-each-commit-twice-and-the-project-workflow-rebuilds-releases.md),
