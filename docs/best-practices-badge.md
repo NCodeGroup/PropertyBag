@@ -34,7 +34,7 @@ The criteria that need a document, at every level, point to these:
 | Vulnerability response and credit | [SECURITY.md](../SECURITY.md) |
 | Coding standards and their enforcement | [CONTRIBUTING.md](../CONTRIBUTING.md), `.editorconfig`, CSharpier and the analyzers, in the gate |
 | Test coverage and policy | `./build/Test-Coverage.ps1` (98% line and branch) and [CONTRIBUTING.md](../CONTRIBUTING.md) |
-| Test policy (`test_policy_mandated`) | [CONTRIBUTING.md](../CONTRIBUTING.md), Make a Change, item 3 |
+| Test policy (`test_policy_mandated`) | [CONTRIBUTING.md](../CONTRIBUTING.md), which says that a change that adds or changes behavior adds or updates the automated tests that cover it |
 | `dynamic_analysis_enable_assertions`, `input_validation`, `regression_tests_added50`, `security_review` | [assurance-case.md](assurance-case.md): Evidence, Input Validation and Security Reviews |
 | `build_repeatable`, `build_reproducible` | The `reproducible-build` job of `.github/workflows/ci.yml`, `.github/workflows/reproducible-build.yml`, [ADR-1010](decisions/1010-package-builds-are-reproducible-and-ci-compares-rebuilds-entry-by-entry.md) and [ADR-1012](decisions/1012-the-template-ci-job-builds-each-commit-twice-and-the-project-workflow-rebuilds-releases.md) |
 | `internationalization` | [architecture.md](architecture.md#components): the packages show people no text |
