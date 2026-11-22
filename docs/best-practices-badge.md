@@ -19,9 +19,9 @@ a package.
 OpenSSF Scorecard's CII-Best-Practices check scores the badge level: in progress 2, passing 5, silver 7, gold 10
 ([ADR-0020](decisions/project-template/0020-github-projects-are-scored-by-openssf-scorecard.md)).
 
-## Toward Silver
+## Evidence Map
 
-The silver criteria that need a document point to these:
+The criteria that need a document, at every level, point to these:
 
 | Criteria | Where |
 | --- | --- |
@@ -44,22 +44,25 @@ The silver criteria that need a document point to these:
 
 [//]: # "Maintainers: once registered, say which level the site shows and what keeps the next one from being earned, naming the criteria, not a percentage."
 
-Registered as [project 16954](https://www.bestpractices.dev/en/projects/16954). On 2026-11-20 the site showed the
-passing level in progress, with `dynamic_analysis_enable_assertions` its one unanswered criterion. Silver stops at
-`access_continuity`, which only a second owner meets. Gold also needs a second maintainer (`bus_factor`,
-`two_person_review`), two significant contributors from different organizations (`contributors_unassociated`), and an
-owner's confirmation of the organization's two-factor settings (`require_2FA`, `secure_2FA`).
+Registered as [project 16954](https://www.bestpractices.dev/en/projects/16954). The project aims for the passing level
+([ADR-1014](decisions/1014-the-project-keeps-one-owner-and-aims-for-the-openssf-best-practices-passing-level.md)). On
+2026-11-21 the site showed passing in progress: every MUST and SHOULD criterion is answered, and
+`dynamic_analysis_enable_assertions` is the one unanswered criterion. Its evidence is the Assertions while testing item
+of [assurance-case.md](assurance-case.md#evidence), and answering it Met earns passing. Each saved justification links
+to its evidence on `main` by line, so after a change that moves a cited line, run `/best-practices` and answer again
+with the prompt it writes. Silver stops at `access_continuity` and gold at the criteria below, which stay unmet.
 
 ## Needs a Person
 
-- `access_continuity` (silver MUST): a second owner of the GitHub organization and the nuget.org packages, as
-  [GOVERNANCE.md](../GOVERNANCE.md#continuity) says. Silver can't be claimed until there is one.
-- `bus_factor` (silver SHOULD, gold MUST): a bus factor of 2 or more, which the same second owner gives.
-- `two_person_review` (gold MUST): a second maintainer.
+- `access_continuity` (silver MUST), `bus_factor` (silver SHOULD, gold MUST) and `two_person_review` (gold MUST):
+  unmet, because the project keeps one owner and adds no second one
+  ([ADR-1014](decisions/1014-the-project-keeps-one-owner-and-aims-for-the-openssf-best-practices-passing-level.md),
+  [GOVERNANCE.md](../GOVERNANCE.md#continuity)).
 - `contributors_unassociated` (gold MUST): two significant contributors from different organizations.
-- `require_2FA` (gold MUST) and `secure_2FA` (gold SHOULD): the GitHub organization requires two-factor
-  authentication, with secure methods only, which only an owner can set and confirm. GitHub's API reported the
-  requirement enabled on 2026-11-20; an owner confirms that only secure methods are allowed.
+- `require_2FA` (gold MUST) and `secure_2FA` (gold SHOULD): unmet, because the owner doesn't confirm the
+  organization's two-factor methods on bestpractices.dev
+  ([ADR-1014](decisions/1014-the-project-keeps-one-owner-and-aims-for-the-openssf-best-practices-passing-level.md)).
+  GitHub's API reported the organization's two-factor requirement enabled on 2026-11-20.
 - `security_review` (gold MUST): the review of 2026-11-20 in [assurance-case.md](assurance-case.md#security-reviews)
   meets it until 2031-11-20; record the next one there before then.
 - `dco` (silver SHOULD): unmet. The project doesn't ask for `Signed-off-by`

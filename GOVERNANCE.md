@@ -43,8 +43,10 @@ on with no knowledge held elsewhere. nuget.org publishing uses trusted publishin
 
 Owners today, as of 2026-11-20: [@polewskm](https://github.com/polewskm) is the one owner of the NCodeGroup GitHub
 organization and the one administrator of this repository, and the nuget.org packages belong to the nuget.org account
-`NCode`. Continuity needs at least two people who can administer the organization, the repository and that account;
-until a second owner is added, it is incomplete, and the OpenSSF Best Practices silver level can't be claimed
+`NCode`. The project keeps one owner and adds no second one
+([ADR-1014](docs/decisions/1014-the-project-keeps-one-owner-and-aims-for-the-openssf-best-practices-passing-level.md)):
+continuity rests on the repository and the trusted publishing above, and the OpenSSF Best Practices criteria that ask
+for a second owner stay unmet, so the project aims for the passing level
 ([docs/best-practices-badge.md](docs/best-practices-badge.md)).
 
 ## Changing This Document

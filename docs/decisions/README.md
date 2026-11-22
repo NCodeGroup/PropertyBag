@@ -76,3 +76,4 @@ override in `AGENTS.md`.
 | [1011](1011-new-capabilities-are-extension-members-and-new-types-and-the-interfaces-stay-unchanged-within-a-major-version.md) | New capabilities are extension members and new types, and the interfaces stay unchanged within a major version | Accepted |
 | [1012](1012-the-template-ci-job-builds-each-commit-twice-and-the-project-workflow-rebuilds-releases.md) | The template's CI job builds each commit twice, and the project's workflow rebuilds releases (amends 1010) | Accepted |
 | [1013](1013-ncode-review-v1-5-0-is-adopted-inside-the-cooldown-for-the-approver.md) | NCode Review v1.5.0 is adopted inside the cooldown for the approver (amends 1007) | Accepted |
+| [1014](1014-the-project-keeps-one-owner-and-aims-for-the-openssf-best-practices-passing-level.md) | The project keeps one owner and aims for the OpenSSF Best Practices passing level | Accepted |

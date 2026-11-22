@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.
 ### Changed
 
 - Package validation compares each package with the published 2.1.1 package.
+- The project keeps one owner and aims for the OpenSSF Best Practices passing level: `GOVERNANCE.md`, `ROADMAP.md` and `docs/best-practices-badge.md` say so, and the silver and gold criteria that ask for a second owner or the owner's confirmation of the organization's two-factor methods stay unmet ([#50](https://github.com/NCodeGroup/PropertyBag/issues/50), [ADR-1014](docs/decisions/1014-the-project-keeps-one-owner-and-aims-for-the-openssf-best-practices-passing-level.md)).
 
 ## [2.1.1] - 2026-11-21
 
