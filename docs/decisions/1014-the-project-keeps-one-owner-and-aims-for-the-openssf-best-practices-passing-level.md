@@ -45,7 +45,7 @@ gold.**
 - Continuity rests on the repository holding everything and on trusted publishing with no key to hand over, and no one
   else can administer the organization, the repository or the nuget.org account.
 - Silver and gold stay below 100%, and Scorecard's CII-Best-Practices check scores at most 5 once passing is earned
-  (project-template ADR-0020).
+  (project-template ADR-0020), so its code-scanning alert is dismissed as won't fix (project-template ADR-0035).
 - A second person with write access is the signal to write a record that supersedes this one.
 
 ## References
